@@ -1,6 +1,6 @@
 /* Compiler.h
 2017-04-03 : Igor Pavlov : Public domain */
-
+#pragma once
 #ifndef __7Z_COMPILER_H
 #define __7Z_COMPILER_H
 

@@ -15,7 +15,7 @@
 #define _UNICODE
 #endif
 
-#define CSIDL_MYDOCUMENTS		0x0005 //My Documents
+//#define CSIDL_MYDOCUMENTS		0x0005 //My Documents (c4005 macro redef)
 #define DWL_MSGRESULT				0
 #define COL_SELLIM						10
 #define MAX_LOADSTRING			255
@@ -65,7 +65,8 @@ extern wchar_t const *lPref;
 extern int i; //avoids LNK2005
 extern int retVal; //avoids LNK2005
 extern float resX, resY;
-
+wchar_t const* FormatItowNotify(int a, wchar_t(buf)[16], wchar_t *buffer ); //default argument not allowed here else c2572 redefinition
+void * ReallocateMem(wchar_t * aSource, int Size);
 BOOL GetFilesIn(HWND LVFileshWnd, wchar_t *currPathW);
 BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int i, int j = 0);
 BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wchar_t *rcStrType1 = NULL,  int rcIntType = 0);

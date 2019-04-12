@@ -261,11 +261,10 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 	if (!l)
 	{
 		retVal = SendMessageW(hwndList, LVM_INSERTITEMW, k, (LPARAM)&lvi);
-		if (retVal < 0)
+		if (retVal > 0)
 		{
-			wchar_t * buffer= (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
-			_itow_s(k, buffer, MAX_LOADSTRING, 10);
-			ErrorExit(L"Failed to insert Listview item!", buffer);
+			wchar_t(buf)[16] = {};
+			FormatItowNotify(k, buf, buffer);
 			if (buffer) free(buffer);
 			retVal = 0;
 		}
@@ -277,9 +276,9 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 		retVal = SendMessageW(hwndList, LVM_SETITEMTEXTW, k, (LPARAM)&lvi);
 		if (retVal == 0)
 		{
-			wchar_t * buffer= (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
+			buffer= (wchar_t *)realloc(buffer, SIZEOF_WCHAR);	
 			_itow_s(k, buffer, MAX_LOADSTRING, 10);
-			ErrorExit(L"Failed to set text in Listview item!", buffer);
+			ErrorExit(L"Failed to set text in Listview item", buffer);
 			if (buffer) free(buffer);
 		}
 	}
@@ -543,15 +542,15 @@ BOOL ChangeWindowMsgFilterEx(HWND hWnd, UINT uMsg)
 				GetProcAddress(GetModuleHandleW(L"user32"),	"ChangeWindowMessageFilterEx")));
 
 	if (!(pfn))
-		//use the old function
+		//using the old function gets the C4456
 	{
 
 		typedef BOOL (WINAPI * fnChangeWindowMessageFilter)( UINT, DWORD);
-		fnChangeWindowMessageFilter pfn =
+		fnChangeWindowMessageFilter pfn1 =
 			reinterpret_cast<fnChangeWindowMessageFilter>(
 				reinterpret_cast<void*>(
 					GetProcAddress(GetModuleHandleW(L"user32"), "ChangeWindowMessageFilter")));
-		return pfn(uMsg, MSGFLT_ADD);
+		return pfn1(uMsg, MSGFLT_ADD);
 	}
 	return pfn(hWnd, uMsg, MSGFLT_ALLOW, NULL);
 }

@@ -1,7 +1,39 @@
 #include "AuxFuncs.h"
 Byte srcFile[MAX_FILE] = {};								// file dragged to LV: stack overflow if in function!
 
+wchar_t const* FormatItowNotify(int a, wchar_t(buf)[16], wchar_t *buffer)
+{
+	// itow_s chops off the terminator, and craps out Free()
+	//int lenBuffer = SIZEOF_WCHAR* (wcslen(buffer) + 1);
+	//buffer = (wchar_t *)ReallocateMem(buffer, lenBuffer);
+	//_itow_s(k, buffer, lenBuffer, 10);
 
+	for (int i = 0; i < 16; ++i) { buf[i] = ' '; }
+	int count = _scwprintf(buf);
+	// swprintf(buf, count, L"%d", a, L"%-13s", " ");
+	swprintf(buf, count,  L"%d", a);
+	if (buffer)
+	{
+		wcscpy_s(buffer, 16, (wchar_t *)buf);
+		ErrorExit(L"Failed to insert Listview item!", buffer);
+	}
+	return buf;
+}
+
+void * ReallocateMem(wchar_t * aSource, int Size)
+{
+	wchar_t * buffer = (wchar_t *)realloc(aSource, Size);
+	if (buffer)
+	{
+		buffer[(Size - 2)/ SIZEOF_WCHAR] = '\0';
+	}
+	else
+	{
+		wchar_t *buffer = (wchar_t *)calloc(Size - 1, SIZEOF_WCHAR); // retry original size
+		//ErrorExit(L"Failed to insert Listview item!", buffer);
+	}
+	return buffer;
+}
 void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 {
 	// To convert int to LPCWSTR:
@@ -22,13 +54,12 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 			FORMAT_MESSAGE_IGNORE_INSERTS,
 			nullptr,
 			dww,
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPWSTR)&lpMsgBuf, 0, nullptr);
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (wchar_t*)&lpMsgBuf, 0, nullptr);
 	}
-
 
 	// Display the error message and exit the process
 
-	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, (lstrlenW((LPCWSTR)lpMsgBuf) + lstrlenW((LPCWSTR)lpszFunction) + lstrlenW((LPCWSTR)var) + 40) * sizeof(WCHAR));
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, (lstrlenW((wchar_t*)lpMsgBuf) + lstrlenW((wchar_t*)lpszFunction) + lstrlenW((LPCWSTR)var) + 40) * sizeof(WCHAR));
 
 	if (lpDisplayBuf)
 	{
@@ -56,6 +87,7 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 
 int ProcessCompressedFile(wchar_t* fName, const char command7z)
 {
+	UNUSED(command7z);
 	FILE* f = {};
 	if (retVal = _wfopen_s(&f, fName, L"rb"))
 	{

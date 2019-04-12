@@ -30,9 +30,11 @@
 //default compression at 16k
 #define IN_BUF_SIZE (1 << 16)
 #define OUT_BUF_SIZE (1 << 24) //16777216 or default 16mb
-//#define UNUSED_VAR(VAR) VAR
-static void *SzAlloc(ISzAllocPtr p, size_t size) { UNUSED_VAR(p); return MyAlloc(size); }
-static void SzFree(ISzAllocPtr p, void *address) { UNUSED_VAR(p); MyFree(address); }
+ //https://stackoverflow.com/a/1486931/2128797
+#define UNUSED(expr) do { (void)(expr); } while (0)
+//UNUSED_VAR from 7z compiler.h is also possible
+// static void *SzAlloc(ISzAllocPtr p, size_t size) {UNUSED(p); return MyAlloc(size); }
+// static void SzFree(ISzAllocPtr p, void *address) {UNUSED(p); MyFree(address); }
 int Do7zFile(int numargs, const char *arg[3]);
 static SRes PrintString(const wchar_t *s);
 
@@ -75,7 +77,7 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 
 //SRes LzmaDecode(Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen,	const Byte *propData, unsigned propSize, ELzmaFinishMode finishMode, 	ELzmaStatus *status, ISzAllocPtr alloc);
 //static SRes Decode(ISeqOutStream *outStream, ISeqInStream *inStream);
-/*
+
 // common
 #include <stdlib.h>
 #include <stdio.h>
@@ -93,6 +95,7 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64_common\skse_version.h"
 #include "skse64_common\Utilities.h"
 
+/*
 // skse64
 #include "skse64\BSModelDB.h"
 #include "skse64\Colors.h"
@@ -140,7 +143,6 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64\InternalSerialization.h"
 #include "skse64\InternalTasks.h"
 #include "skse64\NiAdditionalGeometryData.h"
-#include "skse64\NiAllocator.h"
 #include "skse64\NiControllers.h"
 #include "skse64\NiExtraData.h"
 #include "skse64\NiGeometry.h"
@@ -237,7 +239,7 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64\ScaleformVM.h"
 #include "skse64\Serialization.h"
 #include "skse64\Translation.h"
-
+*/
 // skse64_loader
 #include "skse64_loader\Options.h"
 // skse64_loader_common
@@ -246,4 +248,3 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64_loader_common\LoaderError.h"
 #include "skse64_loader_common\Steam.h"
 // 
-*/

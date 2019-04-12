@@ -1,6 +1,6 @@
 /* 7zTypes.h -- Basic types
 2018-08-04 : Igor Pavlov : Public domain */
-
+#pragma once
 #ifndef __7Z_TYPES_H
 #define __7Z_TYPES_H
 

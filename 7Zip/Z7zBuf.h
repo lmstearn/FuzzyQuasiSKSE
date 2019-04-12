@@ -3,7 +3,7 @@
 
 #ifndef __7Z_BUF_H
 #define __7Z_BUF_H
-
+#include "Precomp.h"
 #include "7zTypes.h"
 
 EXTERN_C_BEGIN

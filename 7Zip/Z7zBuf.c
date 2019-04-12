@@ -1,8 +1,6 @@
 /* 7zBuf.c -- Byte Buffer
 2017-04-03 : Igor Pavlov : Public domain */
 
-#include "Precomp.h"
-
 #include "Z7zBuf.h"
 
 void Buf_Init(CBuf *p)
@@ -37,14 +35,20 @@ void Buf_Free(CBuf *p, ISzAllocPtr alloc)
 
 void DynBuf_Construct(CDynBuf * p)
 {
+	UNUSED_VAR(p);
 }
 
 void DynBuf_SeekToBeg(CDynBuf * p)
 {
+	UNUSED_VAR(p);
 }
 
 int DynBuf_Write(CDynBuf * p, const Byte * buf, size_t size, ISzAllocPtr alloc)
 {
+	UNUSED_VAR(p);
+	UNUSED_VAR(buf);
+	UNUSED_VAR(size);
+	UNUSED_VAR(alloc);
 	return 0;
 }
 void DynBuf_Free(CDynBuf *p, ISzAllocPtr alloc)

@@ -1,21 +1,23 @@
 #include "AIPrefix.h"
 #include "AuxFuncs.h"
 
+static void *SzAlloc(ISzAllocPtr p, size_t size) { UNUSED_VAR(p); return MyAlloc(size); }
+static void SzFree(ISzAllocPtr p, void *address) { UNUSED_VAR(p); MyFree(address); }
 
-static int TestSignatureCandidate(const Byte *testBytes)
-{
-	unsigned i;
-	for (i = 0; i < k7zSignatureSize; i++)
-		if (testBytes[i] != k7zSignature[i])
-			return 0;
-	return 1;
-}
+// Dummy Function
 UInt64 SzArEx_GetFolderStreamPos(const CSzArEx *p, UInt32 folderIndex, UInt32 indexInFolder)
 {
+	UNUSED(p);
+	UNUSED(folderIndex);
+	UNUSED(indexInFolder);
 	return UInt64();
 }
+// Dummy Function
 int SzArEx_GetFolderFullPackSize(const CSzArEx *p, UInt32 folderIndex, UInt64 *resSize)
 {
+	UNUSED(p);
+	UNUSED(folderIndex);
+	UNUSED(resSize);
 	return int();
 }
 
@@ -473,7 +475,8 @@ int Do7zFile(int numargs, const char *args[3])
 	const char *command = args[2];
 	//strcpy(command, args[2]);
 	//if (command) free(command);
-	if (args[2] == "" || InFile_Open(&archiveStream.file, command))
+	//if (args[2] == "" || InFile_Open(&archiveStream.file, command))
+		if ((strcmp(args[2], "") == 0) || (InFile_Open(&archiveStream.file, command) != 0))
 #endif
 	{
 		ErrorExit(L"Can not open input file");
@@ -510,14 +513,14 @@ int Do7zFile(int numargs, const char *args[3])
 	if (res == SZ_OK)
 	{
 		
-		char *command = (char *)calloc(2, 1);
-		strcpy(command, args[1]);
+		char *command1 = (char *)calloc(2, 1);
+		strcpy(command1, args[1]);
 		int listCommand = 0, testCommand = 0, fullPaths = 0;
 
-		if (strcmp(command, "l") == 0) listCommand = 1;
-		else if (strcmp(command, "t") == 0) testCommand = 1;
-		else if (strcmp(command, "e") == 0) {}
-		else if (strcmp(command, "x") == 0) { fullPaths = 1; }
+		if (strcmp(command1, "l") == 0) listCommand = 1;
+		else if (strcmp(command1, "t") == 0) testCommand = 1;
+		else if (strcmp(command1, "e") == 0) {}
+		else if (strcmp(command1, "x") == 0) { fullPaths = 1; }
 		else
 		{
 			ErrorExit(L"incorrect command");
@@ -552,6 +555,7 @@ int Do7zFile(int numargs, const char *args[3])
 				{
 					SzFree(NULL, temp);
 					tempSize = len;
+					// SzAlloc is void, but pointer return is legal
 					temp = (wchar_t *)SzAlloc(NULL, tempSize * sizeof(temp[0]));
 					if (!temp)
 					{
@@ -714,7 +718,7 @@ int Do7zFile(int numargs, const char *args[3])
 			}
 			ISzAlloc_Free(&allocImp, outBuffer);
 		}
-		SzFree(NULL, command);
+		SzFree(NULL, command1);
 	}
 
 

@@ -1,6 +1,6 @@
 /* Precomp.h -- StdAfx
 2013-11-12 : Igor Pavlov : Public domain */
-
+#pragma once
 #ifndef __7Z_PRECOMP_H
 #define __7Z_PRECOMP_H
 

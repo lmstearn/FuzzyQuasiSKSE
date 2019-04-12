@@ -5,12 +5,15 @@
 #define __COMMON_ALLOC_H
 
 #include "7zTypes.h"
+#include "compiler.h"
 
 EXTERN_C_BEGIN
 
 void *MyAlloc(size_t size);
 void MyFree(void *address);
 
+static void *SzAlloc(ISzAllocPtr p, size_t size);
+static void SzFree(ISzAllocPtr p, void *address);
 #ifdef _WIN32
 
 void SetLargePageSize();

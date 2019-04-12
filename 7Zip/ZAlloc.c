@@ -237,10 +237,9 @@ void BigFree(void *address)
 #endif
 
 
+extern const ISzAlloc g_Alloc = { SzAlloc, SzFree };
 static void *SzAlloc(ISzAllocPtr p, size_t size) { UNUSED_VAR(p); return MyAlloc(size); }
 static void SzFree(ISzAllocPtr p, void *address) { UNUSED_VAR(p); MyFree(address); }
-extern const ISzAlloc g_Alloc = { SzAlloc, SzFree };
-
 static void *SzMidAlloc(ISzAllocPtr p, size_t size) { UNUSED_VAR(p); return MidAlloc(size); }
 static void SzMidFree(ISzAllocPtr p, void *address) { UNUSED_VAR(p); MidFree(address); }
 const ISzAlloc g_MidAlloc = { SzMidAlloc, SzMidFree };
