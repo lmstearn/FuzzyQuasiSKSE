@@ -30,7 +30,7 @@
     <ClInclude Include="AIPrefix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ASKSEView.h">
+    <ClInclude Include="AFuzzyQuasiSKSE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AuxFuncs.h">
@@ -77,7 +77,7 @@
     <ClCompile Include="AIPrefix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ASKSEView.cpp">
+    <ClCompile Include="AFuzzyQuasiSKSE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\7Zip\ZLzmaDec.c">
@@ -127,7 +127,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SKSEView.rc">
+    <ResourceCompile Include="AFuzzyQuasiSKSE.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -135,7 +135,7 @@
     <Image Include="small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="SKSEView.ico">
+    <Image Include="AFuzzyQuasiSKSE.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
