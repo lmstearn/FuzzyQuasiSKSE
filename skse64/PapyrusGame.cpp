@@ -97,64 +97,114 @@ namespace papyrusGame
 		return pDataHandler->modList.loadedMods.count;
 	}
 
+	static const int LIGHT_MOD_OFFSET = 0x100;
+
 	UInt32 GetModByName(StaticFunctionTag*, BSFixedString name)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		return pDataHandler->GetLoadedModIndex(name.data);
+		const ModInfo * modInfo = pDataHandler->LookupModByName(name.data);
+		if (!modInfo || !modInfo->IsActive())
+			return 0xFF;
+
+		if (modInfo->IsLight())
+			return modInfo->lightIndex + LIGHT_MOD_OFFSET;
+
+		return modInfo->modIndex;
 	}
 
 	BSFixedString GetModName(StaticFunctionTag*, UInt32 index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if(index > 255 && index < pDataHandler->modList.loadedMods.count)
-			return NULL;
-		
 		ModInfo* modInfo = nullptr;
-		pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
-		return (modInfo) ? modInfo->name : NULL;
+		if (index > 0xFF) {
+			UInt32 adjusted = index - LIGHT_MOD_OFFSET;
+			if (adjusted >= pDataHandler->modList.loadedCCMods.count)
+				return "";
+			pDataHandler->modList.loadedCCMods.GetNthItem(adjusted, modInfo);
+			
+		} else {
+			if (index >= pDataHandler->modList.loadedMods.count)
+				return "";
+			pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
+		}
+
+		return (modInfo) ? modInfo->name : "";
 	}
 
 	BSFixedString GetModAuthor(StaticFunctionTag*, UInt32 index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if (index > 255 && index < pDataHandler->modList.loadedMods.count)
-			return NULL;
+		ModInfo* modInfo = nullptr;
+		if (index > 0xFF) {
+			UInt32 adjusted = index - LIGHT_MOD_OFFSET;
+			if (adjusted >= pDataHandler->modList.loadedCCMods.count)
+				return "";
+			pDataHandler->modList.loadedCCMods.GetNthItem(adjusted, modInfo);
 
-		ModInfo* modInfo = NULL;
-		pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
-		return (modInfo) ? modInfo->author.Get() : NULL;
+		}
+		else {
+			if (index >= pDataHandler->modList.loadedMods.count)
+				return "";
+			pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
+		}
+
+		return (modInfo) ? modInfo->author.Get() : "";
 	}
 
 	BSFixedString GetModDescription(StaticFunctionTag*, UInt32 index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if (index > 255 && index < pDataHandler->modList.loadedMods.count)
-			return NULL;
+		ModInfo* modInfo = nullptr;
+		if (index > 0xFF) {
+			UInt32 adjusted = index - LIGHT_MOD_OFFSET;
+			if (adjusted >= pDataHandler->modList.loadedCCMods.count)
+				return "";
+			pDataHandler->modList.loadedCCMods.GetNthItem(adjusted, modInfo);
 
-		ModInfo* modInfo = NULL;
-		pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
-		return (modInfo) ? modInfo->description.Get() : NULL;
+		}
+		else {
+			if (index >= pDataHandler->modList.loadedMods.count)
+				return "";
+			pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
+		}
+		return (modInfo) ? modInfo->description.Get() : "";
 	}
 
 	UInt32 GetModDependencyCount(StaticFunctionTag*, UInt32 index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if (index > 255 && index < pDataHandler->modList.loadedMods.count)
-			return NULL;
+		ModInfo* modInfo = nullptr;
+		if (index > 0xFF) {
+			UInt32 adjusted = index - LIGHT_MOD_OFFSET;
+			if (adjusted >= pDataHandler->modList.loadedCCMods.count)
+				return 0;
+			pDataHandler->modList.loadedCCMods.GetNthItem(adjusted, modInfo);
 
-		ModInfo* modInfo = NULL;
-		pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
+		}
+		else {
+			if (index >= pDataHandler->modList.loadedMods.count)
+				return 0;
+			pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
+		}
 		return (modInfo) ? modInfo->numRefMods : 0;
 	}
 
 	UInt32 GetNthModDependency(StaticFunctionTag*, UInt32 index, UInt32 dep_index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if (index > 255 && index < pDataHandler->modList.loadedMods.count)
-			return NULL;
+		ModInfo* modInfo = nullptr;
+		if (index > 0xFF) {
+			UInt32 adjusted = index - LIGHT_MOD_OFFSET;
+			if (adjusted >= pDataHandler->modList.loadedCCMods.count)
+				return 0;
+			pDataHandler->modList.loadedCCMods.GetNthItem(adjusted, modInfo);
 
-		ModInfo* modInfo = NULL;
-		pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
+		}
+		else {
+			if (index >= pDataHandler->modList.loadedMods.count)
+				return 0;
+			pDataHandler->modList.loadedMods.GetNthItem(index, modInfo);
+		}
 		return (modInfo && dep_index < modInfo->numRefMods) ? modInfo->refModInfo[dep_index]->modIndex : 0;
 	}
 
@@ -167,14 +217,18 @@ namespace papyrusGame
 	UInt32 GetLightModByName(StaticFunctionTag*, BSFixedString name)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		return pDataHandler->GetLoadedLightModIndex(name.data);
+		const ModInfo * modInfo = pDataHandler->LookupModByName(name.data);
+		if (!modInfo || !modInfo->IsActive() || !modInfo->IsLight())
+			return 0xFFFF;
+
+		return modInfo->lightIndex;
 	}
 
 	BSFixedString GetLightModName(StaticFunctionTag*, UInt32 index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if (index > 255 && index < pDataHandler->modList.loadedCCMods.count)
-			return NULL;
+		if (index >= pDataHandler->modList.loadedCCMods.count)
+			return "";
 
 		ModInfo* modInfo = nullptr;
 		pDataHandler->modList.loadedCCMods.GetNthItem(index, modInfo);
@@ -184,8 +238,8 @@ namespace papyrusGame
 	BSFixedString GetLightModAuthor(StaticFunctionTag*, UInt32 index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if (index > 255 && index < pDataHandler->modList.loadedCCMods.count)
-			return NULL;
+		if (index >= pDataHandler->modList.loadedCCMods.count)
+			return "";
 
 		ModInfo* modInfo = NULL;
 		pDataHandler->modList.loadedCCMods.GetNthItem(index, modInfo);
@@ -195,8 +249,8 @@ namespace papyrusGame
 	BSFixedString GetLightModDescription(StaticFunctionTag*, UInt32 index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if (index > 255 && index < pDataHandler->modList.loadedCCMods.count)
-			return NULL;
+		if (index >= pDataHandler->modList.loadedCCMods.count)
+			return "";
 
 		ModInfo* modInfo = NULL;
 		pDataHandler->modList.loadedCCMods.GetNthItem(index, modInfo);
@@ -206,8 +260,8 @@ namespace papyrusGame
 	UInt32 GetLightModDependencyCount(StaticFunctionTag*, UInt32 index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if (index > 255 && index < pDataHandler->modList.loadedCCMods.count)
-			return NULL;
+		if (index >= pDataHandler->modList.loadedCCMods.count)
+			return 0;
 
 		ModInfo* modInfo = NULL;
 		pDataHandler->modList.loadedCCMods.GetNthItem(index, modInfo);
@@ -217,8 +271,8 @@ namespace papyrusGame
 	UInt32 GetNthLightModDependency(StaticFunctionTag*, UInt32 index, UInt32 dep_index)
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
-		if (index > 255 && index < pDataHandler->modList.loadedCCMods.count)
-			return NULL;
+		if (index >= pDataHandler->modList.loadedCCMods.count)
+			return 0;
 
 		ModInfo* modInfo = NULL;
 		pDataHandler->modList.loadedCCMods.GetNthItem(index, modInfo);
@@ -229,13 +283,9 @@ namespace papyrusGame
 	{
 		DataHandler* pDataHandler = DataHandler::GetSingleton();
 
-		const ModInfo * modInfo = pDataHandler->LookupLoadedModByName(name.data);
+		const ModInfo * modInfo = pDataHandler->LookupModByName(name.data);
 		if (modInfo)
-			return true;
-
-		modInfo = pDataHandler->LookupLoadedLightModByName(name.data);
-		if (modInfo)
-			return true;
+			return modInfo->IsActive();
 
 		return false;
 	}
@@ -438,7 +488,7 @@ namespace papyrusGame
 		// Compute skintone
 		if(tintMask->tintType == TintMask::kMaskType_SkinTone) {
 			NiColorA colorResult;
-			CALL_MEMBER_FN(actorBase, SetSkinFromTint)(&colorResult, tintMask, 1, 0);
+			CALL_MEMBER_FN(actorBase, SetSkinFromTint)(&colorResult, tintMask, true);
 		}
 	}
 
@@ -693,9 +743,9 @@ namespace papyrusGame
 	TESObjectREFR * GetCurrentConsoleRef(StaticFunctionTag * base)
 	{
 		UInt32 handle = (*g_consoleHandle);
-		TESObjectREFR * refr = NULL;
+		NiPointer<TESObjectREFR> refr;
 		if(handle != 0 && handle != (*g_invalidRefHandle)) {
-			LookupREFRByHandle(&handle, &refr);
+			LookupREFRByHandle(handle, refr);
 			return refr;
 		}
 

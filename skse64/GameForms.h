@@ -26,6 +26,7 @@ class BGSHazard;
 class TESNPC;
 class TESWorldSpace;
 class BSExtraData;
+struct ModInfo;
 
 typedef TESForm* (*_LookupFormByID)(UInt32 id);
 extern RelocAddr <_LookupFormByID> LookupFormByID;
@@ -374,7 +375,7 @@ public:
 	virtual void			Unk_11(UInt32 arg);
 	virtual void			Unk_12(UInt32 arg);
 	virtual void			InitItem(void);		// called once all dependent forms are loaded
-	virtual void			Unk_14(void);
+	virtual ModInfo*		GetFinalSourceFile();
 	virtual UInt32			GetFormType(void);
 	virtual void			GetFormDesc(char * buf, UInt32 bufLen);
 	virtual bool			GetFlag00000040(void);
@@ -965,9 +966,9 @@ public:
 	UInt32	unk40;	// 40
 
 	MEMBER_FN_PREFIX(BGSListForm);
-	DEFINE_MEMBER_FN(AddFormToList, void, 0x002C55C0, TESForm * form);
-	DEFINE_MEMBER_FN(RemoveFormFromList, void, 0x002C5760, TESForm * form);
-	DEFINE_MEMBER_FN(RevertList, void, 0x002C54F0);
+	DEFINE_MEMBER_FN(AddFormToList, void, 0x002C53D0, TESForm * form);
+	DEFINE_MEMBER_FN(RemoveFormFromList, void, 0x002C5570, TESForm * form);
+	DEFINE_MEMBER_FN(RevertList, void, 0x002C5300);
 
 	class Visitor
 	{
@@ -1617,8 +1618,8 @@ public:
 	UnkArray	unk250;		// 250
 
 	MEMBER_FN_PREFIX(TESQuest);
-	DEFINE_MEMBER_FN(ForceRefTo, UInt32, 0x00375240, UInt32 aliasId, TESObjectREFR * reference);
-	DEFINE_MEMBER_FN(NewGame_Internal, UInt8, 0x00370B00, UInt8 * unk1, UInt8 unk2);
+	DEFINE_MEMBER_FN(ForceRefTo, UInt32, 0x00375050, UInt32 aliasId, TESObjectREFR * reference);
+	DEFINE_MEMBER_FN(NewGame_Internal, UInt8, 0x00370910, UInt8 * unk1, UInt8 unk2);
 
 	UInt8 NewGame_Hook(UInt8 * unk1, UInt8 unk2);
 };
@@ -2489,7 +2490,7 @@ public:
 	UInt64						unk138;		// 138
 
 	MEMBER_FN_PREFIX(TESObjectCELL);
-	DEFINE_MEMBER_FN(GetNorthRotation, double, 0x0026D700);
+	DEFINE_MEMBER_FN(GetNorthRotation, double, 0x0026D510);
 };
 STATIC_ASSERT(offsetof(TESObjectCELL, refData) == 0x88);
 STATIC_ASSERT(offsetof(TESObjectCELL, objectList) == 0xB8);
@@ -3382,7 +3383,7 @@ public:
 			return NULL;
 
 		// B8146167FE300AED18E0DCE1DA9C86E4C4D08513+11
-		static RelocPtr<IFormFactory *> kFactoryList(0x01EEACE0);
+		static RelocPtr<IFormFactory *> kFactoryList(0x01EC3CE0);
 
 		return kFactoryList[type];
 	}

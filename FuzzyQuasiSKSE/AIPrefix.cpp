@@ -632,88 +632,91 @@ int Do7zFile(int numargs, const char *args[3])
 					CSzFile outFile;
 					size_t processedSize;
 					size_t j;
-					wchar_t *name = (wchar_t *)temp;
-					const wchar_t *destPath = (const wchar_t *)name;
-
-					for (j = 0; name[j] != 0; j++)
-						if (name[j] == '/')
-						{
-							if (fullPaths)
+					wchar_t* name = (wchar_t*)temp;
+					const wchar_t* destPath = (const wchar_t*)name;
+					if (name)
+					{
+						for (j = 0; name[j] != 0; j++)
+							if (name[j] == '/')
 							{
-								name[j] = 0;
-								MyCreateDir(name);
-								name[j] = CHAR_PATH_SEPARATOR;
+								if (fullPaths)
+								{
+									name[j] = 0;
+									MyCreateDir(name);
+									name[j] = CHAR_PATH_SEPARATOR;
+								}
+								else
+									destPath = name + j + 1;
 							}
-							else
-								destPath = name + j + 1;
+
+						if (isDir)
+						{
+							MyCreateDir(destPath);
+							PrintLF();
+							continue;
+						}
+						else if (OutFile_OpenUtf16(&outFile, destPath))
+						{
+							ErrorExit(L"can not open output file");
+							res = SZ_ERROR_FAIL;
+							break;
 						}
 
-					if (isDir)
-					{
-						MyCreateDir(destPath);
-						PrintLF();
-						continue;
-					}
-					else if (OutFile_OpenUtf16(&outFile, destPath))
-					{
-						ErrorExit(L"can not open output file");
-						res = SZ_ERROR_FAIL;
-						break;
-					}
+						processedSize = outSizeProcessed;
 
-					processedSize = outSizeProcessed;
-
-					if (File_Write(&outFile, outBuffer + offset, &processedSize) != 0 || processedSize != outSizeProcessed)
-					{
-						ErrorExit(L"can not write output file");
-						res = SZ_ERROR_FAIL;
-						break;
-					}
+						if (File_Write(&outFile, outBuffer + offset, &processedSize) != 0 || processedSize != outSizeProcessed)
+						{
+							ErrorExit(L"can not write output file");
+							res = SZ_ERROR_FAIL;
+							break;
+						}
 
 #ifdef USE_WINDOWS_FILE
-					{
-						FILETIME mtime, ctime;
-						FILETIME *mtimePtr = NULL;
-						FILETIME *ctimePtr = NULL;
+						{
+							FILETIME mtime, ctime;
+							FILETIME* mtimePtr = NULL;
+							FILETIME* ctimePtr = NULL;
 
-						if (SzBitWithVals_Check(&db.MTime, i))
-						{
-							const CNtfsFileTime *t = &db.MTime.Vals[i];
-							mtime.dwLowDateTime = (DWORD)(t->Low);
-							mtime.dwHighDateTime = (DWORD)(t->High);
-							mtimePtr = &mtime;
+							if (SzBitWithVals_Check(&db.MTime, i))
+							{
+								const CNtfsFileTime* t = &db.MTime.Vals[i];
+								mtime.dwLowDateTime = (DWORD)(t->Low);
+								mtime.dwHighDateTime = (DWORD)(t->High);
+								mtimePtr = &mtime;
+							}
+							if (SzBitWithVals_Check(&db.CTime, i))
+							{
+								const CNtfsFileTime* t = &db.CTime.Vals[i];
+								ctime.dwLowDateTime = (DWORD)(t->Low);
+								ctime.dwHighDateTime = (DWORD)(t->High);
+								ctimePtr = &ctime;
+							}
+							if (mtimePtr || ctimePtr)
+								SetFileTime(outFile.handle, ctimePtr, NULL, mtimePtr);
 						}
-						if (SzBitWithVals_Check(&db.CTime, i))
-						{
-							const CNtfsFileTime *t = &db.CTime.Vals[i];
-							ctime.dwLowDateTime = (DWORD)(t->Low);
-							ctime.dwHighDateTime = (DWORD)(t->High);
-							ctimePtr = &ctime;
-						}
-						if (mtimePtr || ctimePtr)
-							SetFileTime(outFile.handle, ctimePtr, NULL, mtimePtr);
-					}
 #endif
 
-					if (File_Close(&outFile))
-					{
-						ErrorExit(L"can not close output file");
-						res = SZ_ERROR_FAIL;
-						break;
-					}
+						if (File_Close(&outFile))
+						{
+							ErrorExit(L"can not close output file");
+							res = SZ_ERROR_FAIL;
+							break;
+						}
 
 #ifdef USE_WINDOWS_FILE
-					if (SzBitWithVals_Check(&db.Attribs, i))
-					{
-						UInt32 attrib = db.Attribs.Vals[i];
-						/* p7zip stores posix attributes in high 16 bits and adds 0x8000 as marker.
-						   We remove posix bits, if we detect posix mode field */
-						if ((attrib & 0xF0000000) != 0)
-							attrib &= 0x7FFF;
-						SetFileAttributesW(destPath, attrib);
-					}
+						if (SzBitWithVals_Check(&db.Attribs, i))
+						{
+							UInt32 attrib = db.Attribs.Vals[i];
+							/* p7zip stores posix attributes in high 16 bits and adds 0x8000 as marker.
+							   We remove posix bits, if we detect posix mode field */
+							if ((attrib & 0xF0000000) != 0)
+								attrib &= 0x7FFF;
+							SetFileAttributesW(destPath, attrib);
+						}
 #endif
+					}
 				}
+
 				PrintLF();
 			}
 			ISzAlloc_Free(&allocImp, outBuffer);

@@ -1,12 +1,5 @@
 #include "Translation.h"
 
-#include "common/IFileStream.h"
-#include <shlobj.h>
-#include <string>
-#include "GameStreams.h"
-#include "GameSettings.h"
-#include "ScaleformState.h"
-
 namespace Translation
 {
 	void ParseTranslation(BSScaleformTranslator * translator, std::string & name)

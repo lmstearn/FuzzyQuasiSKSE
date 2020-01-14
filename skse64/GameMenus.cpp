@@ -1,6 +1,6 @@
 #include "GameMenus.h"
 
-RelocAddr <_CreateUIMessageData> CreateUIMessageData(0x003260F0);
+RelocAddr <_CreateUIMessageData> CreateUIMessageData(0x00325F00);
 
 IMenu::IMenu() :
 	view(NULL),
@@ -68,15 +68,29 @@ RaceMenuSlider::RaceMenuSlider(UInt32 _filterFlag, const char * _sliderName, con
 	pad135[2] = 0;
 }
 
-TESObjectREFR * EnemyHealth::GetTarget() const
+NiPointer<TESObjectREFR> EnemyHealth::GetTarget() const
 {
-	TESObjectREFR * refr = NULL;
+	NiPointer<TESObjectREFR> refr;
 	UInt32 refHandle = (*g_thePlayer)->targetHandle;
-	LookupREFRByHandle(&refHandle, &refr);
+	LookupREFRByHandle(refHandle, refr);
 	if(!refr) {
 		refHandle = handle;
-		LookupREFRByHandle(&refHandle, &refr);
+		LookupREFRByHandle(refHandle, refr);
 	}
 
 	return refr;
+}
+
+Notification::Notification(const Notification& other)
+{
+	CALL_MEMBER_FN(&text, Set)(other.text.Get(), 0);
+	CALL_MEMBER_FN(&status, Set)(other.status.Get(), 0);
+
+	CALL_MEMBER_FN(&sound, Set)(other.sound.c_str());
+	objectives.CopyFrom(&other.objectives);
+
+	type = other.type;
+	quest = other.quest;
+	word = other.word;
+	time = other.time;
 }

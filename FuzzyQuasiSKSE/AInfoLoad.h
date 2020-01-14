@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include <strsafe.h>
+#include <vector>
 #include <string>
 #include <filesystem>
 #include <shellapi.h>

@@ -6,33 +6,33 @@
 #include "HashUtil.h"
 
 // ??_7ExtraHealth@@6B@
-static const RelocPtr<uintptr_t> s_ExtraHealthVtbl(0x015460C0);
+const RelocPtr<uintptr_t> s_ExtraHealthVtbl(0x0152C060);
 // ??_7ExtraCharge@@6B@
-static const RelocPtr<uintptr_t> s_ExtraChargeVtbl(0x01546120);
+const RelocPtr<uintptr_t> s_ExtraChargeVtbl(0x0152C0C0);
 // ??_7ExtraCount@@6B@
-static const RelocPtr<uintptr_t> s_ExtraCountVtbl(0x01546040);
+const RelocPtr<uintptr_t> s_ExtraCountVtbl(0x0152BFE0);
 // ??_7ExtraTextDisplayData@@6B@
-static const RelocPtr<uintptr_t> s_ExtraTextDisplayVtbl(0x01546B40);
+const RelocPtr<uintptr_t> s_ExtraTextDisplayVtbl(0x0152CAE0);
 // ??_7ExtraSoul@@6B@
-static const RelocPtr<uintptr_t> s_ExtraSoulVtbl(0x01549340);
+const RelocPtr<uintptr_t> s_ExtraSoulVtbl(0x0152F2E0);
 // ??_7ExtraOwnership@@6B@
-static const RelocPtr<uintptr_t> s_ExtraOwnershipVtbl(0x01545FE0);
+const RelocPtr<uintptr_t> s_ExtraOwnershipVtbl(0x0152BF80);
 // ??_7ExtraAliasInstanceArray@@6B@
-static const RelocPtr<uintptr_t> s_ExtraAliasInstanceArrayVtbl(0x01546A00);
+const RelocPtr<uintptr_t> s_ExtraAliasInstanceArrayVtbl(0x0152C9A0);
 // ??_7ExtraCannotWear@@6B@
-static const RelocPtr<uintptr_t> s_ExtraCannotWearVtbl(0x015460A0);
+const RelocPtr<uintptr_t> s_ExtraCannotWearVtbl(0x0152C040);
 // ??_7ExtraHotkey@@6B@
-static const RelocPtr<uintptr_t> s_ExtraHotkeyVtbl(0x01546180);
+const RelocPtr<uintptr_t> s_ExtraHotkeyVtbl(0x0152C120);
 // ??_7ExtraForcedTarget@@6B@
-static const RelocPtr<uintptr_t> s_ExtraForcedTargetVtbl(0x01546BC0);
+const RelocPtr<uintptr_t> s_ExtraForcedTargetVtbl(0x0152CB60);
 // ??_7ExtraReferenceHandle@@6B@
-static const RelocPtr<uintptr_t> s_ExtraReferenceHandleVtbl(0x015461C0);
+const RelocPtr<uintptr_t> s_ExtraReferenceHandleVtbl(0x0152C160);
 // ??_7ExtraEnchantment@@6B@
-static const RelocPtr<uintptr_t> s_ExtraEnchantmentVtbl(0x015464E0);
+const RelocPtr<uintptr_t> s_ExtraEnchantmentVtbl(0x0152C480);
 // ??_7ExtraRank@@6B@
-static const RelocPtr<uintptr_t> s_ExtraRankVtbl(0x01546020);
+const RelocPtr<uintptr_t> s_ExtraRankVtbl(0x0152BFC0);
 // ??_7ExtraUniqueID@@6B@
-static const RelocPtr<uintptr_t> s_ExtraUniqueIdVtbl(0x01546C00);
+const RelocPtr<uintptr_t> s_ExtraUniqueIdVtbl(0x0152CBA0);
 
 ExtraHealth* ExtraHealth::Create() 
 {
@@ -118,33 +118,33 @@ ExtraUniqueID* ExtraUniqueID::Create()
 	return xUniqueId;
 }
 
-TESObjectREFR * ExtraReferenceHandle::GetReference()
+NiPointer<TESObjectREFR> ExtraReferenceHandle::GetReference()
 {
-	TESObjectREFR * reference = NULL;
+	NiPointer<TESObjectREFR> reference;
 	if(handle == (*g_invalidRefHandle) || handle == 0)
 		return NULL;
 
-	LookupREFRByHandle(&handle, &reference);
+	LookupREFRByHandle(handle, reference);
 	return reference;
 }
 
-TESObjectREFR * ExtraEnableStateParent::GetReference()
+NiPointer<TESObjectREFR> ExtraEnableStateParent::GetReference()
 {
-	TESObjectREFR * reference = NULL;
+	NiPointer<TESObjectREFR> reference;
 	if(handle == (*g_invalidRefHandle) || handle == 0)
 		return NULL;
 
-	LookupREFRByHandle(&handle, &reference);
+	LookupREFRByHandle(handle, reference);
 	return reference;
 }
 
-TESObjectREFR * ExtraForcedTarget::GetReference()
+NiPointer<TESObjectREFR> ExtraForcedTarget::GetReference()
 {
-	TESObjectREFR * reference = NULL;
+	NiPointer<TESObjectREFR> reference;
 	if(handle == (*g_invalidRefHandle) || handle == 0)
 		return NULL;
 
-	LookupREFRByHandle(&handle, &reference);
+	LookupREFRByHandle(handle, reference);
 	return reference;
 }
 

@@ -1,0 +1,16 @@
+#pragma once
+
+#include "common/IFileStream.h"
+#include <shlobj.h>
+#include <string>
+#include "skse64/GameStreams.h"
+#include "skse64/GameSettings.h"
+#include "skse64/ScaleformState.h"
+
+
+class BSScaleformTranslator;
+
+namespace Translation
+{
+	void ImportTranslationFiles(BSScaleformTranslator * translator);
+}

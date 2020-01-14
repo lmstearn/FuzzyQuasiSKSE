@@ -37,11 +37,11 @@ namespace papyrusReferenceAlias
 		ExtraContainerChanges* pContainerChanges = static_cast<ExtraContainerChanges*>(reference->extraData.GetByType(kExtraData_ContainerChanges));
 		if (pContainerChanges) {
 			EquipData eqD = pContainerChanges->FindEquipped(matcher);
-			TESObjectREFR * foundReference = NULL;
+			NiPointer<TESObjectREFR> foundReference;
 			ExtraReferenceHandle* xReference = static_cast<ExtraReferenceHandle*>(eqD.pExtraData->GetByType(kExtraData_ReferenceHandle));
 			if(xReference) { // Persistent Ref exists, acquire it
 				UInt32 handleIn = xReference->handle;
-				LookupREFRByHandle(&handleIn, &foundReference);
+				LookupREFRByHandle(handleIn, foundReference);
 				_MESSAGE("Found Reference %08X", foundReference->formID);
 			} else { // No Persistent Ref, Create One
 				/*IFormFactory * factory = IFormFactory::GetFactoryForType(TESObjectREFR::kTypeID);
@@ -62,10 +62,15 @@ namespace papyrusReferenceAlias
 				}*/
 			}
 
-			_MESSAGE("Forced Reference to %08X", foundReference->formID);
-			if(foundReference) {
+			if(foundReference)
+			{
+				_MESSAGE("Forced Reference to %08X", foundReference->formID);
 				CALL_MEMBER_FN(alias->owner, ForceRefTo)(alias->aliasId, foundReference);
 				return true;
+			}
+			else
+			{
+				_MESSAGE("Forced Reference to <not found>");
 			}
 		}
 

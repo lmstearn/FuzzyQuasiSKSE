@@ -127,7 +127,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="AFuzzyQuasiSKSE.rc">
+    <ResourceCompile Include="FuzzyQuasiSKSE.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -135,11 +135,11 @@
     <Image Include="small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="AFuzzyQuasiSKSE.ico">
+    <Image Include="FuzzyQuasiSKSE.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="SKSEInfo.txt" />
+    <Text Include="FuzzyQuasiSKSE.txt" />
   </ItemGroup>
 </Project>

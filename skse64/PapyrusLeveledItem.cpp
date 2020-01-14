@@ -76,8 +76,8 @@ namespace leveledItemUtils
 	void SetNthLevel(TESLeveledList * leveledList, UInt32 n, UInt32 level)
 	{
 		if(n < leveledList->length) {
-			if(level > 255)
-				level = 255;
+			if(level > 0xFFFF)
+				level = 0xFFFF;
 
 			leveledList->entries[n].level = level;
 		}
@@ -91,8 +91,8 @@ namespace leveledItemUtils
 	void SetNthCount(TESLeveledList * leveledList, UInt32 n, UInt32 count)
 	{
 		if(n < leveledList->length) {
-			if(count > 255)
-				count = 255;
+			if(count > 0xFFFF)
+				count = 0xFFFF;
 
 			leveledList->entries[n].count = count;
 		}

@@ -32,7 +32,6 @@ CustomMenu::CustomMenu(const char* swfPath)
 	if(!InputEventDispatcher::GetSingleton()->IsGamepadEnabled())
 		flags |= 0x404; // Shows the cursor when no gamepad is enabled
 
-
 #ifdef _CUSTOMMENU_ITEMDISPLAY
 	flags |= 0x1000;
 #endif

@@ -258,7 +258,18 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 	lvi.pszText = buffer;
 	lvi.iItem = k;  //zero based
 	lvi.iSubItem = l; // ''
-	if (!l)
+	if (l)
+	{
+		retVal = SendMessageW(hwndList, LVM_SETITEMTEXTW, k, (LPARAM)&lvi);
+		if (retVal == 0)
+		{
+			buffer = (wchar_t*)realloc(buffer, SIZEOF_WCHAR);
+			_itow_s(k, buffer, MAX_LOADSTRING, 10);
+			ErrorExit(L"Failed to set text in Listview item", buffer);
+			if (buffer) free(buffer);
+		}
+	}
+	else
 	{
 		retVal = SendMessageW(hwndList, LVM_INSERTITEMW, k, (LPARAM)&lvi);
 		if (retVal > 0)
@@ -266,21 +277,10 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 			wchar_t(buf)[16] = {};
 			FormatItowNotify(k, buf, buffer);
 			if (buffer) free(buffer);
-			retVal = 0;
 		}
 		else
-		retVal = 1;
-	}
-	else
-	{
-		retVal = SendMessageW(hwndList, LVM_SETITEMTEXTW, k, (LPARAM)&lvi);
-		if (retVal == 0)
-		{
-			buffer= (wchar_t *)realloc(buffer, SIZEOF_WCHAR);	
-			_itow_s(k, buffer, MAX_LOADSTRING, 10);
-			ErrorExit(L"Failed to set text in Listview item", buffer);
-			if (buffer) free(buffer);
-		}
+			retVal = 1;
+		// Hope there is no actual error on first pass
 	}
 
 		// meh VS again
@@ -311,7 +311,7 @@ else
 	data = static_cast<wchar_t*>(::LockResource(rcData)); //LockResource does not actually lock memory; it is just used to obtain a pointer to the memory containing the resource data. 
 	return data;
 	}
-	return false;
+	return NULL;
 }
 BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wchar_t *rcStrType1,  int rcIntType)
 {
@@ -373,7 +373,6 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 			if (!CreateColumn(LVRepshWnd, j, ColNames[0].ColHeadNames[j] , ColWidVals[0].ColWid[j]))
 			return FALSE;
 		}
-
 		
 		for (i = 0; i <iMax; ++i)
 		{
@@ -384,7 +383,8 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 		}
 		}
 	}	
-	//if (data) free(data);
+
+		//if (data) free(data);
 		if (buffer) free(buffer);
 		if (buffer1) free(buffer1);
 		if (buffer2) free(buffer2);

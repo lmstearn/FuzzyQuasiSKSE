@@ -1,13 +1,14 @@
 #include "skse64/NiGeometry.h"
 #include "skse64/GameAPI.h"
 
-RelocAddr<_CreateBSTriShape> CreateBSTriShape(0x00C671D0);
+RelocAddr<_CreateBSTriShape> CreateBSTriShape(0x00C67490);
+RelocAddr<_CreateBSDynamicTriShape> CreateBSDynamicTriShape(0x00C72180);
 
 // ??_7NiTriShape@@6B@
-static const RelocPtr<uintptr_t> s_NiTriShapeVtbl(0x01787140);
+static const RelocPtr<uintptr_t> s_NiTriShapeVtbl(0x0176D060);
 
 // ??_7NiTriStrips@@6B@
-static const RelocPtr<uintptr_t> s_NiTriStripsVtbl(0x01787680);
+static const RelocPtr<uintptr_t> s_NiTriStripsVtbl(0x0176D5A0);
 
 void NiGeometryData::AllocateVerts(UInt32 numVerts)
 {
@@ -94,6 +95,7 @@ NiSkinInstance * NiSkinInstance::Clone()
 {
 	NiSkinInstance * newSkinInstance = nullptr;
 
+	EnterCriticalSection(&lock);
 	BSDismemberSkinInstance* srcSkin = ni_cast(this, BSDismemberSkinInstance);
 	if (srcSkin)
 	{
@@ -118,11 +120,21 @@ NiSkinInstance * NiSkinInstance::Clone()
 	newSkinInstance->unk38 = unk38;
 	newSkinInstance->m_uiBoneNodes = m_uiBoneNodes;
 	newSkinInstance->numFlags = numFlags;
-	newSkinInstance->flags = (UInt32 *)Heap_Allocate(sizeof(UInt32) * numFlags);
+	if (flags) {
+		newSkinInstance->flags = (UInt32 *)Heap_Allocate(sizeof(UInt32) * numFlags);
+	}
+	else {
+		flags = nullptr;
+	}
 	newSkinInstance->unk44 = unk44;
 	memcpy(newSkinInstance->flags, flags, sizeof(UInt32) * numFlags);
-	newSkinInstance->unk50 = unk50;
-	newSkinInstance->unk54 = unk54;
+	if (unk50) {
+		newSkinInstance->unk50 = (UInt32 *)Heap_Allocate(sizeof(UInt32) * numFlags);
+		memcpy(newSkinInstance->unk50, unk50, sizeof(UInt32) * numFlags);
+	}
+	else {
+		unk50 = nullptr;
+	}
 
 	NiSkinData * skinData = niptr_cast<NiSkinData>(newSkinInstance->m_spSkinData);
 	if (skinData) {
@@ -147,6 +159,6 @@ NiSkinInstance * NiSkinInstance::Clone()
 		newSkinInstance->unk54 = unk54;
 	}
 #endif
-
+	LeaveCriticalSection(&lock);
 	return newSkinInstance;
 }

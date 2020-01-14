@@ -7,18 +7,18 @@
 #include "skse64/NiNodes.h"
 
 // 123ED1FD37DCAF9CBB5808F1DFB2B9B4E6D678DC+67
-RelocAddr<_CreateRefHandleByREFR> CreateRefHandleByREFR(0x001322E0);
+RelocAddr<_CreateRefHandleByREFR> CreateRefHandleByREFR(0x001320F0);
 // D479D10F77326C177B3D5AE2C5738B0D39A1546A+5F
-RelocAddr<_LookupREFRByHandle> LookupREFRByHandle(0x00132A90);
+RelocAddr<_LookupREFRByHandle> LookupREFRByHandle(0x001328A0);
 // B995A21984B048C2B4F61777E615FFFB2806F9B7+8C
-RelocAddr<_LookupREFRObjectByHandle> LookupREFRObjectByHandle(0x00132BC0);
+RelocAddr<_LookupREFRObjectByHandle> LookupREFRObjectByHandle(0x001329D0);
 
 // 123ED1FD37DCAF9CBB5808F1DFB2B9B4E6D678DC+4D
-RelocPtr<UInt32> g_invalidRefHandle(0x01EE5ABC);
+RelocPtr<UInt32> g_invalidRefHandle(0x01EBEABC);
 
-RelocAddr<_MoveRefrToPosition> MoveRefrToPosition(0x009AE7B0);
-RelocAddr<_PlaceAtMe_Native> PlaceAtMe_Native(0x009953E0);
-RelocAddr<_AddItem_Native> AddItem_Native(0x009932F0);
+RelocAddr<_MoveRefrToPosition> MoveRefrToPosition(0x009AE5C0);
+RelocAddr<_PlaceAtMe_Native> PlaceAtMe_Native(0x009951F0);
+RelocAddr<_AddItem_Native> AddItem_Native(0x00993100);
 
 UInt32 GetOrCreateRefrHandle(TESObjectREFR* ref)
 {
@@ -43,13 +43,23 @@ UInt32 TESObjectREFR::CreateRefHandle(void)
 	if (handleRefObject.GetRefCount() > 0)
 	{
 		UInt32 refHandle = 0;
-		CreateRefHandleByREFR(&refHandle, this);
+		CreateRefHandleByREFR(refHandle, this);
 		return refHandle;
 	}
 	else
 	{
 		return *g_invalidRefHandle;
 	}
+}
+
+void TESObjectREFR::IncRef()
+{
+	handleRefObject.IncRef();
+}
+
+void TESObjectREFR::DecRef()
+{
+	handleRefObject.DecRef();
 }
 
 TESForm * Actor::GetEquippedObject(bool abLeftHand)
@@ -156,7 +166,7 @@ bool Actor::VisitFactions(FactionVisitor & visitor)
 	return false;
 }
 
-RelocPtr<CrosshairRefHandleHolder*> g_crosshairRefHandleHolder(0);
+RelocPtr<CrosshairRefHandleHolder*> g_crosshairRefHandleHolder(0x02F011D0);
 
 CrosshairRefHandleHolder * CrosshairRefHandleHolder::GetSingleton(void)
 {

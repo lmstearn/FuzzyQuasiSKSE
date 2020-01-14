@@ -12,12 +12,12 @@ wchar_t const* FormatItowNotify(int a, wchar_t(buf)[16], wchar_t *buffer)
 	int count = _scwprintf(buf);
 	// swprintf(buf, count, L"%d", a, L"%-13s", " ");
 	swprintf(buf, count,  L"%d", a);
-	if (buffer)
-	{
-		wcscpy_s(buffer, 16, (wchar_t *)buf);
-		ErrorExit(L"Failed to insert Listview item!", buffer);
-	}
-	return buf;
+	wcscpy_s(buffer, 16, (wchar_t*)buf);
+		if (!buffer)
+		{
+			ErrorExit(L"Failed to insert Listview item!", (wchar_t*)buf);
+		}
+		return buf;
 }
 
 void * ReallocateMem(wchar_t * aSource, int Size)

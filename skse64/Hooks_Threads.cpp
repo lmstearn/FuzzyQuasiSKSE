@@ -44,8 +44,8 @@ void Hooks_Threads_Init(void)
 	
 }
 
-RelocAddr <uintptr_t> ProcessTasks_HookTarget_Enter(0x005B31E0 + 0x6B8);
-RelocAddr <uintptr_t> ProcessTasks_HookTarget_Enter2(0x005B46B0 + 0x1C);
+RelocAddr <uintptr_t> ProcessTasks_HookTarget_Enter(0x005B2FF0 + 0x6B8);
+RelocAddr <uintptr_t> ProcessTasks_HookTarget_Enter2(0x005B44C0 + 0x1C);
 
 void Hooks_Threads_Commit(void)
 {

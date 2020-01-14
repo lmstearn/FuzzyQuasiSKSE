@@ -1,7 +1,8 @@
 #pragma once
 
+#include "skse64_common/Relocation.h"
 #include "skse64/ScaleformState.h"
-
+#include "skse64/Translation.h"
 class NiTexture;
 class IMenu;
 class GImageInfoBase;
@@ -21,28 +22,27 @@ public:
 	virtual GImageInfoBase*	LoadImage(const char * url);
 
 	MEMBER_FN_PREFIX(BSScaleformImageLoader);
-	DEFINE_MEMBER_FN(AddVirtualImage, UInt8, 0x00F45090, NiTexture ** texture);
-	DEFINE_MEMBER_FN(ReleaseVirtualImage, UInt8, 0x00F45560, NiTexture ** texture);
+	DEFINE_MEMBER_FN_1(AddVirtualImage, UInt8, 0x00F45350, NiTexture ** texture);
+	DEFINE_MEMBER_FN_1(ReleaseVirtualImage, UInt8, 0x00F45820, NiTexture ** texture);
 };
 
 class GFxLoader
 {
 public:
-	UInt32			unk00;					// 00
-	GFxStateBag		* stateBag;				// 04
-	UInt32			unk08;					// 08
-	UInt32			unk0C;					// 0C
-	BSScaleformImageLoader	* imageLoader;	// 10
+	UInt64			unk00;					// 00
+	GFxStateBag		* stateBag;				// 08
+	UInt64			unk08;					// 10
+	UInt64			unk10;					// 18
+	BSScaleformImageLoader	* imageLoader;	// 20
 
-	static GFxLoader * GetSingleton();	
-
-
+	static GFxLoader * GetSingleton();
 
 	MEMBER_FN_PREFIX(GFxLoader);
-	DEFINE_MEMBER_FN(ctor, GFxLoader *, 0x00ECDE10);
+	DEFINE_MEMBER_FN(ctor, GFxLoader *, 0x00ECE0D0);
 
 	// Note: Probably in subclass
-	DEFINE_MEMBER_FN(LoadMovie, bool, 0x00ECE4D0, IMenu* menu, GFxMovieView** viewOut, const char* name, int arg4, float arg5);
+	DEFINE_MEMBER_FN(LoadMovie, bool, 0x00ECE790, IMenu* menu, GFxMovieView** viewOut, const char* name, int arg4, float arg5);
+
 
 	static UInt64* getCtorHookAddress();
 

@@ -40,7 +40,7 @@ public:
 		return m_uiRefCount & kMask_RefCount;
 	}
 
-	void DecRefHandle()
+	void DecRef()
 	{
 		if((InterlockedDecrement(&m_uiRefCount) & kMask_RefCount) == 0)
 			DeleteThis();
@@ -54,14 +54,14 @@ public:
 //	12 - ??	handle (seems to be divided in two parts, 0xFFFFF and 0x3F00000)
 
 // Adds entry to lookup table if not yet there
-typedef void (* _CreateRefHandleByREFR)(UInt32 * refHandleOut, TESObjectREFR * refr);
+typedef void (* _CreateRefHandleByREFR)(UInt32 & refHandleOut, TESObjectREFR * refr);
 extern RelocAddr<_CreateRefHandleByREFR> CreateRefHandleByREFR;
 
 // Note: May set refHandle to 0
-typedef bool (* _LookupREFRByHandle)(UInt32 * refHandle, TESObjectREFR ** refrOut);
+typedef bool (* _LookupREFRByHandle)(UInt32 & refHandle, NiPointer<TESObjectREFR> & refrOut);
 extern RelocAddr<_LookupREFRByHandle> LookupREFRByHandle;
 
-typedef bool (* _LookupREFRObjectByHandle)(UInt32 * refHandle, BSHandleRefObject ** refrOut);
+typedef bool (* _LookupREFRObjectByHandle)(UInt32 & refHandle, NiPointer<BSHandleRefObject> & refrOut);
 extern RelocAddr<_LookupREFRObjectByHandle> LookupREFRObjectByHandle;
 
 extern RelocPtr<UInt32> g_invalidRefHandle;
@@ -255,13 +255,16 @@ public:
 
 	UInt32 CreateRefHandle(void);
 
+	void IncRef();
+	void DecRef();
+
 	MEMBER_FN_PREFIX(TESObjectREFR);
-	DEFINE_MEMBER_FN(GetBaseScale, float, 0x0028CE50);
-	DEFINE_MEMBER_FN(IsOffLimits, bool, 0x0029A520);
+	DEFINE_MEMBER_FN(GetBaseScale, float, 0x0028CC60);
+	DEFINE_MEMBER_FN(IsOffLimits, bool, 0x0029A330);
 	// E2B825B476DC5CFBC69E194AA76CB0C049AC78E3+137
-	DEFINE_MEMBER_FN(GetWeight, float, 0x002A71E0);
-	DEFINE_MEMBER_FN(GetReferenceName, const char *, 0x002963E0);
-	DEFINE_MEMBER_FN(GetWorldspace, TESWorldSpace*, 0x00299940);
+	DEFINE_MEMBER_FN(GetWeight, float, 0x002A6FF0);
+	DEFINE_MEMBER_FN(GetReferenceName, const char *, 0x002961F0);
+	DEFINE_MEMBER_FN(GetWorldspace, TESWorldSpace*, 0x00299750);
 };
 
 STATIC_ASSERT(sizeof(TESObjectREFR) == 0x98);
@@ -547,14 +550,14 @@ public:
 	UInt64	unk2A8;									// 2A8
 
 	MEMBER_FN_PREFIX(Actor);
-	DEFINE_MEMBER_FN(QueueNiNodeUpdate, void, 0x00693300, bool updateWeight);
-	DEFINE_MEMBER_FN(HasPerk, bool, 0x005FA020, BGSPerk * perk);
-	DEFINE_MEMBER_FN(GetLevel, UInt16, 0x005D64D0);
-	DEFINE_MEMBER_FN(SetRace, void, 0x00607870, TESRace*, bool isPlayer);
-	DEFINE_MEMBER_FN(UpdateWeaponAbility, void, 0x006315C0, TESForm*, BaseExtraList * extraData, bool bLeftHand);
-	DEFINE_MEMBER_FN(UpdateArmorAbility, void, 0x00631550, TESForm*, BaseExtraList * extraData);
-	DEFINE_MEMBER_FN(IsHostileToActor, bool, 0x005E8030, Actor * actor);
-	DEFINE_MEMBER_FN(ResetAI, void, 0x005DB500, UInt32 unk1, UInt32 unk2);
+	DEFINE_MEMBER_FN(QueueNiNodeUpdate, void, 0x00693110, bool updateWeight);
+	DEFINE_MEMBER_FN(HasPerk, bool, 0x005F9E30, BGSPerk * perk);
+	DEFINE_MEMBER_FN(GetLevel, UInt16, 0x005D62E0);
+	DEFINE_MEMBER_FN(SetRace, void, 0x00607680, TESRace*, bool isPlayer);
+	DEFINE_MEMBER_FN(UpdateWeaponAbility, void, 0x006313D0, TESForm*, BaseExtraList * extraData, bool bLeftHand);
+	DEFINE_MEMBER_FN(UpdateArmorAbility, void, 0x00631360, TESForm*, BaseExtraList * extraData);
+	DEFINE_MEMBER_FN(IsHostileToActor, bool, 0x005E7E40, Actor * actor);
+	DEFINE_MEMBER_FN(ResetAI, void, 0x005DB310, UInt32 unk1, UInt32 unk2);
 
 	TESForm * GetEquippedObject(bool abLeftHand);
 	void UpdateSkinColor();
@@ -894,10 +897,10 @@ public:
 	}
 
 	MEMBER_FN_PREFIX(PlayerCharacter);
-	DEFINE_MEMBER_FN(GetNumTints, UInt32, 0x006B5640, UInt32 tintType);
-	DEFINE_MEMBER_FN(GetTintMask, TintMask *, 0x006B5490, UInt32 tintType, UInt32 index);
-	DEFINE_MEMBER_FN(GetDamage, float, 0x00693240, InventoryEntryData * pForm);
-	DEFINE_MEMBER_FN(GetArmorValue, float, 0x00692EC0, InventoryEntryData * pForm);
+	DEFINE_MEMBER_FN(GetNumTints, UInt32, 0x006B5450, UInt32 tintType);
+	DEFINE_MEMBER_FN(GetTintMask, TintMask *, 0x006B52A0, UInt32 tintType, UInt32 index);
+	DEFINE_MEMBER_FN(GetDamage, float, 0x00693050, InventoryEntryData * pForm);
+	DEFINE_MEMBER_FN(GetArmorValue, float, 0x00692CD0, InventoryEntryData * pForm);
 };
 
 STATIC_ASSERT(offsetof(PlayerCharacter, userEventEnabledEvent) == 0x2C0);

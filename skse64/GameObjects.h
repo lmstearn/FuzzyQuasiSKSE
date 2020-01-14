@@ -336,7 +336,7 @@ public:
 	static BSShaderTextureSet * Create();
 
 	MEMBER_FN_PREFIX(BSShaderTextureSet);
-	DEFINE_MEMBER_FN(ctor, BSShaderTextureSet *, 0x012E06F0);
+	DEFINE_MEMBER_FN(ctor, BSShaderTextureSet *, 0x012C9320);
 };
 
 STATIC_ASSERT(sizeof(BSShaderTextureSet) == 0x58);
@@ -457,8 +457,8 @@ public:
 	UInt64				unk88;	// 88
 
 	MEMBER_FN_PREFIX(MagicItem);
-	DEFINE_MEMBER_FN(GetCostliestEffectItem, EffectItem *, 0x00101EB0, int arg1, bool arg2);
-	DEFINE_MEMBER_FN(GetEffectiveMagickaCost, float, 0x00101C20, Character* caster);
+	DEFINE_MEMBER_FN(GetCostliestEffectItem, EffectItem *, 0x00101CC0, int arg1, bool arg2);
+	DEFINE_MEMBER_FN(GetEffectiveMagickaCost, float, 0x00101A30, Character* caster);
 };
 
 STATIC_ASSERT(sizeof(MagicItem) == 0x90);
@@ -793,11 +793,11 @@ public:
 	UInt64			unk260;			// 260
 
 	MEMBER_FN_PREFIX(TESNPC);
-	DEFINE_MEMBER_FN(GetSex, char, 0x00351490);
-	DEFINE_MEMBER_FN(HasOverlays, bool, 0x00368C10);
+	DEFINE_MEMBER_FN(GetSex, char, 0x003512A0);
+	DEFINE_MEMBER_FN(HasOverlays, bool, 0x00368A20);
 
 	// Swaps a headPart of the same type as target with target
-	DEFINE_MEMBER_FN(ChangeHeadPart, void, 0x00365DE0, BGSHeadPart * target);
+	DEFINE_MEMBER_FN(ChangeHeadPart, void, 0x00365BF0, BGSHeadPart * target);
 
 	struct MorphAction {
 		BSFaceGenNiNode * faceNode;
@@ -807,10 +807,10 @@ public:
 	};
 	
 	// Updates the neck seam when weight changed
-	DEFINE_MEMBER_FN(UpdateNeck, void, 0x003608C0, BSFaceGenNiNode * faceNode);
+	DEFINE_MEMBER_FN(UpdateNeck, void, 0x003606D0, BSFaceGenNiNode * faceNode);
 
 	// Computes RGB SkinTone from RGBA TintMask
-	DEFINE_MEMBER_FN(SetSkinFromTint, void, 0x00360670, NiColorA * result, TintMask * tintMask, UInt32 compute, UInt32 unk1);
+	DEFINE_MEMBER_FN(SetSkinFromTint, void, 0x00360480, NiColorA * result, TintMask * tintMask, bool fromTint);
 
 	void SetFaceTexture(BGSTextureSet * textureSet);
 	void SetHairColor(BGSColorForm * hairColor);

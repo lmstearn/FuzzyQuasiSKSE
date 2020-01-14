@@ -531,9 +531,9 @@ extern EventDispatcher<SKSECameraEvent> g_cameraEventDispatcher;
 
 struct SKSECrosshairRefEvent
 {
-	TESObjectREFR *		crosshairRef;
+	NiPointer<TESObjectREFR>	crosshairRef;
 
-	SKSECrosshairRefEvent(TESObjectREFR * a_crosshairRef) : crosshairRef(a_crosshairRef) {}
+	SKSECrosshairRefEvent(NiPointer<TESObjectREFR> & a_crosshairRef);
 };
 
 template <>

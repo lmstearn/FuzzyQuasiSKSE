@@ -39,6 +39,12 @@ extern RelocPtr<NiRect<float>> g_viewPort;
 typedef bool (* _WorldPtToScreenPt3_Internal)(float * worldToCamMatrix, NiRect<float> * port, NiPoint3 * p_in, float * x_out, float * y_out, float * z_out, float zeroTolerance);
 extern RelocAddr<_WorldPtToScreenPt3_Internal> WorldPtToScreenPt3_Internal;
 
+typedef void * (*_NiAllocate)(size_t size);
+extern RelocAddr<_NiAllocate> NiAllocate;
+
+typedef void(*_NiFree)(void * ptr);
+extern RelocAddr<_NiFree> NiFree;
+
 // 10
 class NiRefObject
 {
@@ -118,7 +124,7 @@ public:
 
 	
 	MEMBER_FN_PREFIX(NiObject);
-	DEFINE_MEMBER_FN(DeepCopy, NiStream *, 0x00C526E0, NiObject ** result);
+	DEFINE_MEMBER_FN(DeepCopy, NiStream *, 0x00C529A0, NiObject ** result);
 };
 STATIC_ASSERT(sizeof(NiObject) == 0x10);
 
@@ -215,7 +221,7 @@ public:
 
 	MEMBER_FN_PREFIX(NiAVObject);
 	// 3239A102C6E8818F0FBFEF58A1B6EA724A237258+26
-	DEFINE_MEMBER_FN(UpdateNode, void, 0x00C56890, ControllerUpdateContext * ctx);
+	DEFINE_MEMBER_FN(UpdateNode, void, 0x00C56B50, ControllerUpdateContext * ctx);
 };
 STATIC_ASSERT(offsetof(NiAVObject, m_localTransform) == 0x48);
 STATIC_ASSERT(offsetof(NiAVObject, m_worldTransform) == 0x7C);
@@ -263,10 +269,10 @@ public:
 	UInt32	pad1C;		// 1C
 
 	MEMBER_FN_PREFIX(BSFaceGenModel);
-	DEFINE_MEMBER_FN(ctor, void, 0x003D4260);
-	DEFINE_MEMBER_FN(CopyFrom, void, 0x003D4340, BSFaceGenModel * other);
-	DEFINE_MEMBER_FN(SetModelData, bool, 0x003D49B0, const char * meshPath, void * unk1, UInt8 unk2);
-	DEFINE_MEMBER_FN(ApplyMorph, UInt8, 0x003D4820, BSFixedString * morphName, TESModelTri * triModel, NiAVObject ** headNode, float relative, UInt8 unk1);
+	DEFINE_MEMBER_FN(ctor, void, 0x003D4070);
+	DEFINE_MEMBER_FN(CopyFrom, void, 0x003D4150, BSFaceGenModel * other);
+	DEFINE_MEMBER_FN(SetModelData, bool, 0x003D47C0, const char * meshPath, void * unk1, UInt8 unk2);
+	DEFINE_MEMBER_FN(ApplyMorph, UInt8, 0x003D4630, BSFixedString * morphName, TESModelTri * triModel, NiAVObject ** headNode, float relative, UInt8 unk1);
 };
 
 // 18
@@ -277,7 +283,7 @@ public:
 	
 
 	MEMBER_FN_PREFIX(BSFaceGenMorphData);
-	DEFINE_MEMBER_FN(ApplyMorph, UInt8, 0x003D7A50, const char ** morphName, NiAVObject * faceTrishape, float relative, UInt8 unk2);
+	DEFINE_MEMBER_FN(ApplyMorph, UInt8, 0x003D7860, const char ** morphName, NiAVObject * faceTrishape, float relative, UInt8 unk2);
 };
 
 // 20
