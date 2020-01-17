@@ -1,6 +1,7 @@
 #include "AuxFuncs.h"
 Byte srcFile[MAX_FILE] = {};								// file dragged to LV: stack overflow if in function!
 
+
 wchar_t const* FormatItowNotify(int a, wchar_t(buf)[16], wchar_t *buffer)
 {
 	// itow_s chops off the terminator, and craps out Free()

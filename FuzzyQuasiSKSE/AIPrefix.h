@@ -16,8 +16,7 @@
 //#define _WIN32_WINNT	0x0501
 
 
-#include <winsock2.h>
-#include <stdio.h>
+//#include <winsock2.h>
 #include "7Zip\Z7zFile.h"
 #include "7Zip\ZLzmaDec.h"
 #include "7Zip\ZAlloc.h"
@@ -79,9 +78,9 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 //static SRes Decode(ISeqOutStream *outStream, ISeqInStream *inStream);
 
 // common
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+//#include <stdlib.h> // included in stdafx.h
+//#include <stdio.h> // included in stdafx.h
+// #include <string.h> included in stdafx.h
 #include "common\ITypes.h"
 #include "common\IErrors.h"
 #include "common\IDynamicCreate.h"

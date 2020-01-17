@@ -1,10 +1,12 @@
 #pragma once
 #include "stdafx.h"
 #include <strsafe.h>
-#include <vector>
-#include <string>
+//#include <vector> // included in filesystem
+//#include <string> //string included in iTypes
 #include <filesystem>
 #include <shellapi.h>
+//#include <iostream> //iostream included in iTypes
+// #include <algorithm> // included in filesystem
 #include "resource.h"
 #include "AIPrefix.h"
 
@@ -18,7 +20,7 @@
 
 //#define CSIDL_MYDOCUMENTS		0x0005 //My Documents (c4005 macro redef)
 #define DWL_MSGRESULT				0
-#define COL_SELLIM						10
+#define COL_SELLIM						200
 #define MAX_LOADSTRING			255
 #define RCDATALIM						2500 //compatible with SIZEOF(bytes)
 #define MAX_GUIMOVPERSESS		25
@@ -53,6 +55,8 @@ struct ColWidth
 // Global Variables:
 UINT const WM_COPYGLOBALDATA = 0x0049; //Drop files filter
 const wchar_t TEMP_CLASS_NAME[14]  = L"ResCheckClass";
+
+typedef std::vector<std::wstring> ColumnSelectors;
 typedef std::vector<std::wstring> LVA;
 typedef std::vector<LVA> LVA2D;
 const std::wstring ColSelectors[COL_SELLIM][MAX_LOADSTRING] = {{L"GameForms"}, {L"Selection2"}, {L"Selection3"}, {L"Selection4"}, {L"Selection5"}, {L"Selection6"}, {L"Selection7"}, {L"Selection8"}, {L"Selection9"}, {L"Selection10"}};

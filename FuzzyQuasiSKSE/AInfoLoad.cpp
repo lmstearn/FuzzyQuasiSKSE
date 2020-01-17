@@ -153,7 +153,7 @@ BOOL InitListView(HWND LVWnd, int lvType)
 	break;
 	}
 
-	/* Waiting for these to be fixed esp. LVS_EX_JUSTIFYCOLUMNS perhaps also EX_AUTOSIZECOLUMNS
+	//Waiting for these to be fixed esp. LVS_EX_JUSTIFYCOLUMNS perhaps also EX_AUTOSIZECOLUMNS
 	#if (NTDDI_VERSION >= NTDDI_VISTA)
 	#define LVS_EX_JUSTIFYCOLUMNS   0x00200000  // Icons are lined up in columns that use up the whole view area.
 	#define LVS_EX_TRANSPARENTBKGND 0x00400000  // Background is painted by the parent via WM_PRINTCLIENT
@@ -165,8 +165,8 @@ BOOL InitListView(HWND LVWnd, int lvType)
 	#define LVS_EX_COLUMNSNAPPOINTS 0x40000000
 	#define LVS_EX_COLUMNOVERFLOW   0x80000000
 	#endif
-	ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_AUTOSIZECOLUMNS);
-	*/
+	ListView_SetExtendedListViewStyle(LVWnd, LVS_EX_AUTOSIZECOLUMNS);
+
 
 	
 	SendMessageW(LVWnd, LVM_DELETEALLITEMS, 0, 0);
@@ -317,6 +317,7 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 {
 	DWORD size1 = 0, size2 = 0;
 	LVA2D LV2DA(MAX_LOADSTRING, LVA(4));
+	ColumnSelectors ColumnSels(ColumnSelectors(COL_SELLIM));
 	wchar_t *buffer =nullptr, *buffer1 =nullptr, *buffer2 =nullptr;
 	const wchar_t *data, *data1;
 	i = 0, j = 0;
@@ -376,9 +377,24 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 		
 		for (i = 0; i <iMax; ++i)
 		{
+		std::wstring foo = L"Selection";
+		ColumnSels.push_back(foo);
+		//https://stackoverflow.com/a/48251347/2128797
+		std::rotate(ColumnSels.rbegin(), ColumnSels.rbegin() + 1, ColumnSels.rend());
+		//ColumnSels.shrink_to_fit();
+		wchar_t* tempDest = nullptr;
+		// MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, ColumnSels[i].c_str())
+		int temp = wcslen(ColumnSels[i].c_str());
+		tempDest = (wchar_t *)calloc(temp + SIZEOF_WCHAR, SIZEOF_WCHAR);
+		// _itow_s(i, tempDest, MAX_LOADSTRING, 10);
+		wcscpy_s(tempDest, temp + SIZEOF_WCHAR, ColumnSels[i].c_str());
+		//tempDest[SIZEOF_WCHAR * temp + 1] = '\0';
+		 //ErrorExit(L"w", tempDest);
+		if (tempDest) free(tempDest);
 		for (j = 0; j <=jMax + 1; ++j)
 		{
-			if (!CreateLVItems(LVRepshWnd, (j == 0)? (i < 10? ColSelectors[i][0]: L""): LV2DA[i][j -1], i , j))
+			//if (!CreateLVItems(LVRepshWnd, (j == 0)? (i < 10? ColSelectors[i][0]: L""): LV2DA[i][j -1], i , j))
+			if (!CreateLVItems(LVRepshWnd, (j == 0)? (i < 10? ColumnSels[i]: L""): LV2DA[i][j -1], i , j))
 			return FALSE;
 		}
 		}

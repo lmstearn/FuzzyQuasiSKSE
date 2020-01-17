@@ -1,6 +1,8 @@
 #include "ScaleformLoader.h"
 
 
+
+
 bool g_logScaleform = false;
 
 GFxLoader *GFxLoader::ctor_Hook(void)
