@@ -119,7 +119,7 @@ for (j = 1; j <=2; ++j)
 	}
 
 
-FindClose(ds);
+if (ds) FindClose(ds);
 
 
 return TRUE;
@@ -153,22 +153,10 @@ BOOL InitListView(HWND LVWnd, int lvType)
 	break;
 	}
 
-	//Waiting for these to be fixed esp. LVS_EX_JUSTIFYCOLUMNS perhaps also EX_AUTOSIZECOLUMNS
-	#if (NTDDI_VERSION >= NTDDI_VISTA)
-	#define LVS_EX_JUSTIFYCOLUMNS   0x00200000  // Icons are lined up in columns that use up the whole view area.
-	#define LVS_EX_TRANSPARENTBKGND 0x00400000  // Background is painted by the parent via WM_PRINTCLIENT
-	#define LVS_EX_TRANSPARENTSHADOWTEXT 0x00800000  // Enable shadow text on transparent backgrounds only (useful with bitmaps)
-	#define LVS_EX_AUTOAUTOARRANGE  0x01000000  // Icons automatically arrange if no icon positions have been set
-	#define LVS_EX_HEADERINALLVIEWS 0x02000000  // Display column header in all view modes
-	#define LVS_EX_AUTOCHECKSELECT  0x08000000
-	#define LVS_EX_AUTOSIZECOLUMNS  0x10000000
-	#define LVS_EX_COLUMNSNAPPOINTS 0x40000000
-	#define LVS_EX_COLUMNOVERFLOW   0x80000000
-	#endif
+
 	ListView_SetExtendedListViewStyle(LVWnd, LVS_EX_AUTOSIZECOLUMNS);
 
 
-	
 	SendMessageW(LVWnd, LVM_DELETEALLITEMS, 0, 0);
 
 	//ListView_DeleteAllItems(LVRepshWnd);
@@ -184,13 +172,28 @@ BOOL InitListView(HWND LVWnd, int lvType)
 
 void AutoSizeCols(HWND LVhWnd)
 {
-	HWND hWndHdr = (HWND)::SendMessageW(LVhWnd, LVM_GETHEADER, 0, 0);
+	// HWND hWndHdr = (HWND)::SendMessageW(LVhWnd, LVM_GETHEADER, 0, 0);
+	HWND hWndHdr = ListView_GetHeader(LVhWnd);
 	int maxCol = (int)::SendMessageW(hWndHdr, HDM_GETITEMCOUNT, 0, 0L);
+	//int maxCol = (int)ListView_GetItemCount(hWndHdr); // https://github.com/MicrosoftDocs/feedback/issues/1270
+	int nColumnWidth = 0, nHeaderWidth = 0, nColumnWidthNew= 0, nHeaderWidthNew = 0;
 	for (i = 0; i< maxCol; i++)
 	{
-		SendMessageW(LVhWnd, LVM_SETCOLUMNWIDTH, i, LVSCW_AUTOSIZE_USEHEADER);
-	}
+		ListView_SetColumnWidth(LVhWnd, i, LVSCW_AUTOSIZE);
+		nColumnWidthNew = ListView_GetColumnWidth(LVhWnd, i);
+		if (nColumnWidthNew > nColumnWidth)
+		{
+			nColumnWidth = nColumnWidthNew;
+			ListView_SetColumnWidth(LVhWnd, i, LVSCW_AUTOSIZE_USEHEADER);
+		}
 
+		nHeaderWidthNew = ListView_GetColumnWidth(LVhWnd, i);
+		if (nHeaderWidthNew > nHeaderWidth)
+		{
+			nHeaderWidth = nHeaderWidthNew;
+		}
+		ListView_SetColumnWidth(LVhWnd, i, max(nColumnWidth, nHeaderWidth));
+	}
 
 }
 
@@ -381,25 +384,15 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 		ColumnSels.push_back(foo);
 		//https://stackoverflow.com/a/48251347/2128797
 		std::rotate(ColumnSels.rbegin(), ColumnSels.rbegin() + 1, ColumnSels.rend());
-		//ColumnSels.shrink_to_fit();
-		wchar_t* tempDest = nullptr;
-		// MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, ColumnSels[i].c_str())
-		int temp = wcslen(ColumnSels[i].c_str());
-		tempDest = (wchar_t *)calloc(temp + SIZEOF_WCHAR, SIZEOF_WCHAR);
-		// _itow_s(i, tempDest, MAX_LOADSTRING, 10);
-		wcscpy_s(tempDest, temp + SIZEOF_WCHAR, ColumnSels[i].c_str());
-		//tempDest[SIZEOF_WCHAR * temp + 1] = '\0';
-		 //ErrorExit(L"w", tempDest);
-		if (tempDest) free(tempDest);
+
 		for (j = 0; j <=jMax + 1; ++j)
 		{
-			//if (!CreateLVItems(LVRepshWnd, (j == 0)? (i < 10? ColSelectors[i][0]: L""): LV2DA[i][j -1], i , j))
-			if (!CreateLVItems(LVRepshWnd, (j == 0)? (i < 10? ColumnSels[i]: L""): LV2DA[i][j -1], i , j))
+			if (!CreateLVItems(LVRepshWnd, (j == 0)? (ColumnSels[i] + std::to_wstring(i)): LV2DA[i][j -1], i , j))
 			return FALSE;
 		}
 		}
 	}	
-
+		ColumnSels.shrink_to_fit();
 		//if (data) free(data);
 		if (buffer) free(buffer);
 		if (buffer1) free(buffer1);

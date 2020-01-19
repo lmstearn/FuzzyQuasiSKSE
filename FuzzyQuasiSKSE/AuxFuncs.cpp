@@ -40,6 +40,12 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 	// To convert int to LPCWSTR:
 	// _itow_s( int      _Value, wchar_t* _Buffer, size_t   _BufferCount,radix usually 10);
 
+	//Example
+	//wchar_t* tempDest = (wchar_t*)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
+	//_itow_s(retVal, tempDest, MAX_LOADSTRING, 10);
+	//ErrorExit(L"Blah", tempDest);
+	//if (tempDest) free(tempDest);
+
 		//courtesy https://msdn.microsoft.com/en-us/library/windows/desktop/ms680582(v=vs.85).aspx
 		// also see http://stackoverflow.com/questions/35177972/wide-char-version-of-get-last-error/35193301#35193301
 	DWORD dww = 0;
@@ -66,7 +72,7 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 	{
 		if (dww)
 		{
-			StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s Failed With Error %lu\nExtended information:\n%s", lpszFunction, dww, var, (LPWSTR)lpMsgBuf);
+			StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s Failed With Error %lu\nExtended information: %s", lpszFunction, dww, var);
 			wprintf(L"\a");  //audible bell
 			Beep(400, 500);
 			//MessageBeep((UINT) -1); 

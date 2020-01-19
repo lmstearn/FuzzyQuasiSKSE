@@ -36,7 +36,19 @@
 #define DESIGNSCRY						768
 
 
-
+	/* Informational: Same is in header
+#if (NTDDI_VERSION >= NTDDI_VISTA)
+#define LVS_EX_JUSTIFYCOLUMNS   0x00200000  // Icons are lined up in columns that use up the whole view area.
+#define LVS_EX_TRANSPARENTBKGND 0x00400000  // Background is painted by the parent via WM_PRINTCLIENT
+#define LVS_EX_TRANSPARENTSHADOWTEXT 0x00800000  // Enable shadow text on transparent backgrounds only (useful with bitmaps)
+#define LVS_EX_AUTOAUTOARRANGE  0x01000000  // Icons automatically arrange if no icon positions have been set
+#define LVS_EX_HEADERINALLVIEWS 0x02000000  // Display column header in all view modes
+#define LVS_EX_AUTOCHECKSELECT  0x08000000
+#define LVS_EX_AUTOSIZECOLUMNS  0x10000000
+#define LVS_EX_COLUMNSNAPPOINTS 0x40000000
+#define LVS_EX_COLUMNOVERFLOW   0x80000000
+#endif
+	*/
 
 //Header names
 struct ColHeading
@@ -59,7 +71,6 @@ const wchar_t TEMP_CLASS_NAME[14]  = L"ResCheckClass";
 typedef std::vector<std::wstring> ColumnSelectors;
 typedef std::vector<std::wstring> LVA;
 typedef std::vector<LVA> LVA2D;
-const std::wstring ColSelectors[COL_SELLIM][MAX_LOADSTRING] = {{L"GameForms"}, {L"Selection2"}, {L"Selection3"}, {L"Selection4"}, {L"Selection5"}, {L"Selection6"}, {L"Selection7"}, {L"Selection8"}, {L"Selection9"}, {L"Selection10"}};
 const uint32_t maxDWORD = 32767;
 const LONGLONG ID_LIST = 200;
 wchar_t const EOL_DELIM = L'\n';
