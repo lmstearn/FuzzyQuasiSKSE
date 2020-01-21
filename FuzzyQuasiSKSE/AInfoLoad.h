@@ -68,7 +68,7 @@ struct ColWidth
 UINT const WM_COPYGLOBALDATA = 0x0049; //Drop files filter
 const wchar_t TEMP_CLASS_NAME[14]  = L"ResCheckClass";
 
-typedef std::vector<std::wstring> ColumnSelectors;
+//typedef std::vector<std::int16_t> intVec;
 typedef std::vector<std::wstring> LVA;
 typedef std::vector<LVA> LVA2D;
 const uint32_t maxDWORD = 32767;
@@ -108,7 +108,7 @@ BOOL InitListView(HWND hwndLV, int lvType);
 HWND CreateListView(HINSTANCE hInstance, int lvType, HWND Ownerhwnd);
 BOOL CreateOtherCtrls();
 BOOL CreateColumn(HWND hwndLV, int iCol, std::wstring Text, int iWidth, BOOL delDummyCol = FALSE);
-void AutoSizeCols(HWND LVhWnd);
+bool AutoSizeCols(HWND LVhWnd, int selectedTab);
 void Kleenup();
 LRESULT ProcessCustomDraw (LPARAM lParam);
 

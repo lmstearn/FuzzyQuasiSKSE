@@ -42,7 +42,9 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 
 	//Example
 	//wchar_t* tempDest = (wchar_t*)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
-	//_itow_s(retVal, tempDest, MAX_LOADSTRING, 10);
+	//size_t m = wcslen(tempDest);
+	//No good having count (m) in itow_s as MAX_LOADSTRING as random memory may contain more null terminators!
+	//_itow_s(k, tempDest, m, 10);
 	//ErrorExit(L"Blah", tempDest);
 	//if (tempDest) free(tempDest);
 
@@ -66,13 +68,13 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 
 	// Display the error message and exit the process
 
-	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, (lstrlenW((wchar_t*)lpMsgBuf) + lstrlenW((wchar_t*)lpszFunction) + lstrlenW((LPCWSTR)var) + 40) * sizeof(WCHAR));
-
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, ((lpMsgBuf)?lstrlenW((wchar_t*)lpMsgBuf):0 + lstrlenW((wchar_t*)lpszFunction) + lstrlenW((LPCWSTR)var) + 80) * SIZEOF_WCHAR);
+	
 	if (lpDisplayBuf)
 	{
 		if (dww)
 		{
-			StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s Failed With Error %lu\nExtended information: %s", lpszFunction, dww, var);
+			StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf), L"%s Failed With Error %lu\nExtended information: %s : %s", lpszFunction, dww, var, (LPWSTR)lpMsgBuf);
 			wprintf(L"\a");  //audible bell
 			Beep(400, 500);
 			//MessageBeep((UINT) -1); 
@@ -80,11 +82,26 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 		}
 		else
 		{
-			StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s: %s", lpszFunction, var, (LPWSTR)lpMsgBuf);
+			//if (StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf), L"%s: %s", lpszFunction, var))
+			//try {
+				//StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s: %s", lpszFunction, var);
+				//}
+			//catch e
+
+			if (StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s: %s", lpszFunction, var))
+			MessageBoxW(nullptr, L"Format Error", L"Informational", MB_OK | MB_TASKMODAL);
+			else
 			MessageBoxW(nullptr, (LPCWSTR)lpDisplayBuf, L"Informational", MB_OK | MB_TASKMODAL);
 		}
-
-		if (LocalFree(lpDisplayBuf) || LocalFree(lpMsgBuf))
+		int ww = 0;
+			if ((LocalFree(lpDisplayBuf)))
+			ww = 1;
+			if (lpMsgBuf)
+			{
+				if (LocalFree(lpMsgBuf))
+				ww = 1;
+			}
+			if (ww)
 			MessageBoxW(nullptr, L"ErrorExit memory problem", L"Error", MB_OK | MB_SYSTEMMODAL);
 
 		//ExitProcess(dw);

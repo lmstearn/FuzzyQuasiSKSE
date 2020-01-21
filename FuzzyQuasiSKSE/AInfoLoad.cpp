@@ -170,31 +170,52 @@ BOOL InitListView(HWND LVWnd, int lvType)
 	return (BOOL)retVal;
 }
 
-void AutoSizeCols(HWND LVhWnd)
+bool AutoSizeCols(HWND LVhWnd, int selectedTab)
 {
+
 	// HWND hWndHdr = (HWND)::SendMessageW(LVhWnd, LVM_GETHEADER, 0, 0);
 	HWND hWndHdr = ListView_GetHeader(LVhWnd);
+	bool hangLV = TRUE;
 	int maxCol = (int)::SendMessageW(hWndHdr, HDM_GETITEMCOUNT, 0, 0L);
-	//int maxCol = (int)ListView_GetItemCount(hWndHdr); // https://github.com/MicrosoftDocs/feedback/issues/1270
-	int nColumnWidth = 0, nHeaderWidth = 0, nColumnWidthNew= 0, nHeaderWidthNew = 0;
+		//int maxCol = (int)ListView_GetItemCount(hWndHdr); // https://github.com/MicrosoftDocs/feedback/issues/1270
+	int nColumnWidth = 0, nHeaderWidth = 0, nColumnWidthNew= 0, nHeaderWidthNew = 0, maxColHeadWd = 0;
+	static int maxColHeadWidth0[100];
+	static int maxColHeadWidth2[150];
+
 	for (i = 0; i< maxCol; i++)
 	{
 		ListView_SetColumnWidth(LVhWnd, i, LVSCW_AUTOSIZE);
 		nColumnWidthNew = ListView_GetColumnWidth(LVhWnd, i);
-		if (nColumnWidthNew > nColumnWidth)
+		if (nColumnWidthNew != nColumnWidth)
 		{
 			nColumnWidth = nColumnWidthNew;
 			ListView_SetColumnWidth(LVhWnd, i, LVSCW_AUTOSIZE_USEHEADER);
 		}
 
 		nHeaderWidthNew = ListView_GetColumnWidth(LVhWnd, i);
-		if (nHeaderWidthNew > nHeaderWidth)
+		if (nHeaderWidthNew != nHeaderWidth)
 		{
 			nHeaderWidth = nHeaderWidthNew;
 		}
-		ListView_SetColumnWidth(LVhWnd, i, max(nColumnWidth, nHeaderWidth));
+		maxColHeadWd = max(nColumnWidth, nHeaderWidth);
+		if (maxColHeadWidth0[i] != maxColHeadWd)
+		{
+			switch (selectedTab)
+			{
+			case 0:
+			{
+				maxColHeadWidth0[i] = maxColHeadWd;
+			}
+			case 2:
+			{
+				maxColHeadWidth2[i] = maxColHeadWd;
+			}
+			}
+			ListView_SetColumnWidth(LVhWnd, i, maxColHeadWd);
+			hangLV = FALSE;
+		}
 	}
-
+	return hangLV;
 }
 
 
@@ -255,8 +276,10 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 
 	// Initialize LVITEMW members that are common to all items.
 
-	wchar_t *buffer= (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
+	wchar_t *buffer = (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
+	wchar_t *buffer1 = (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
 	wcscpy_s( buffer,  MAX_LOADSTRING, Text1.c_str());
+	wcscpy_s( buffer1,  MAX_LOADSTRING, L"Hi");
 	lvi.mask = LVIF_TEXT;
 	lvi.pszText = buffer;
 	lvi.iItem = k;  //zero based
@@ -266,10 +289,22 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 		retVal = SendMessageW(hwndList, LVM_SETITEMTEXTW, k, (LPARAM)&lvi);
 		if (retVal == 0)
 		{
-			buffer = (wchar_t*)realloc(buffer, SIZEOF_WCHAR);
-			_itow_s(k, buffer, MAX_LOADSTRING, 10);
-			ErrorExit(L"Failed to set text in Listview item", buffer);
-			if (buffer) free(buffer);
+			// if realloc succeeds, buffer1 can be buffer
+			buffer1 = (wchar_t*)realloc(buffer, MAX_LOADSTRING);
+
+			if (buffer1)
+			{
+				size_t m = wcslen(buffer1);
+				//No good having buffercount (m) as MAX_LOADSTRING as random memory may contain more null terminators!
+				_itow_s(k, buffer1, m, 10);
+				ErrorExit(L"Failed to set text in Listview item", buffer1);
+				free(buffer1);
+			}
+			else
+			{
+				ErrorExit(L"CreateLVItems: Memory problem");
+				exit(0);
+			}
 		}
 	}
 	else
@@ -320,7 +355,7 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 {
 	DWORD size1 = 0, size2 = 0;
 	LVA2D LV2DA(MAX_LOADSTRING, LVA(4));
-	ColumnSelectors ColumnSels(ColumnSelectors(COL_SELLIM));
+	LVA ColumnSels(LVA(COL_SELLIM));
 	wchar_t *buffer =nullptr, *buffer1 =nullptr, *buffer2 =nullptr;
 	const wchar_t *data, *data1;
 	i = 0, j = 0;
@@ -402,11 +437,24 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 	}
 else
 	{
+	if (buffer1) free(buffer1);
+
 	buffer= (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
-	_itow_s(rcName, buffer, MAX_LOADSTRING, 10);
-	ErrorExit(L"Could not locate resource!",buffer);
-	if (buffer) free (buffer);
-	if (buffer1) free (buffer1);
+
+	if (buffer)
+	{
+		size_t m = wcslen(buffer);
+		_itow_s(rcName, buffer, m, 10);
+		ErrorExit(L"Could not locate resource!", buffer);
+		free(buffer);
+	}
+	else
+	{
+		ErrorExit(L"CreateLVItems: Memory problem");
+		exit(0);
+	}
+
+
 	//if (data) free (data);
 	return FALSE;
 	}
