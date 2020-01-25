@@ -456,7 +456,7 @@ int Do7zFile(int numargs, const char *args[3])
 
 	if (numargs < 3)
 	{
-		ErrorExit(L"incorrect command");
+		ErrorRep(L"incorrect command.");
 		return 1;
 	}
 
@@ -479,7 +479,7 @@ int Do7zFile(int numargs, const char *args[3])
 		if ((strcmp(args[2], "") == 0) || (InFile_Open(&archiveStream.file, command) != 0))
 #endif
 	{
-		ErrorExit(L"Can not open input file");
+		ErrorRep(L"Can not open input file.");
 		return 1;
 	}
 
@@ -523,7 +523,7 @@ int Do7zFile(int numargs, const char *args[3])
 		else if (strcmp(command1, "x") == 0) { fullPaths = 1; }
 		else
 		{
-			ErrorExit(L"incorrect command");
+			ErrorRep(L"incorrect command.");
 			res = SZ_ERROR_FAIL;
 		}
 
@@ -657,7 +657,7 @@ int Do7zFile(int numargs, const char *args[3])
 						}
 						else if (OutFile_OpenUtf16(&outFile, destPath))
 						{
-							ErrorExit(L"can not open output file");
+							ErrorRep(L"can not open output file.");
 							res = SZ_ERROR_FAIL;
 							break;
 						}
@@ -666,7 +666,7 @@ int Do7zFile(int numargs, const char *args[3])
 
 						if (File_Write(&outFile, outBuffer + offset, &processedSize) != 0 || processedSize != outSizeProcessed)
 						{
-							ErrorExit(L"can not write output file");
+							ErrorRep(L"can not write output file.");
 							res = SZ_ERROR_FAIL;
 							break;
 						}
@@ -698,7 +698,7 @@ int Do7zFile(int numargs, const char *args[3])
 
 						if (File_Close(&outFile))
 						{
-							ErrorExit(L"can not close output file");
+							ErrorRep(L"can not close output file.");
 							res = SZ_ERROR_FAIL;
 							break;
 						}
@@ -738,11 +738,11 @@ int Do7zFile(int numargs, const char *args[3])
 	}
 
 	if (res == SZ_ERROR_UNSUPPORTED)
-		ErrorExit(L"decoder doesn't support this archive");
+		ErrorRep(L"decoder doesn't support this archive.");
 	else if (res == SZ_ERROR_MEM)
-		ErrorExit(L"can not allocate memory");
+		ErrorRep(L"can not allocate memory.");
 	else if (res == SZ_ERROR_CRC)
-		ErrorExit(L"CRC error");
+		ErrorRep(L"CRC error.");
 	else
 	{
 		char s[32];

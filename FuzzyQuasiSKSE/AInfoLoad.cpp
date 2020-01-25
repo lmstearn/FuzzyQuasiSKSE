@@ -83,7 +83,7 @@ for (j = 1; j <=2; ++j)
 
 	if (ds == INVALID_HANDLE_VALUE)
 	{
-		ErrorExit(L"No files in the Skyrim Special Edition Directory!");
+		ErrorRep(L"No files in the Skyrim Special Edition Directory!");
 		return FALSE;
 	}
 
@@ -103,13 +103,13 @@ for (j = 1; j <=2; ++j)
 			CreateLVItems(LVFileshWnd,currPathW, i , 2);
 			
 			
-			if (i < maxDWORD) 
+			if (i < maxInt) 
 			{
 				i += 1;
 			}
 			else
 			{
-				ErrorExit(L"Limit of files in listbox reached!");
+				ErrorRep(L"Limit of files in listbox reached!");
 				break;
 			}				
 			//compare with dacfolders[rootFolderC] to check for dups
@@ -166,7 +166,7 @@ BOOL InitListView(HWND LVWnd, int lvType)
 	lvc.cx=120;
 	//lvc.pszText = nullptr; // not needed as not masked
 	retVal = ListView_InsertColumn(LVWnd, retVal, &lvc);
-	if (retVal < 0) ErrorExit(L"First column in Listview could not be created!");
+	if (retVal < 0) ErrorRep(L"First column in Listview could not be created!");
 	return (BOOL)retVal;
 }
 
@@ -222,6 +222,7 @@ bool AutoSizeCols(HWND LVhWnd, int selectedTab)
 BOOL CreateColumn(HWND LVhWnd, int iCol, std::wstring inText, int iWidth, BOOL delDummyCol)
 {
 	LVCOLUMNW lvc;
+	BOOL bRetVal = FALSE;
 	i = 0;
 	wchar_t *text = 0;
 	text = (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
@@ -237,22 +238,20 @@ BOOL CreateColumn(HWND LVhWnd, int iCol, std::wstring inText, int iWidth, BOOL d
 	//i = ListView_InsertColumn(LVhWnd, iCol, &lvc);
 	if (retVal < 0)
 	{
-		ErrorExit(L"Could not Insert a column!",text);
-		if (text) free(text);
-		return FALSE;
+		ErrorRep(L"Could not Insert a column!", text);
 	}
 	else
 	{
 		if (delDummyCol)
 		{
 			i = ListView_DeleteColumn(LVhWnd, 0);
-			if (i < 0)
-				ErrorExit(L"Could not delete dummy column!");
+				if (i < 0)
+				ErrorRep(L"Could not delete dummy column!");
 		}
-		if (text) free(text);
-		return TRUE;
+	bRetVal = TRUE;
 	}
-
+	if (text) free(text);
+	return bRetVal;
 }
 
 
@@ -277,49 +276,35 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 	// Initialize LVITEMW members that are common to all items.
 
 	wchar_t *buffer = (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
-	wchar_t *buffer1 = (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
-	wcscpy_s( buffer,  MAX_LOADSTRING, Text1.c_str());
-	wcscpy_s( buffer1,  MAX_LOADSTRING, L"Hi");
-	lvi.mask = LVIF_TEXT;
-	lvi.pszText = buffer;
-	lvi.iItem = k;  //zero based
-	lvi.iSubItem = l; // ''
-	if (l)
+	if (buffer)
 	{
-		retVal = SendMessageW(hwndList, LVM_SETITEMTEXTW, k, (LPARAM)&lvi);
-		if (retVal == 0)
-		{
-			// if realloc succeeds, buffer1 can be buffer
-			buffer1 = (wchar_t*)realloc(buffer, MAX_LOADSTRING);
+		int m = wcslen(Text1.c_str());
+		wcscpy_s(buffer, wcslen(Text1.c_str()) + SIZEOF_WCHAR, Text1.c_str());
 
-			if (buffer1)
-			{
-				size_t m = wcslen(buffer1);
-				//No good having buffercount (m) as MAX_LOADSTRING as random memory may contain more null terminators!
-				_itow_s(k, buffer1, m, 10);
-				ErrorExit(L"Failed to set text in Listview item", buffer1);
-				free(buffer1);
-			}
-			else
-			{
-				ErrorExit(L"CreateLVItems: Memory problem");
-				exit(0);
-			}
-		}
-	}
-	else
-	{
-		retVal = SendMessageW(hwndList, LVM_INSERTITEMW, k, (LPARAM)&lvi);
-		if (retVal > 0)
+		lvi.mask = LVIF_TEXT;
+		lvi.pszText = buffer;
+		lvi.iItem = k;  //zero based
+		lvi.iSubItem = l; // ''
+		if (l)
 		{
-			wchar_t(buf)[16] = {};
-			FormatItowNotify(k, buf, buffer);
-			if (buffer) free(buffer);
+		retVal = SendMessageW(hwndList, LVM_SETITEMTEXTW, k, (LPARAM)&lvi);
+			if (retVal == 0)
+			ErrorRep(L"Failed to set text in Listview item", nullptr, k);
 		}
 		else
+		{
+		retVal = SendMessageW(hwndList, LVM_INSERTITEMW, k, (LPARAM)&lvi);
+		// This fails
+			if (retVal > 0)
+			FormatItowNotify(k, &buffer);
+			else
 			retVal = 1;
-		// Hope there is no actual error on first pass
+			// Hope there is no actual error on first pass
+		}
+		if (buffer) free(buffer);
 	}
+	else
+	ErrorRep(L"Memory allocation issue with LV item.", buffer, k);
 
 		// meh VS again
 		//char *tmpA = (char *)malloc(sizeof(char));
@@ -368,12 +353,12 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 	{
 		/* Access bytes in data - here's a simple example involving text output*/
 		// The text stored in the resource might not be NULL terminated.
-		// alternative memory mgt +but not compat with LocalAlloc in ErrorExit!
+		// alternative memory mgt + but not compat with LocalAlloc in ErrorRep!
 		//wchar_t* buffer = new wchar_t[size + 1];
 		//::memcpy(buffer, data, size);
 		//delete[] buffer; // only delete objects created by "new"
-		buffer1= (wchar_t *)calloc(size1 + 1, SIZEOF_WCHAR);
-		wcscpy_s( buffer1,  size1, data);
+		buffer1= (wchar_t *)calloc((SizeT)size1 + 1, SIZEOF_WCHAR);
+		wcscpy_s( buffer1,  size1, data); // data is not NULL terminated
 		buffer1[size1] = L'\0'; // NULL terminator
 	
 		if (rcStrType1)
@@ -381,22 +366,20 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 			data1 = LoadInResource(size2, rcName, rcStrType1, rcIntType);
 			if (data1 && size2)
 			{
-				buffer= (wchar_t *)calloc(size1 + size2 + 2, SIZEOF_WCHAR);
-				buffer2= (wchar_t *)calloc(size2 + 1, SIZEOF_WCHAR);
+				buffer= (wchar_t *)calloc((SizeT)size1 + size2 + 2, SIZEOF_WCHAR);
+				buffer2= (wchar_t *)calloc((SizeT)size2 + 1, SIZEOF_WCHAR);
 				wcscpy_s( buffer2,  size2, data1);
 				buffer2[size2] = L'\0'; // C6011 deferencing warning N/A as size2 > 0
 				wcscpy_s(buffer, size1, buffer1);
-				wcscat_s(buffer, size1 + size2 + 1, L"\n");
-				wcscat_s(buffer, size1 + size2 + 1, buffer2);
-				buffer[size1 + size2 + 1] = L'\0'; 
+				wcscat_s(buffer, (SizeT)size1 + (SizeT)size2 + 1, L"\n");
+				wcscat_s(buffer, (SizeT)size1 + (SizeT)size2 + 1, buffer2);
+				buffer[size1 + size2 + 1] = L'\0';
+					if (buffer1) free(buffer1);
+					if (buffer2) free(buffer2);
 			}
 			else
 			{
-				buffer= (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
-				_itow_s(rcName, buffer, MAX_LOADSTRING, 10);
-				ErrorExit(L"Could not locate resource!",buffer);
-				if (buffer) free (buffer);
-				if (buffer1) free (buffer1);
+				if (buffer1) free(buffer1);
 				//if (data) free (data);
 				return FALSE;
 			}
@@ -405,12 +388,19 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 		InitListView(LVRepshWnd, SKSEINFO);
 		
 		if (!CreateColumn(LVRepshWnd, 1, ColNames[0].ColHeadNames[0], ColWidVals[0].ColWid[0], true))
-		return FALSE;
+			{
+				if (buffer) free(buffer);
+				return FALSE;
+			}
+
 		//Create columns & headers
 		for (j = 1; j <=jMax + 1; ++j)
 		{
 			if (!CreateColumn(LVRepshWnd, j, ColNames[0].ColHeadNames[j] , ColWidVals[0].ColWid[j]))
-			return FALSE;
+			{
+				if (buffer) free(buffer);
+				return FALSE;
+			}
 		}
 		
 		for (i = 0; i <iMax; ++i)
@@ -420,44 +410,23 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 		//https://stackoverflow.com/a/48251347/2128797
 		std::rotate(ColumnSels.rbegin(), ColumnSels.rbegin() + 1, ColumnSels.rend());
 
-		for (j = 0; j <=jMax + 1; ++j)
-		{
-			if (!CreateLVItems(LVRepshWnd, (j == 0)? (ColumnSels[i] + std::to_wstring(i)): LV2DA[i][j -1], i , j))
-			return FALSE;
-		}
+			for (j = 0; j <=jMax + 1; ++j)
+			{
+				if (!CreateLVItems(LVRepshWnd, (j == 0)? (ColumnSels[i] + std::to_wstring(i)): LV2DA[i][j -(UINT64)1], i , j))
+				{
+					if (buffer) free(buffer);
+					return FALSE;
+				}
+			}
 		}
 	}	
 		ColumnSels.shrink_to_fit();
 		//if (data) free(data);
 		if (buffer) free(buffer);
-		if (buffer1) free(buffer1);
-		if (buffer2) free(buffer2);
-
 		return TRUE;
 	}
-else
-	{
-	if (buffer1) free(buffer1);
 
-	buffer= (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
-
-	if (buffer)
-	{
-		size_t m = wcslen(buffer);
-		_itow_s(rcName, buffer, m, 10);
-		ErrorExit(L"Could not locate resource!", buffer);
-		free(buffer);
-	}
-	else
-	{
-		ErrorExit(L"CreateLVItems: Memory problem");
-		exit(0);
-	}
-
-
-	//if (data) free (data);
-	return FALSE;
-	}
+return FALSE;
 
 }
 
@@ -474,7 +443,7 @@ LVA2D ResProc(const wchar_t* strVar, const wchar_t delimiter, int &iMax, int &jM
 	{
 		if (i > MAX_LOADSTRING)
 		{
-			ErrorExit(L"Input data overflow at ", tmp);
+			ErrorRep(L"Input data overflow at ", tmp);
 			return  LV2DAOUT;
 		}
 		
@@ -536,10 +505,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		retVal = 0;
 		else
 		{
-		wchar_t * buffer= (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
-		_itow_s(retVal, buffer, MAX_LOADSTRING, 10);
-		ErrorExit(L"Failed to open SSE registry key!", buffer);
-		if (buffer) free(buffer);
+		ErrorRep(L"Failed to open SSE registry key!", nullptr, retVal);
 		}
 		return retVal;
 	}
@@ -557,13 +523,13 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 	if(retVal!=ERROR_SUCCESS)
 	{
 		retVal = 1;
-		ErrorExit(L"Failed to get buffer size!");
+		ErrorRep(L"Failed to get buffer size!");
 		RegCloseKey(key);
 		return retVal;
 	}
 
 	wchar_t* lpValue;
-	lpValue = new wchar_t[length+1];
+	lpValue = new wchar_t[(size_t)length+1];
 	lpValue[length] = '\0';
 
 	// query
@@ -581,7 +547,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 	else
 	{
 		retVal = 1;
-		ErrorExit(L"Failed to get value data!");
+		ErrorRep(L"Failed to get value data!");
 	}
 delete[] lpValue;
 RegCloseKey(key);

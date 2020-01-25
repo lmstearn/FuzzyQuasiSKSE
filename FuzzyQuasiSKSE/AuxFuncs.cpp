@@ -2,13 +2,25 @@
 Byte srcFile[MAX_FILE] = {};								// file dragged to LV: stack overflow if in function!
 
 
-wchar_t const* FormatItowNotify(int a, wchar_t(buf)[16], wchar_t *buffer)
+void FormatItowNotify(int a, wchar_t **buffer)
 {
-	// itow_s chops off the terminator, and craps out Free()
-	//int lenBuffer = SIZEOF_WCHAR* (wcslen(buffer) + 1);
-	//buffer = (wchar_t *)ReallocateMem(buffer, lenBuffer);
-	//_itow_s(k, buffer, lenBuffer, 10);
+	wchar_t errLVMsg[] = L": Failed to insert Listview item.";
 
+	// itow_s chops off the terminator, and craps out Free()
+	SizeT lenBuffer = (wcslen(*buffer) + wcslen(errLVMsg) + SIZEOF_WCHAR);
+	wchar_t *buffer1 = ReallocateMem(*buffer, lenBuffer);
+	if (buffer1)
+	{
+		wcscat_s(buffer1, lenBuffer + SIZEOF_WCHAR, errLVMsg);
+		// test free(buffer1);
+		ErrorRep(buffer1, nullptr, a);
+		free(buffer1);
+	}
+	else
+	MessageBoxW(nullptr, L"Memory problem in LV item insertion!", L"ListView insertion: Memory", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
+		//_itow_s(a, buffer, lenBuffer, 10);
+
+	/*
 	for (int i = 0; i < 16; ++i) { buf[i] = ' '; }
 	int count = _scwprintf(buf);
 	// swprintf(buf, count, L"%d", a, L"%-13s", " ");
@@ -16,37 +28,67 @@ wchar_t const* FormatItowNotify(int a, wchar_t(buf)[16], wchar_t *buffer)
 	wcscpy_s(buffer, 16, (wchar_t*)buf);
 		if (!buffer)
 		{
-			ErrorExit(L"Failed to insert Listview item!", (wchar_t*)buf);
+			//ErrorRep(buf + L"Failed to insert Listview item!", buf);
 		}
-		return buf;
+*/
 }
 
-void * ReallocateMem(wchar_t * aSource, int Size)
+wchar_t* ReallocateMem(wchar_t * aSource, int Size)
 {
+	//buffer1 = (wchar_t*)realloc(buffer, MAX_LOADSTRING);
 	wchar_t * buffer = (wchar_t *)realloc(aSource, Size);
 	if (buffer)
 	{
-		buffer[(Size - 2)/ SIZEOF_WCHAR] = '\0';
+		//buffer[(Size - 2)/ SIZEOF_WCHAR] = '\0';
 	}
 	else
 	{
-		wchar_t *buffer = (wchar_t *)calloc(Size - 1, SIZEOF_WCHAR); // retry original size
+		wchar_t *buffer = (wchar_t *)calloc((SizeT)Size - 1, SIZEOF_WCHAR); // retry original size
 		//ErrorExit(L"Failed to insert Listview item!", buffer);
 	}
 	return buffer;
 }
-void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
+
+void ErrorRep(LPCWSTR lpszFunction, wchar_t* extraInf, int var)
 {
+	wchar_t* buffer = (wchar_t*)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
 	// To convert int to LPCWSTR:
 	// _itow_s( int      _Value, wchar_t* _Buffer, size_t   _BufferCount,radix usually 10);
 
 	//Example
 	//wchar_t* tempDest = (wchar_t*)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
 	//size_t m = wcslen(tempDest);
-	//No good having count (m) in itow_s as MAX_LOADSTRING as random memory may contain more null terminators!
+		//No good having count (m) in itow_s as MAX_LOADSTRING as random memory may contain more null terminators!
 	//_itow_s(k, tempDest, m, 10);
-	//ErrorExit(L"Blah", tempDest);
+	//ErrorRep(L"Blah", tempDest);
 	//if (tempDest) free(tempDest);
+	if (buffer)
+	{
+		if (var == maxInt)
+		ErrorExit(lpszFunction, extraInf);
+		else
+		{
+			DWORD dww = GetLastError();
+				if (_itow_s(var, buffer, sizeof(buffer), 10))
+				MessageBoxW(nullptr, lpszFunction, L"Error and conversion problem", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
+				else
+				{
+					DWORD dww = GetLastError();
+					//size_t m = wcslen(tempDest);
+					ErrorExit(lpszFunction, extraInf);
+				}
+		}
+
+		free(buffer);
+	}
+	else
+	{
+		MessageBoxW(nullptr, lpszFunction, L"Error and memory allocation problem", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
+		exit(0);
+	}
+}
+void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var, bool reportVar)
+{
 
 		//courtesy https://msdn.microsoft.com/en-us/library/windows/desktop/ms680582(v=vs.85).aspx
 		// also see http://stackoverflow.com/questions/35177972/wide-char-version-of-get-last-error/35193301#35193301
@@ -68,17 +110,28 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 
 	// Display the error message and exit the process
 
-	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, ((lpMsgBuf)?lstrlenW((wchar_t*)lpMsgBuf):0 + lstrlenW((wchar_t*)lpszFunction) + lstrlenW((LPCWSTR)var) + 80) * SIZEOF_WCHAR);
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, ((lpMsgBuf)?lstrlenW((wchar_t*)lpMsgBuf): (SizeT)0 + lstrlenW((wchar_t*)lpszFunction) + (var)?lstrlenW((LPCWSTR)var): + (SizeT)80) * SIZEOF_WCHAR);
 	
 	if (lpDisplayBuf)
 	{
 		if (dww)
 		{
-			StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf), L"%s Failed With Error %lu\nExtended information: %s : %s", lpszFunction, dww, var, (LPWSTR)lpMsgBuf);
-			wprintf(L"\a");  //audible bell
-			Beep(400, 500);
-			//MessageBeep((UINT) -1); 
-			MessageBoxW(nullptr, (LPCWSTR)lpDisplayBuf, L"Error", MB_OK | MB_SYSTEMMODAL);
+			try
+			{
+				if (reportVar)
+					StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf), L"%s Failed With Error %lu\nExtended information reference: %s : %s", lpszFunction, dww, var, (LPWSTR)lpMsgBuf);
+				else
+					StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf), L"%s Failed With Error %lu\nExtended information reference: %s", lpszFunction, dww, (LPWSTR)lpMsgBuf);
+				wprintf(L"\a");  //audible bell
+				Beep(400, 500);
+				//MessageBeep((UINT) -1); 
+				MessageBoxW(nullptr, (LPCWSTR)lpDisplayBuf, L"Error", MB_OK | MB_SYSTEMMODAL | MB_ICONWARNING);
+			}
+			catch (...)
+			{
+				MessageBoxW(nullptr, L"ErrorExit Format Error", L"Error", MB_OK | MB_TASKMODAL | MB_ICONERROR);
+			}
+
 		}
 		else
 		{
@@ -87,11 +140,22 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var)
 				//StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s: %s", lpszFunction, var);
 				//}
 			//catch e
+			try
+			{
+				if (reportVar)
+					StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s: %s", lpszFunction, var);
+				else
+					StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s", lpszFunction);
 
-			if (StringCchPrintfW((LPWSTR)lpDisplayBuf, LocalSize(lpDisplayBuf) / SIZEOF_WCHAR, L"%s: %s", lpszFunction, var))
-			MessageBoxW(nullptr, L"Format Error", L"Informational", MB_OK | MB_TASKMODAL);
-			else
-			MessageBoxW(nullptr, (LPCWSTR)lpDisplayBuf, L"Informational", MB_OK | MB_TASKMODAL);
+				MessageBoxW(nullptr, (LPCWSTR)lpDisplayBuf, L"Informational", MB_OK | MB_TASKMODAL | MB_ICONINFORMATION);
+			}
+			catch (...)
+			{
+				MessageBoxW(nullptr, L"ErrorExit Format Error", L"Error", MB_OK | MB_TASKMODAL | MB_ICONERROR);
+			}
+			
+
+			
 		}
 		int ww = 0;
 			if ((LocalFree(lpDisplayBuf)))
@@ -115,9 +179,7 @@ int ProcessCompressedFile(wchar_t* fName, const char command7z)
 	FILE* f = {};
 	if (retVal = _wfopen_s(&f, fName, L"rb"))
 	{
-		wchar_t * buffer = (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
-		_itow_s(retVal, buffer, MAX_LOADSTRING, 10);
-		ErrorExit(L"Could not open the file!", buffer);
+		ErrorRep(L"Could not open the file!", 0, retVal);
 		return 1;
 	}
 
@@ -166,36 +228,36 @@ int ProcessCompressedFile(wchar_t* fName, const char command7z)
 				if (status == LZMA_STATUS_NOT_FINISHED)
 				{
 					retVal = -1;
-					ErrorExit(L"Decompress: LZMA_STATUS_NOT_FINISHED!");
+					ErrorRep(L"Decompress: LZMA_STATUS_NOT_FINISHED!");
 				}
 				else
 				{
 					if (status == LZMA_STATUS_MAYBE_FINISHED_WITHOUT_MARK)
 					{
 						retVal = -1;
-						ErrorExit(L"Decompress: LZMA_STATUS_MAYBE_FINISHED_WITHOUT_MARK!");
+						ErrorRep(L"Decompress: LZMA_STATUS_MAYBE_FINISHED_WITHOUT_MARK!");
 					}
 				}
 			}
 			break;
 			case SZ_ERROR_DATA:
 			{
-				ErrorExit(L"Decompress data error: SZ_ERROR_DATA!");
+				ErrorRep(L"Decompress data error: SZ_ERROR_DATA!");
 			}
 			break;
 			case SZ_ERROR_MEM:
 			{
-				ErrorExit(L"Decompress memory allocation error: SZ_ERROR_MEM!");
+				ErrorRep(L"Decompress memory allocation error: SZ_ERROR_MEM!");
 			}
 			break;
 			case SZ_ERROR_UNSUPPORTED:
 			{
-				ErrorExit(L"Decompress unsupported properties: SZ_ERROR_UNSUPPORTED!");
+				ErrorRep(L"Decompress unsupported properties: SZ_ERROR_UNSUPPORTED!");
 			}
 			break;
 			case SZ_ERROR_INPUT_EOF:
 			{
-				ErrorExit(L"Decompress more bytes required in input buffer (src): SZ_ERROR_INPUT_EOF!");
+				ErrorRep(L"Decompress more bytes required in input buffer (src): SZ_ERROR_INPUT_EOF!");
 			}
 			break;
 			}
