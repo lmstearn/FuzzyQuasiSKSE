@@ -137,18 +137,24 @@ BOOL InitListView(HWND LVWnd, int lvType)
 	{
 	case 256:
 	{	
-		SendMessageW(LVWnd,
+		ListView_SetExtendedListViewStyleEx(LVWnd,
 			LVM_SETEXTENDEDLISTVIEWSTYLE,
-			LVS_EX_DOUBLEBUFFER |  LVS_EX_GRIDLINES,
-			LVS_EX_DOUBLEBUFFER |  LVS_EX_GRIDLINES);
+			LVS_EX_DOUBLEBUFFER | LVS_EX_GRIDLINES);
+		//SendMessageW(LVWnd,
+			//LVM_SETEXTENDEDLISTVIEWSTYLE,
+			//LVS_EX_DOUBLEBUFFER |  LVS_EX_GRIDLINES,
+			//LVS_EX_DOUBLEBUFFER |  LVS_EX_GRIDLINES);
 	}
 	break;
 	case 257:
 	{
-		SendMessageW(LVWnd,
+		ListView_SetExtendedListViewStyleEx(LVWnd,
 			LVM_SETEXTENDEDLISTVIEWSTYLE,
-			LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES,
 			LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+		//SendMessageW(LVWnd,
+			//LVM_SETEXTENDEDLISTVIEWSTYLE,
+			//LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES,
+			//LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	}
 	break;
 	}
@@ -165,7 +171,8 @@ BOOL InitListView(HWND LVWnd, int lvType)
 	lvc.fmt = LVCFMT_LEFT;
 	lvc.cx=120;
 	//lvc.pszText = nullptr; // not needed as not masked
-	retVal = ListView_InsertColumn(LVWnd, retVal, &lvc);
+	//retVal = ListView_InsertColumn(LVWnd, retVal, &lvc); //rubbish
+	retVal = SendMessageW(LVWnd, LVM_INSERTCOLUMN, 0, (LPARAM)&lvc);
 	if (retVal < 0) ErrorRep(L"First column in Listview could not be created!");
 	return (BOOL)retVal;
 }

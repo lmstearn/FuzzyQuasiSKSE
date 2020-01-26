@@ -1,12 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include <strsafe.h>
-//#include <vector> // included in filesystem
-//#include <string> //string included in iTypes
-#include <filesystem>
-#include <shellapi.h>
-//#include <iostream> //iostream included in iTypes
-// #include <algorithm> // included in filesystem
 #include "resource.h"
 #include "AIPrefix.h"
 
