@@ -1,5 +1,5 @@
 #include "AIPrefix.h"
-#include "AuxFuncs.h"
+
 
 static void *SzAlloc(ISzAllocPtr p, size_t size) { UNUSED_VAR(p); return MyAlloc(size); }
 static void SzFree(ISzAllocPtr p, void *address) { UNUSED_VAR(p); MyFree(address); }

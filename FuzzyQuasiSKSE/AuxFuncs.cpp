@@ -2,17 +2,16 @@
 Byte srcFile[MAX_FILE] = {};								// file dragged to LV: stack overflow if in function!
 
 
-void FormatItowNotify(int a, wchar_t **buffer)
+void FormatItowNotify(int a, wchar_t *buffer)
 {
-	wchar_t errLVMsg[] = L": Failed to insert Listview item.";
-
-	// itow_s chops off the terminator, and craps out Free()
-	SizeT lenBuffer = (wcslen(*buffer) + wcslen(errLVMsg) + SIZEOF_WCHAR);
-	wchar_t *buffer1 = ReallocateMem(*buffer, lenBuffer);
+	wchar_t errLVMsg[MAX_LOADSTRING] = L": Failed to insert Listview item.";
+	SizeT lenBuffer = wcslen(errLVMsg);
+	//errLVMsg[lenBuffer] = L'\0';
+	 lenBuffer += wcslen(buffer) + 1;
+	wchar_t *buffer1 = ReallocateMem(buffer, SIZEOF_WCHAR * (lenBuffer + 1));
 	if (buffer1)
 	{
-		wcscat_s(buffer1, lenBuffer + SIZEOF_WCHAR, errLVMsg);
-		// test free(buffer1);
+		wcscat_s(buffer1, lenBuffer, errLVMsg);
 		ErrorRep(buffer1, nullptr, a);
 		free(buffer1);
 	}
@@ -35,6 +34,7 @@ void FormatItowNotify(int a, wchar_t **buffer)
 
 wchar_t* ReallocateMem(wchar_t * aSource, int Size)
 {
+	// check buffer aSource pointers
 	//buffer1 = (wchar_t*)realloc(buffer, MAX_LOADSTRING);
 	wchar_t * buffer = (wchar_t *)realloc(aSource, Size);
 	if (buffer)
@@ -52,16 +52,6 @@ wchar_t* ReallocateMem(wchar_t * aSource, int Size)
 void ErrorRep(LPCWSTR lpszFunction, wchar_t* extraInf, int var)
 {
 	wchar_t* buffer = (wchar_t*)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
-	// To convert int to LPCWSTR:
-	// _itow_s( int      _Value, wchar_t* _Buffer, size_t   _BufferCount,radix usually 10);
-
-	//Example
-	//wchar_t* tempDest = (wchar_t*)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
-	//size_t m = wcslen(tempDest);
-		//No good having count (m) in itow_s as MAX_LOADSTRING as random memory may contain more null terminators!
-	//_itow_s(k, tempDest, m, 10);
-	//ErrorRep(L"Blah", tempDest);
-	//if (tempDest) free(tempDest);
 	if (buffer)
 	{
 		if (var == maxInt)
@@ -69,7 +59,7 @@ void ErrorRep(LPCWSTR lpszFunction, wchar_t* extraInf, int var)
 		else
 		{
 			DWORD dww = GetLastError();
-				if (_itow_s(var, buffer, sizeof(buffer), 10))
+				if (_itow_s(var, buffer, sizeof(buffer), 10)) //Care alert: itow_s can chop off the terminator, hence crapping out Free()
 				MessageBoxW(nullptr, lpszFunction, L"Error and conversion problem", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
 				else
 				{
@@ -109,9 +99,9 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var, bool reportVar)
 	}
 
 	// Display the error message and exit the process
-
-	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, ((lpMsgBuf)?lstrlenW((wchar_t*)lpMsgBuf): (SizeT)0 + lstrlenW((wchar_t*)lpszFunction) + (var)?lstrlenW((LPCWSTR)var): + (SizeT)80) * SIZEOF_WCHAR);
 	
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, (((lpMsgBuf)?lstrlenW((wchar_t*)lpMsgBuf): (SizeT)0) + lstrlenW((wchar_t*)lpszFunction) + ((var)?lstrlenW((LPCWSTR)var): (SizeT)0) + (SizeT)80) * SIZEOF_WCHAR);
+	int www = LocalSize(lpDisplayBuf);
 	if (lpDisplayBuf)
 	{
 		if (dww)

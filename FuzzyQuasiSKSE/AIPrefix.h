@@ -1,5 +1,8 @@
 #pragma once
-
+#ifndef AUXFUNCS_H
+#include "AuxFuncs.h"
+#define AUXFUNCS_H
+#endif
 
 // 4018 - signed/unsigned mismatch
 // 4200 - zero-sized array

@@ -3,7 +3,12 @@
 #include "resource.h"
 #include "AIPrefix.h"
 
-
+/* This guard cause random compilation errors
+#ifndef AINFOLOAD_H
+#include "AInfoLoad.h"
+#define AINFOLOAD_H
+#endif
+*/
 #ifndef UNICODE
 #define UNICODE
 #endif
@@ -48,8 +53,8 @@ extern int retVal; //avoids LNK2005
 extern float resX, resY;
 
 //#define ITOW(A) Itow((A), &(char[16]){ 0 })
-void FormatItowNotify(int a, wchar_t **buffer = nullptr);
-wchar_t* ReallocateMem(wchar_t * aSource, int Size);
+void FormatItowNotify(int a, wchar_t* buffer = nullptr);
+wchar_t* ReallocateMem(wchar_t* aSource, int Size);
 void ErrorRep(LPCWSTR lpszFunction, wchar_t* extraInf = nullptr, int var = maxInt);
 void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var, bool reportVar = FALSE);
 int ProcessCompressedFile(wchar_t* tempDest, const char command7z);

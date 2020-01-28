@@ -301,9 +301,9 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 		else
 		{
 		retVal = SendMessageW(hwndList, LVM_INSERTITEMW, k, (LPARAM)&lvi);
-		// This fails
+
 			if (retVal > 0)
-			FormatItowNotify(k, &buffer);
+			FormatItowNotify(k, buffer);
 			else
 			retVal = 1;
 			// Hope there is no actual error on first pass
@@ -348,7 +348,7 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 	DWORD size1 = 0, size2 = 0;
 	LVA2D LV2DA(MAX_LOADSTRING, LVA(4));
 	LVA ColumnSels(LVA(COL_SELLIM));
-	wchar_t *buffer =nullptr, *buffer1 =nullptr, *buffer2 =nullptr;
+	wchar_t *buffer = nullptr, *buffer1 = nullptr, *buffer2 = nullptr;
 	const wchar_t *data, *data1;
 	i = 0, j = 0;
 	int iMax = 0, jMax=0;
