@@ -37,6 +37,7 @@
 // Global Variables:
 UINT const WM_COPYGLOBALDATA = 0x0049; //Drop files filter
 const wchar_t TEMP_CLASS_NAME[14] = L"ResCheckClass";
+extern BOOL isLoading;
 
 //typedef std::vector<std::int16_t> intVec;
 typedef std::vector<std::wstring> LVA;

@@ -296,19 +296,22 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 		{
 		retVal = SendMessageW(hwndList, LVM_SETITEMTEXTW, k, (LPARAM)&lvi);
 			if (retVal == 0)
-			ErrorRep(L"Failed to set text in Listview item", nullptr, k);
+			{
+				ErrorRep(L"Failed to set text in Listview item", nullptr, k);
+				free(buffer);
+			}
 		}
 		else
 		{
 		retVal = SendMessageW(hwndList, LVM_INSERTITEMW, k, (LPARAM)&lvi);
 
-			if (retVal > 0)
+			if (retVal < 0)
 			FormatItowNotify(k, buffer);
 			else
 			retVal = 1;
 			// Hope there is no actual error on first pass
 		}
-		if (buffer) free(buffer);
+		if (buffer && retVal) free(buffer); //!retval: buffer already de-allocated by Realloc
 	}
 	else
 	ErrorRep(L"Memory allocation issue with LV item.", buffer, k);
@@ -506,7 +509,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		0, 
 		KEY_READ|KEY_WOW64_64KEY, 
 		&key);
-	if(retVal!=ERROR_SUCCESS)
+	if(retVal !=ERROR_SUCCESS)
 	{
 		if(retVal == ERROR_FILE_NOT_FOUND || retVal == ERROR_PATH_NOT_FOUND)
 		retVal = 0;
@@ -527,7 +530,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		NULL, 
 		NULL, 
 		&length);
-	if(retVal!=ERROR_SUCCESS)
+	if(retVal != ERROR_SUCCESS)
 	{
 		retVal = 1;
 		ErrorRep(L"Failed to get buffer size!");
@@ -546,7 +549,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		NULL, NULL, 
 		(LPBYTE)lpValue, 
 		&length);
-	if(retVal==ERROR_SUCCESS)
+	if(retVal == ERROR_SUCCESS)
 	{
 		wcscpy_s(valueData, RCDATALIM,  lpValue);
 		retVal = 0;

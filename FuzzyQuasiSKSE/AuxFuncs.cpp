@@ -34,17 +34,20 @@ void FormatItowNotify(int a, wchar_t *buffer)
 
 wchar_t* ReallocateMem(wchar_t * aSource, int Size)
 {
-	// check buffer aSource pointers
+	// "Int" may be problematic
 	//buffer1 = (wchar_t*)realloc(buffer, MAX_LOADSTRING);
 	wchar_t * buffer = (wchar_t *)realloc(aSource, Size);
+
 	if (buffer)
 	{
+		//if (buffer = aSource) original address still in scope
 		//buffer[(Size - 2)/ SIZEOF_WCHAR] = '\0';
 	}
 	else
 	{
+		//exit(EXIT_FAILURE);
 		wchar_t *buffer = (wchar_t *)calloc((SizeT)Size - 1, SIZEOF_WCHAR); // retry original size
-		//ErrorExit(L"Failed to insert Listview item!", buffer);
+
 	}
 	return buffer;
 }
@@ -58,12 +61,10 @@ void ErrorRep(LPCWSTR lpszFunction, wchar_t* extraInf, int var)
 		ErrorExit(lpszFunction, extraInf);
 		else
 		{
-			DWORD dww = GetLastError();
 				if (_itow_s(var, buffer, sizeof(buffer), 10)) //Care alert: itow_s can chop off the terminator, hence crapping out Free()
 				MessageBoxW(nullptr, lpszFunction, L"Error and conversion problem", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
 				else
 				{
-					DWORD dww = GetLastError();
 					//size_t m = wcslen(tempDest);
 					ErrorExit(lpszFunction, extraInf);
 				}
@@ -87,6 +88,13 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var, bool reportVar)
 	LPVOID lpDisplayBuf = 0;
 
 	dww = GetLastError();
+
+	// ERROR_INVALID_HANDLE generated at the beginning of staticSubClass procedure
+	// *Possibly* related to having the same Subclass procedure for more than one form.
+	// No need to SetLastError(0)
+		if (isLoading && dww == ERROR_INVALID_HANDLE)
+		dww = 0;
+	
 	if (dww)
 	{
 		FormatMessageW(
