@@ -56,7 +56,7 @@ public:
 
 //	void	** _vtbl;	// 000
 	UInt64	pad008[(0x118 - 0x008) >> 3];
-	Entry	items;	// 118
+	Entry		items;	// 118
 
 	MEMBER_FN_PREFIX(SettingCollectionList);
 	DEFINE_MEMBER_FN(Get_Internal, Setting *, 0x003104D0, const char * name);

@@ -16,6 +16,8 @@
 #define _UNICODE
 #endif
 
+// Consider constexpr unsigned int instead of #define value
+//
 //#define CSIDL_MYDOCUMENTS		0x0005 //My Documents (c4005 macro redef)
 #define DWL_MSGRESULT				0
 #define COL_SELLIM						200

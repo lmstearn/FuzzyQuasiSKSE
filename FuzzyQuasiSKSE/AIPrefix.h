@@ -97,7 +97,7 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64_common\skse_version.h"
 #include "skse64_common\Utilities.h"
 
-/*
+
 // skse64
 #include "skse64\BSModelDB.h"
 #include "skse64\Colors.h"
@@ -241,7 +241,7 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64\ScaleformVM.h"
 #include "skse64\Serialization.h"
 #include "skse64\Translation.h"
-*/
+
 // skse64_loader
 #include "skse64_loader\Options.h"
 // skse64_loader_common

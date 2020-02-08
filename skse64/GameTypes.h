@@ -791,6 +791,21 @@ public:
 		}
 		return curIt;
 	}
+	class StringFinder_CI
+	{
+		char* m_stringToFind;
+	public:
+		StringFinder_CI(char* str) : m_stringToFind(str)
+		{	}
+
+		bool Accept(char* str)
+		{
+			if (!_stricmp(str, m_stringToFind))
+				return true;
+			else
+				return false;
+		}
+	};
 
 	const _Node* FindString(char* str, Iterator prev) const
 	{
@@ -825,7 +840,7 @@ public:
 
 	T * RemoveNth(SInt32 n) 
 	{
-		Item* pRemoved = NULL;
+		T* pRemoved = NULL;
 		if (n == 0) {
 			pRemoved =  m_listHead.RemoveMe();
 		} else if (n > 0) {
@@ -839,7 +854,7 @@ public:
 
 	T * ReplaceNth(SInt32 n, T* item) 
 	{
-		Item* pReplaced = NULL;
+		T* pReplaced = NULL;
 		NodePos nodePos = GetNthNode(n);
 		if (nodePos.node && nodePos.index == n) {
 			pReplaced = nodePos.node->item;

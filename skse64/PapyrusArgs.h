@@ -24,6 +24,9 @@ public:
 	DEFINE_MEMBER_FN(Get, VMValue *, 0x012449D0, VMState * state, UInt32 idx, UInt32 offset);
 };
 
+template<class T>
+inline UInt64 GetTypeID(VMClassRegistry* registry);
+
 template <typename T>
 class VMArray
 {
@@ -46,7 +49,7 @@ public:
 	{
 		// Copy the contents from the reference array to the VM array
 		UInt32 i = 0;
-		for(std::vector<T>::iterator it = begin(); it != end(); ++it, i++) {
+		for(typename std::vector<T>::iterator it = tList::Iterator::Begin(); it != tList::Iterator::End(); ++it, i++) {
 			VMValue * value = data->GetData() + i;
 			PackValue(value, (T*)&(*it), registry);
 			value->type = GetTypeID<T>(registry); // Always pack the type, even if empty data
@@ -67,7 +70,7 @@ void PackValue(VMValue * dst, VMResultArray<T> * src, VMClassRegistry * registry
 			src->PackArray(data, registry);
 
 			// Set the appropriate TypeID and assign the new data array
-			dst->type = GetTypeID<VMResultArray<T>>(registry);
+			dst->type = GetTypeID<VMResultArray<int>>(*registry);
 			dst->data.arr = data;
 		}
 	}
@@ -77,7 +80,7 @@ void PackValue(VMValue * dst, VMResultArray<T> * src, VMClassRegistry * registry
 }
 
 template <typename T>
-void UnpackValue(VMArray<T*> * dst, VMValue * src)
+void UnpackValue(VMArray<T *> * dst, VMValue * src)
 {
 	UnpackArray(dst, src, GetTypeIDFromFormTypeID(T::kTypeID, (*g_skyrimVM)->GetClassRegistry()) | VMValue::kType_Identifier);
 }
@@ -88,8 +91,6 @@ void PackValue(VMValue * dst, T * src, VMClassRegistry * registry);
 template <typename T>
 void UnpackValue(T * dst, VMValue * src);
 
-template <typename T>
-UInt64 GetTypeID(VMClassRegistry * registry);
 
 template <> void PackValue <void>(VMValue * dst, void * src, VMClassRegistry * registry);
 template <> void PackValue <UInt32>(VMValue * dst, UInt32 * src, VMClassRegistry * registry);
@@ -143,6 +144,8 @@ void UnpackArray(VMArray<T> * dst, VMValue * src, const UInt64 type)
 
 UInt64 GetTypeIDFromFormTypeID(UInt32 formTypeID, VMClassRegistry * registry);
 
+
+
 template <> UInt64 GetTypeID <void>(VMClassRegistry * registry);
 template <> UInt64 GetTypeID <UInt32>(VMClassRegistry * registry);
 template <> UInt64 GetTypeID <SInt32>(VMClassRegistry * registry);
@@ -186,20 +189,6 @@ struct IsArrayType<VMResultArray<T*>>
 	typedef T TypedArg;
 };
 
-template <typename T>
-UInt64 GetTypeID <T *>(VMClassRegistry * registry)
-{
-	UInt64		result;
-
-	typedef std::remove_pointer <IsArrayType<T>::TypedArg>::type	BaseType;
-	if(!IsArrayType<T>::value) {
-		result = GetTypeIDFromFormTypeID(BaseType::kTypeID, registry);
-	} else { // Arrays are ClassInfo ptr + 1
-		result = GetTypeIDFromFormTypeID(BaseType::kTypeID, registry) | VMValue::kType_Identifier;
-	}
-
-	return result;
-}
 
 template <class T>
 struct IsStaticType

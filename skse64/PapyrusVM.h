@@ -200,6 +200,7 @@ public:
 
 // 4B04
 // this does more than hold on to class registrations, but for now that's all we care about
+
 class VMClassRegistry
 {
 public:
