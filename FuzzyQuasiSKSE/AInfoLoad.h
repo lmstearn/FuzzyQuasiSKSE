@@ -53,7 +53,7 @@ BOOL InitListView(HWND hwndLV, int lvType);
 HWND CreateListView(HINSTANCE hInstance, int lvType, HWND Ownerhwnd);
 BOOL CreateOtherCtrls();
 BOOL CreateColumn(HWND hwndLV, int iCol, std::wstring Text, int iWidth, BOOL delDummyCol = FALSE);
-bool AutoSizeCols(HWND LVhWnd, int selectedTab);
+void AutoSizeCols(HWND LVhWnd, int selectedTab, int widFactor = 0);
 void Kleenup();
 LRESULT ProcessCustomDraw (LPARAM lParam);
 

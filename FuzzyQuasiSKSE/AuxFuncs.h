@@ -21,6 +21,7 @@
 //#define CSIDL_MYDOCUMENTS		0x0005 //My Documents (c4005 macro redef)
 #define DWL_MSGRESULT				0
 #define COL_SELLIM						200
+#define MAX_TABS						10
 #define MAX_LOADSTRING			255
 #define RCDATALIM						2500 //compatible with SIZEOF(bytes)
 #define MAX_GUIMOVPERSESS		25
@@ -40,6 +41,7 @@
 UINT const WM_COPYGLOBALDATA = 0x0049; //Drop files filter
 const wchar_t TEMP_CLASS_NAME[14] = L"ResCheckClass";
 extern BOOL isLoading;
+extern BOOL oneCallAutoSizeCols[MAX_TABS];
 
 //typedef std::vector<std::int16_t> intVec;
 typedef std::vector<std::wstring> LVA;

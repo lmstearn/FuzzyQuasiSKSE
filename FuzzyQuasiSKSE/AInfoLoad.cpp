@@ -177,32 +177,49 @@ BOOL InitListView(HWND LVWnd, int lvType)
 	return (BOOL)retVal;
 }
 
-bool AutoSizeCols(HWND LVhWnd, int selectedTab)
+void AutoSizeCols(HWND LVhWnd, int selectedTab, int widFactor)
 {
 
 	// HWND hWndHdr = (HWND)::SendMessageW(LVhWnd, LVM_GETHEADER, 0, 0);
 	HWND hWndHdr = ListView_GetHeader(LVhWnd);
-	bool hangLV = TRUE;
+
 	int maxCol = (int)::SendMessageW(hWndHdr, HDM_GETITEMCOUNT, 0, 0L);
 		//int maxCol = (int)ListView_GetItemCount(hWndHdr); // https://github.com/MicrosoftDocs/feedback/issues/1270
 	int nColumnWidth = 0, nHeaderWidth = 0, nColumnWidthNew= 0, nHeaderWidthNew = 0, maxColHeadWd = 0;
-	static int maxColHeadWidth0[100];
-	static int maxColHeadWidth2[150];
+	static int maxColHeadWidth0[100] = { 0 };
+	static int maxColHeadWidth2[150] = { 0 };
 
-	for (i = 0; i< maxCol; i++)
+
+	if (widFactor && !maxColHeadWidth0[0])
+	{
+		SendMessageW(LVhWnd, LVM_SETCOLUMNWIDTH, 0, widFactor);
+		ListView_SetExtendedListViewStyle(LVhWnd, LVS_EX_AUTOSIZECOLUMNS);
+	}
+
+	for (i = 1; i< maxCol; i++)
 	{
 		ListView_SetColumnWidth(LVhWnd, i, LVSCW_AUTOSIZE);
 		nColumnWidthNew = ListView_GetColumnWidth(LVhWnd, i);
-		if (nColumnWidthNew != nColumnWidth)
+		if (nColumnWidthNew > widFactor)
+			nColumnWidthNew = widFactor;
+		else
 		{
-			nColumnWidth = nColumnWidthNew;
-			ListView_SetColumnWidth(LVhWnd, i, LVSCW_AUTOSIZE_USEHEADER);
+			if (nColumnWidthNew != nColumnWidth)
+			{
+				nColumnWidth = nColumnWidthNew;
+				ListView_SetColumnWidth(LVhWnd, i, LVSCW_AUTOSIZE_USEHEADER);
+			}
 		}
 
 		nHeaderWidthNew = ListView_GetColumnWidth(LVhWnd, i);
-		if (nHeaderWidthNew != nHeaderWidth)
+		if (nHeaderWidthNew > widFactor)
+			nHeaderWidthNew = widFactor;
+		else
 		{
-			nHeaderWidth = nHeaderWidthNew;
+			if (nHeaderWidthNew != nHeaderWidth)
+			{
+				nHeaderWidth = nHeaderWidthNew;
+			}
 		}
 		maxColHeadWd = max(nColumnWidth, nHeaderWidth);
 		if (maxColHeadWidth0[i] != maxColHeadWd)
@@ -219,10 +236,8 @@ bool AutoSizeCols(HWND LVhWnd, int selectedTab)
 			}
 			}
 			ListView_SetColumnWidth(LVhWnd, i, maxColHeadWd);
-			hangLV = FALSE;
 		}
 	}
-	return hangLV;
 }
 
 
