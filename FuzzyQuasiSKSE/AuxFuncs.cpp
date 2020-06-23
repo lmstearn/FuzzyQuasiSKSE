@@ -1,4 +1,6 @@
 #include "AuxFuncs.h"
+
+
 Byte srcFile[MAX_FILE] = {};								// file dragged to LV: stack overflow if in function!
 
 
@@ -54,29 +56,29 @@ wchar_t* ReallocateMem(wchar_t * aSource, int Size)
 
 void ErrorRep(LPCWSTR lpszFunction, wchar_t* extraInf, int var)
 {
-	wchar_t* buffer = (wchar_t*)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
-	if (buffer)
-	{
-		if (var == maxInt)
+	if (var == maxInt)
 		ErrorExit(lpszFunction, extraInf);
-		else
-		{
-				if (_itow_s(var, buffer, sizeof(buffer), 10)) //Care alert: itow_s can chop off the terminator, hence crapping out Free()
-				MessageBoxW(nullptr, lpszFunction, L"Error and conversion problem", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
-				else
-				{
-					//size_t m = wcslen(tempDest);
-					ErrorExit(lpszFunction, extraInf);
-				}
-		}
-
-		free(buffer);
-	}
 	else
 	{
-		MessageBoxW(nullptr, lpszFunction, L"Error and memory allocation problem", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
-		exit(0);
+		wchar_t* buffer = (wchar_t*)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);
+		if (buffer)
+		{
+			if (_itow_s(var, buffer, sizeof(buffer), 10)) //Care alert: itow_s can chop off the terminator, hence crapping out Free()
+				MessageBoxW(nullptr, lpszFunction, L"Error and conversion problem", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
+			else
+			{
+				//size_t m = wcslen(tempDest);
+				ErrorExit(lpszFunction, extraInf, true);
+			}
+		}
+		else
+		{
+			MessageBoxW(nullptr, lpszFunction, L"Error and memory allocation problem", MB_OK | MB_SYSTEMMODAL | MB_ICONERROR);
+			exit(0);
+		}
+		free(buffer);
 	}
+
 }
 void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var, bool reportVar)
 {

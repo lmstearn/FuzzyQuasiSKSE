@@ -555,7 +555,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 
 	wchar_t* lpValue;
 	lpValue = new wchar_t[(size_t)length+1];
-	lpValue[length] = '\0';
+	lpValue[length + 1] = '\0';
 
 	// query
 	retVal =RegQueryValueExW(
@@ -574,7 +574,9 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		retVal = 1;
 		ErrorRep(L"Failed to get value data!");
 	}
+	_CrtSetBreakAlloc(276);
 delete[] lpValue;
+
 RegCloseKey(key);
 return retVal;
 }
