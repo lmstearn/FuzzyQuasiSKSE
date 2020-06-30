@@ -1,11 +1,11 @@
 #include "AInfoLoad.h"
 
-static const FileColHeading FileColNames[1]
+const FileColHeading FileColNames[1]
 {
 	{L"Select", L"0COL2", L"0COL3"},
 };
 
-static const ColHeading ColNames[COL_SELLIM]
+const ColHeading ColNames[COL_SELLIM]
 {
 {L"Select", L"0COL2", L"0COL3", L"0COL4"},
 {L"Select1", L"1COL2", L"1COL3", L"1COL4"},
@@ -32,7 +32,7 @@ static const ColWidth ColWidVals[10]
 {16, 16, 16, 16}
 };
 
-int j = 0;
+int j = 0, jMax;
 /*Following block is from vector considerations
 
 Protos:
@@ -61,7 +61,18 @@ std::vector<std::wstring> FormsInfo(std::vector<std::wstring> const& arrInit)
 }
 Bit awkward */
 
-
+void ExitKleenup()
+{
+	for (j = 1; j <= 2; ++j)
+	{
+		FileColNames[j].FileColHeadNames->empty();
+		//FileColNames[j].FileColHeadNames. ;
+	}
+	for (j = 1; j <= jMax + 1; ++j)
+	{
+		ColNames[j].ColHeadNames->empty();
+	}
+}
 BOOL GetFilesIn(HWND LVFileshWnd, wchar_t *currPathW)
 {
 WIN32_FIND_DATAW dw;
@@ -368,8 +379,8 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 	LVA ColumnSels(LVA(COL_SELLIM));
 	wchar_t *buffer = nullptr, *buffer1 = nullptr, *buffer2 = nullptr;
 	const wchar_t *data, *data1;
-	i = 0, j = 0;
-	int iMax = 0, jMax=0;
+	i = 0, j = 0, jMax = 0;
+	int iMax = 0;
 	//data= (wchar_t *)calloc(4 * RCDATALIM, SIZEOF_WCHAR);	
 
 	data = LoadInResource(size1, rcName, rcStrType, rcIntType);
@@ -409,9 +420,9 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 				return FALSE;
 			}
 
-		LV2DA = ResProc(buffer, COMMA_DELIM, iMax, jMax);
+		LV2DA = ResProc(buffer, COMMA_DELIM, iMax);
 		InitListView(LVRepshWnd, SKSEINFO);
-		
+		//ColHeading ColNames1 = new ColHeading;
 		if (!CreateColumn(LVRepshWnd, 1, ColNames[0].ColHeadNames[0], ColWidVals[0].ColWid[0], true))
 			{
 				if (buffer) free(buffer);
@@ -455,7 +466,7 @@ return FALSE;
 
 }
 
-LVA2D ResProc(const wchar_t* strVar, const wchar_t delimiter, int &iMax, int &jMax)
+LVA2D ResProc(const wchar_t* strVar, const wchar_t delimiter, int &iMax)
 {
 	i = 0, j = 0;
 	int k = 0;
@@ -574,7 +585,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		retVal = 1;
 		ErrorRep(L"Failed to get value data!");
 	}
-	_CrtSetBreakAlloc(276);
+	// _CrtSetBreakAlloc(276); //debug
 delete[] lpValue;
 
 RegCloseKey(key);
