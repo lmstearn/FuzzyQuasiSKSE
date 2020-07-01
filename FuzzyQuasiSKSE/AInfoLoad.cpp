@@ -65,7 +65,7 @@ void ExitKleenup()
 {
 	for (j = 1; j <= 2; ++j)
 	{
-		FileColNames[j].FileColHeadNames->empty();
+		FileColNames[j].FileColHeadNames->empty(); // doesn't "empty" it
 		//FileColNames[j].FileColHeadNames. ;
 	}
 	for (j = 1; j <= jMax + 1; ++j)
@@ -535,7 +535,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		0, 
 		KEY_READ|KEY_WOW64_64KEY, 
 		&key);
-	if(retVal !=ERROR_SUCCESS)
+	if(retVal != ERROR_SUCCESS)
 	{
 		if(retVal == ERROR_FILE_NOT_FOUND || retVal == ERROR_PATH_NOT_FOUND)
 		retVal = 0;
