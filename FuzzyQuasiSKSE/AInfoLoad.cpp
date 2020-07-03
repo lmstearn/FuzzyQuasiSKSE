@@ -63,6 +63,7 @@ Bit awkward */
 
 void ExitKleenup()
 {
+// Experimental: see https://developercommunity.visualstudio.com/idea/1093120/leaks-reported-in-initialisation.html
 	for (j = 1; j <= 2; ++j)
 	{
 		FileColNames[j].FileColHeadNames->empty(); // doesn't "empty" it

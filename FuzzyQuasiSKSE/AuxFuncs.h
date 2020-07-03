@@ -24,7 +24,7 @@
 #define MAX_TABS						10
 #define MAX_LOADSTRING			255
 #define RCDATALIM						2500 //compatible with SIZEOF(bytes)
-#define MAX_GUIMOVPERSESS		25
+#define MAX_GUIMOVPERSESS		100
 #define MAX_FILE							4194304
 
 

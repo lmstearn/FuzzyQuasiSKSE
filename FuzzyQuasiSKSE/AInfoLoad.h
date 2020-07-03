@@ -67,8 +67,8 @@ BOOL MoveCtrl(HWND ownerHwnd, float szFactorX, float szFactorY, int ctrlID, HWND
 LRESULT CALLBACK staticSubClass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 INT_PTR CALLBACK DialogPage(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 BOOL LVPRocEvents(HWND LVhWnd, WPARAM wp, const int evt);
-float DoSystemParametersInfoStuff(HWND hwnd, bool progLoad =FALSE);
-int OnSelChange(int setTab=999);
+float DoSystemParametersInfoStuff(HWND hwnd, bool progLoad = FALSE);
+int OnSelChange(int setTab = 999);
 BOOL InitListView(HWND hwndLV, int lvType);
 HWND CreateListView(HINSTANCE hInstance, int lvType, HWND Ownerhwnd);
 BOOL CreateOtherCtrls();
