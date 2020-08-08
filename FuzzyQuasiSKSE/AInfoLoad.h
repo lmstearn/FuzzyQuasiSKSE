@@ -34,15 +34,17 @@
 #endif
 	*/
 
+static wchar_t* myVar2;
+
 //Header names
 typedef struct ColHeading
 {
 	std::wstring ColHeadNames[4];
-};
+}ColHeading;
 typedef struct FileColHeading
 {
 	std::wstring FileColHeadNames[3];
-};
+}FileColHeading;
 
 struct ColWidth
 {
@@ -138,4 +140,35 @@ IsWindowsVistaOrGreater()
 {
 	return IsWindowsVersionOrGreater( HIBYTE( _WIN32_WINNT_VISTA ), LOBYTE( _WIN32_WINNT_VISTA ), 0 );
 }
+class X
+{
+	const int allocSize = RCDATALIM;
+public:
+	wchar_t* Var()
+	{
+		if (myVar2)
+			return myVar2;
+		else
+		{
+			myVar2 = (wchar_t*)calloc(allocSize, SIZEOF_WCHAR);
+			return myVar2;
+		}
+	}
+	~X()
+	{
+		if (myVar2 && *myVar2 != NULL)
+		{
+			free(myVar2);
+			myVar2 = nullptr;
+		}
+	}
+	void ReleaseVar()
+	{
+		if (myVar2 && *myVar2 != NULL)
+		{
+			free(myVar2);
+			myVar2 = nullptr;
+		}
+	}
+};
 
