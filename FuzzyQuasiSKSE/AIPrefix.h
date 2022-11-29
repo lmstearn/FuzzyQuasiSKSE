@@ -32,7 +32,7 @@
 //default compression at 16k
 #define IN_BUF_SIZE (1 << 16)
 #define OUT_BUF_SIZE (1 << 24) //16777216 or default 16mb
- //https://stackoverflow.com/a/1486931/2128797
+ //Suppress warning on unused variables https://stackoverflow.com/a/1486931/2128797
 #define UNUSED(expr) do { (void)(expr); } while (0)
 //UNUSED_VAR from 7z compiler.h is also possible
 // static void *SzAlloc(ISzAllocPtr p, size_t size) {UNUSED(p); return MyAlloc(size); }

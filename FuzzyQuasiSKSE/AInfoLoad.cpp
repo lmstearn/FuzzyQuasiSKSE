@@ -1,11 +1,11 @@
 #include "AInfoLoad.h"
 
-static const FileColHeading FileColNames[1]
+const FileColHeading FileColNames[1]
 {
 	{L"Select", L"0COL2", L"0COL3"},
 };
 
-static const ColHeading ColNames[COL_SELLIM]
+const ColHeading ColNames[COL_SELLIM]
 {
 {L"Select", L"0COL2", L"0COL3", L"0COL4"},
 {L"Select1", L"1COL2", L"1COL3", L"1COL4"},
@@ -32,7 +32,7 @@ static const ColWidth ColWidVals[10]
 {16, 16, 16, 16}
 };
 
-int j = 0;
+int j = 0, jMax;
 /*Following block is from vector considerations
 
 Protos:
@@ -61,19 +61,31 @@ std::vector<std::wstring> FormsInfo(std::vector<std::wstring> const& arrInit)
 }
 Bit awkward */
 
-
+void ExitKleenup()
+{
+	return;
+	// Experimental: see https://developercommunity.visualstudio.com/idea/1093120/leaks-reported-in-initialisation.html
+	for (j = 1; j <= 2; ++j)
+	{
+		FileColNames[j].FileColHeadNames->empty(); // doesn't "empty" it
+		//FileColNames[j].FileColHeadNames. ;
+	}
+	for (j = 1; j <= jMax + 1; ++j)
+	{
+		ColNames[j].ColHeadNames->empty();
+	}
+}
 BOOL GetFilesIn(HWND LVFileshWnd, wchar_t *currPathW)
 {
 WIN32_FIND_DATAW dw;
 BOOL findhandle = TRUE;
-
 
 memset(&dw, 0, sizeof(WIN32_FIND_DATAW));
 
 HANDLE ds = FindFirstFileW(currPathW, &dw);
 
 InitListView(LVFileshWnd, SKSEFILES);
-
+FileColHeading* ColNames1 = new FileColHeading;
 CreateColumn(LVFileshWnd, 1, FileColNames[0].FileColHeadNames[0], ColWidVals[0].ColWid[0], true);
 //Create columns & headers
 for (j = 1; j <=2; ++j)
@@ -88,6 +100,7 @@ for (j = 1; j <=2; ++j)
 	}
 
 	i = 0, j = 0;
+	wchar_t* tempPath = X().Var();
 
 	while (ds != INVALID_HANDLE_VALUE && findhandle)
 	{
@@ -118,9 +131,10 @@ for (j = 1; j <=2; ++j)
 
 	}
 
-
+X().ReleaseVar();
+tempPath = NULL;
+delete ColNames1;
 if (ds) FindClose(ds);
-
 
 return TRUE;
 }
@@ -366,12 +380,14 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 	DWORD size1 = 0, size2 = 0;
 	LVA2D LV2DA(MAX_LOADSTRING, LVA(4));
 	LVA ColumnSels(LVA(COL_SELLIM));
+	// following iterator initialised but not used
+	for (LVA2D::iterator outer = LV2DA.begin(); outer != LV2DA.end(); ++outer)
+		for (LVA::iterator inner = outer->begin(); inner != outer->end(); ++inner);
 	wchar_t *buffer = nullptr, *buffer1 = nullptr, *buffer2 = nullptr;
 	const wchar_t *data, *data1;
-	i = 0, j = 0;
-	int iMax = 0, jMax=0;
+	i = 0, j = 0, jMax = 0;
+	int iMax = 0;
 	//data= (wchar_t *)calloc(4 * RCDATALIM, SIZEOF_WCHAR);	
-
 	data = LoadInResource(size1, rcName, rcStrType, rcIntType);
 
 	if (data && size1)
@@ -409,25 +425,29 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 				return FALSE;
 			}
 
-		LV2DA = ResProc(buffer, COMMA_DELIM, iMax, jMax);
+		LV2DA = ResProc(buffer, COMMA_DELIM, iMax);
 		InitListView(LVRepshWnd, SKSEINFO);
-		
+		ColHeading *ColNames1 = new ColHeading;
 		if (!CreateColumn(LVRepshWnd, 1, ColNames[0].ColHeadNames[0], ColWidVals[0].ColWid[0], true))
 			{
 				if (buffer) free(buffer);
+				LV2DA.clear();
+				ColumnSels.clear();
 				return FALSE;
 			}
-
+		delete ColNames1;
 		//Create columns & headers
 		for (j = 1; j <=jMax + 1; ++j)
 		{
 			if (!CreateColumn(LVRepshWnd, j, ColNames[0].ColHeadNames[j] , ColWidVals[0].ColWid[j]))
 			{
 				if (buffer) free(buffer);
+				LV2DA.clear();
+				ColumnSels.clear();
 				return FALSE;
 			}
 		}
-		
+
 		for (i = 0; i <iMax; ++i)
 		{
 		std::wstring foo = L"Selection";
@@ -440,22 +460,28 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 				if (!CreateLVItems(LVRepshWnd, (j == 0)? (ColumnSels[i] + std::to_wstring(i)): LV2DA[i][j -(UINT64)1], i , j))
 				{
 					if (buffer) free(buffer);
+					LV2DA.clear();
+					ColumnSels.clear();
 					return FALSE;
 				}
 			}
 		}
 	}	
-		ColumnSels.shrink_to_fit();
-		//if (data) free(data);
-		if (buffer) free(buffer);
-		return TRUE;
+	ColumnSels.shrink_to_fit();
+	ColumnSels.clear();
+	//if (data) free(data);
+	if (buffer) free(buffer);
+	LV2DA.clear();
+	return TRUE;
 	}
 
+LV2DA.clear();
+ColumnSels.clear();
 return FALSE;
 
 }
 
-LVA2D ResProc(const wchar_t* strVar, const wchar_t delimiter, int &iMax, int &jMax)
+LVA2D ResProc(const wchar_t* strVar, const wchar_t delimiter, int &iMax)
 {
 	i = 0, j = 0;
 	int k = 0;
@@ -507,6 +533,7 @@ LVA2D ResProc(const wchar_t* strVar, const wchar_t delimiter, int &iMax, int &jM
 
 	}
 //no delims or EOL
+
 iMax = i;
 if (!i && !j)
 LV2DAOUT[i][j]= tmp;
@@ -524,7 +551,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		0, 
 		KEY_READ|KEY_WOW64_64KEY, 
 		&key);
-	if(retVal !=ERROR_SUCCESS)
+	if(retVal != ERROR_SUCCESS)
 	{
 		if(retVal == ERROR_FILE_NOT_FOUND || retVal == ERROR_PATH_NOT_FOUND)
 		retVal = 0;
@@ -555,7 +582,7 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 
 	wchar_t* lpValue;
 	lpValue = new wchar_t[(size_t)length+1];
-	lpValue[length] = '\0';
+	lpValue[length + 1] = '\0';
 
 	// query
 	retVal =RegQueryValueExW(
@@ -574,7 +601,9 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		retVal = 1;
 		ErrorRep(L"Failed to get value data!");
 	}
+	// _CrtSetBreakAlloc(276); //debug
 delete[] lpValue;
+
 RegCloseKey(key);
 return retVal;
 }
