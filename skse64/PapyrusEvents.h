@@ -165,7 +165,7 @@ public:
 		reg.handle = handle;
 
 		SafeDataHolder::Lock();
-		
+
 		for (typename RegMap::iterator iter = SafeDataHolder::m_data.begin(); iter != SafeDataHolder::m_data.end(); ++iter)
 			if (iter->second.erase(reg))
 				policy->Release(handle);

@@ -223,6 +223,7 @@ static SRes Utf16_To_Char(CBuf *buf, const wchar_t *s
 		unsigned size = len * 3 + 100;
 		if (!Buf_EnsureSize(buf, size))
 			return SZ_ERROR_MEM;
+// Bracket for else?
 		{
 			buf->data[0] = 0;
 			if (len != 0)

@@ -3,6 +3,7 @@
 #include <string>
 #include <functional>
 #include <unordered_map>
+
 #include "common/IFileStream.h"
 #include "skse64/PluginAPI.h"
 #include "skse64/InternalSerialization.h"

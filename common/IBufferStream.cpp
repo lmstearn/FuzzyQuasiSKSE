@@ -1,6 +1,5 @@
 #include "IBufferStream.h"
 
-
 IBufferStream::IBufferStream()
 :streamBuf(NULL), flags(0)
 {

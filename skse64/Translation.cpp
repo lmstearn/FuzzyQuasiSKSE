@@ -1,5 +1,13 @@
 #include "Translation.h"
 
+#include "common/IFileStream.h"
+#include <shlobj.h>
+#include <string>
+#include "GameStreams.h"
+#include "GameSettings.h"
+#include "ScaleformState.h"
+#include "skse64_common/skse_version.h"
+
 namespace Translation
 {
 	void ParseTranslation(BSScaleformTranslator * translator, std::string & name)
@@ -77,7 +85,7 @@ namespace Translation
 		ASSERT(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA, NULL, SHGFP_TYPE_CURRENT, appdataPath)));
 
 		std::string	modlistPath = appdataPath;
-		modlistPath += "\\Skyrim Special Edition\\plugins.txt";
+		modlistPath += "\\" SAVE_FOLDER_NAME "\\plugins.txt";
 
 		// Parse mod list file to acquire translation filenames
 		IFileStream modlistFile;

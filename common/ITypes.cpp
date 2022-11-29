@@ -32,7 +32,7 @@ void Bitstring::Dispose(void)
 
 void Bitstring::Clear(void)
 {
-	memset(data, 0, length);
+	std::memset(data, 0, length);
 }
 
 void Bitstring::Clear(UInt32 idx)

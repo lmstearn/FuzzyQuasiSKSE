@@ -6,7 +6,7 @@
 /**
  *	An arbitrary data stream
  */
-extern class IDataStream
+class IDataStream
 {
 	public:
 		IDataStream();

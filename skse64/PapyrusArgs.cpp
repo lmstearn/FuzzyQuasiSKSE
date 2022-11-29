@@ -4,51 +4,6 @@
 #include "skse64/GameForms.h"
 
 //// type -> VMValue
-template<class T>
-struct s
-{
-	static UInt64 GetTypeID_impl(VMClassRegistry* registry)
-	{
-		UInt64		result;
-
-		typedef std::remove_pointer <IsArrayType<T>::TypedArg>::type	BaseType;
-		if (!IsArrayType<T>::value) {
-			result = GetTypeIDFromFormTypeID(BaseType::kTypeID, registry);
-		}
-		else { // Arrays are ClassInfo ptr + 1
-			result = GetTypeIDFromFormTypeID(BaseType::kTypeID, registry) | VMValue::kType_Identifier;
-		}
-
-		return result;
-	}
-};
-template<class T>
-struct s<T*>
-{
-	static UInt64 GetTypeID_impl(VMClassRegistry* registry)
-	{
-		UInt64		result;
-
-		typedef std::remove_pointer <IsArrayType<T>::TypedArg>::type	BaseType;
-		if (!IsArrayType<T>::value) {
-			result = GetTypeIDFromFormTypeID(BaseType::kTypeID, registry);
-		}
-		else { // Arrays are ClassInfo ptr + 1
-			result = GetTypeIDFromFormTypeID(BaseType::kTypeID, registry) | VMValue::kType_Identifier;
-		}
-
-		return result;
-	}
-};
-template<class T>
-inline UInt64 GetTypeID(VMClassRegistry* registry)
-{
-	return s<T>::GetTypeID_impl(registry);
-}
-
-
-
-
 
 template <> void PackValue <void>(VMValue * dst, void * src, VMClassRegistry * registry)
 {

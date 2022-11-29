@@ -337,6 +337,7 @@ public:
 	Vector3 &	operator*=(const Vector3 & rhs)	{ x *= rhs.x; y *= rhs.y; z *= rhs.z; return *this; }
 	Vector3 &	operator/=(const Vector3 & rhs)	{ x /= rhs.x; y /= rhs.y; z /= rhs.z; return *this; }
 
+	// anonymous union & struct for less verbosity
 	union
 	{
 		struct

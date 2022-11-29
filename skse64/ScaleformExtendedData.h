@@ -1,13 +1,4 @@
 #pragma once
-#include "skse64/ScaleformCallbacks.h"
-#include "skse64/ScaleformMovie.h"
-#include "skse64/GameData.h"
-#include "skse64/GameForms.h"
-#include "skse64/GameObjects.h"
-#include "skse64/GameExtraData.h"
-#include "skse64/GameRTTI.h"
-#include "skse64/GameMenus.h"
-
 
 class TESForm;
 class ActiveEffect;
@@ -17,6 +8,7 @@ class BGSKeywordForm;
 class InventoryEntryData;
 struct AlchemyEffectCategory;
 
+#include "GameReferences.h"
 
 void RegisterNumber(GFxValue * dst, const char * name, double value);
 void RegisterBool(GFxValue * dst, const char * name, bool value);

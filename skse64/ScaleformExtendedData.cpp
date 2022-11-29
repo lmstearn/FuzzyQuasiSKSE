@@ -1,4 +1,13 @@
+#include "ScaleformCallbacks.h"
+#include "ScaleformMovie.h"
 #include "ScaleformExtendedData.h"
+#include "GameData.h"
+#include "GameForms.h"
+#include "GameObjects.h"
+#include "GameReferences.h"
+#include "GameExtraData.h"
+#include "GameRTTI.h"
+#include "GameMenus.h"
 
 // Helpers
 double round(double r)
