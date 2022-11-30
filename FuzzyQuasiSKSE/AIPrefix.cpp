@@ -565,7 +565,7 @@ int Do7zFile(int numargs, const char *args[3])
 					}
 				}
 
-				SzArEx_GetFileNameUtf16(&db, i, temp);
+				SzArEx_GetFileNameUtf16(&db, i, (UInt16*)temp);
 				/*
 				if (SzArEx_GetFullNameUtf16_Back(&db, i, temp + len) != temp)
 				{

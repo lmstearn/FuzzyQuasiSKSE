@@ -240,14 +240,18 @@ void AutoSizeCols(HWND LVhWnd, int selectedTab, int widFactor)
 		{
 			switch (selectedTab)
 			{
-			case 0:
-			{
+				case 0:
+				{
 				maxColHeadWidth0[i] = maxColHeadWd;
-			}
-			case 2:
-			{
+				}
+				break;
+				case 2:
+				{
 				maxColHeadWidth2[i] = maxColHeadWd;
-			}
+				}
+				break;
+				default:
+				break;
 			}
 			ListView_SetColumnWidth(LVhWnd, i, maxColHeadWd);
 		}
@@ -314,6 +318,7 @@ BOOL CreateLVItems(HWND hwndList, std::wstring Text1, int k, int l)
 	wchar_t *buffer = (wchar_t *)calloc(MAX_LOADSTRING, SIZEOF_WCHAR);	
 	if (buffer)
 	{
+		buffer[0] = L'\0';
 		int m = wcslen(Text1.c_str());
 		wcscpy_s(buffer, wcslen(Text1.c_str()) + SIZEOF_WCHAR, Text1.c_str());
 
@@ -399,24 +404,39 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 		//::memcpy(buffer, data, size);
 		//delete[] buffer; // only delete objects created by "new"
 		buffer1= (wchar_t *)calloc((SizeT)size1 + 1, SIZEOF_WCHAR);
-		wcscpy_s( buffer1,  size1, data); // data is not NULL terminated
-		buffer1[size1] = L'\0'; // NULL terminator
-	
+			if (buffer1 == NULL)
+			{
+			ErrorRep(L"GetResource: Could not allocate memory for buffer1");
+			return FALSE;
+			}
+			else
+			{
+			wcscpy_s(buffer1, size1, data); // data is not NULL terminated
+			buffer1[size1] = L'\0'; // NULL terminator
+			}
 		if (rcStrType1)
 		{
 			data1 = LoadInResource(size2, rcName, rcStrType1, rcIntType);
 			if (data1 && size2)
 			{
-				buffer= (wchar_t *)calloc((SizeT)size1 + size2 + 2, SIZEOF_WCHAR);
-				buffer2= (wchar_t *)calloc((SizeT)size2 + 1, SIZEOF_WCHAR);
-				wcscpy_s( buffer2,  size2, data1);
+			buffer= (wchar_t *)calloc((SizeT)size1 + size2 + 2, SIZEOF_WCHAR);
+			buffer2= (wchar_t *)calloc((SizeT)size2 + 1, SIZEOF_WCHAR);
+				if (buffer == NULL || buffer2 == NULL)
+				{
+				ErrorRep(L"GetResource: Could not allocate memory for buffers");
+				return FALSE;
+				}
+				else
+				{
+				wcscpy_s(buffer2, size2, data1);
 				buffer2[size2] = L'\0'; // C6011 deferencing warning N/A as size2 > 0
 				wcscpy_s(buffer, size1, buffer1);
 				wcscat_s(buffer, (SizeT)size1 + (SizeT)size2 + 1, L"\n");
 				wcscat_s(buffer, (SizeT)size1 + (SizeT)size2 + 1, buffer2);
 				buffer[size1 + size2 + 1] = L'\0';
-					if (buffer1) free(buffer1);
-					if (buffer2) free(buffer2);
+				if (buffer1) free(buffer1);
+				if (buffer2) free(buffer2);
+				}
 			}
 			else
 			{

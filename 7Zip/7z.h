@@ -1,5 +1,5 @@
 /* 7z.h -- 7z interface
-2017-04-03 : Igor Pavlov : Public domain */
+2018-07-02 : Igor Pavlov : Public domain */
 
 #ifndef __7Z_H
 #define __7Z_H
@@ -91,6 +91,8 @@ typedef struct
   UInt64 *CoderUnpackSizes;       // for all coders in all folders
 
   Byte *CodersData;
+
+  UInt64 RangeLimit;
 } CSzAr;
 
 UInt64 SzAr_GetFolderUnpackSize(const CSzAr *p, UInt32 folderIndex);
@@ -141,7 +143,7 @@ if dest == NULL, the return value specifies the required size of the buffer,
 if dest != NULL, the return value specifies the number of 16-bit characters that
   are written to the dest, including the null-terminating character. */
 
-size_t SzArEx_GetFileNameUtf16(const CSzArEx *p, size_t fileIndex, wchar_t *dest);
+size_t SzArEx_GetFileNameUtf16(const CSzArEx *p, size_t fileIndex, UInt16 *dest);
 
 /*
 size_t SzArEx_GetFullNameLen(const CSzArEx *p, size_t fileIndex);
