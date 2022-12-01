@@ -403,7 +403,7 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 		//wchar_t* buffer = new wchar_t[size + 1];
 		//::memcpy(buffer, data, size);
 		//delete[] buffer; // only delete objects created by "new"
-		buffer1= (wchar_t *)calloc((SizeT)size1 + 1, SIZEOF_WCHAR);
+		buffer1= (wchar_t *)calloc((size_t)size1 + 1, SIZEOF_WCHAR);
 			if (buffer1 == NULL)
 			{
 			ErrorRep(L"GetResource: Could not allocate memory for buffer1");
@@ -419,8 +419,8 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 			data1 = LoadInResource(size2, rcName, rcStrType1, rcIntType);
 			if (data1 && size2)
 			{
-			buffer= (wchar_t *)calloc((SizeT)size1 + size2 + 2, SIZEOF_WCHAR);
-			buffer2= (wchar_t *)calloc((SizeT)size2 + 1, SIZEOF_WCHAR);
+			buffer= (wchar_t *)calloc((size_t)size1 + size2 + 2, SIZEOF_WCHAR);
+			buffer2= (wchar_t *)calloc((size_t)size2 + 1, SIZEOF_WCHAR);
 				if (buffer == NULL || buffer2 == NULL)
 				{
 				ErrorRep(L"GetResource: Could not allocate memory for buffers");
@@ -431,8 +431,8 @@ BOOL GetResource(HWND LVRepshWnd, int rcName, const wchar_t *rcStrType, const wc
 				wcscpy_s(buffer2, size2, data1);
 				buffer2[size2] = L'\0'; // C6011 deferencing warning N/A as size2 > 0
 				wcscpy_s(buffer, size1, buffer1);
-				wcscat_s(buffer, (SizeT)size1 + (SizeT)size2 + 1, L"\n");
-				wcscat_s(buffer, (SizeT)size1 + (SizeT)size2 + 1, buffer2);
+				wcscat_s(buffer, (size_t)size1 + (size_t)size2 + 1, L"\n");
+				wcscat_s(buffer, (size_t)size1 + (size_t)size2 + 1, buffer2);
 				buffer[size1 + size2 + 1] = L'\0';
 				if (buffer1) free(buffer1);
 				if (buffer2) free(buffer2);
@@ -600,9 +600,9 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		return retVal;
 	}
 
-	wchar_t* lpValue;
-	lpValue = new wchar_t[(size_t)length+1];
-	lpValue[length + 1] = '\0';
+	//wchar_t* lpValue;
+	wchar_t* lpValue = new wchar_t[(size_t)length+1]();
+	//lpValue[length + 1] = '\0';
 
 	// query
 	retVal =RegQueryValueExW(

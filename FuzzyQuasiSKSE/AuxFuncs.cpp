@@ -1,13 +1,13 @@
 #include "AuxFuncs.h"
 
 
-Byte srcFile[MAX_FILE] = {};								// file dragged to LV: stack overflow if in function!
+BYTE srcFile[MAX_FILE] = {};								// file dragged to LV: stack overflow if in function!
 
 
 void FormatItowNotify(int a, wchar_t *buffer)
 {
 	wchar_t errLVMsg[MAX_LOADSTRING] = L": Failed to insert Listview item.";
-	SizeT lenBuffer = wcslen(errLVMsg);
+	size_t lenBuffer = wcslen(errLVMsg);
 	//errLVMsg[lenBuffer] = L'\0';
 	 lenBuffer += wcslen(buffer) + 1;
 	wchar_t *buffer1 = ReallocateMem(buffer, SIZEOF_WCHAR * (lenBuffer + 1));
@@ -48,7 +48,7 @@ wchar_t* ReallocateMem(wchar_t * aSource, int Size)
 	else
 	{
 		//exit(EXIT_FAILURE);
-		wchar_t *buffer = (wchar_t *)calloc((SizeT)Size - 1, SIZEOF_WCHAR); // retry original size
+		wchar_t *buffer = (wchar_t *)calloc((size_t)Size - 1, SIZEOF_WCHAR); // retry original size
 
 	}
 	return buffer;
@@ -110,7 +110,7 @@ void ErrorExit(LPCWSTR lpszFunction, LPCWSTR var, bool reportVar)
 
 	// Display the error message and exit the process
 	
-	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, (((lpMsgBuf)?lstrlenW((wchar_t*)lpMsgBuf): (SizeT)0) + lstrlenW((wchar_t*)lpszFunction) + ((var)?lstrlenW((LPCWSTR)var): (SizeT)0) + (SizeT)80) * SIZEOF_WCHAR);
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, (((lpMsgBuf)?lstrlenW((wchar_t*)lpMsgBuf): (size_t)0) + lstrlenW((wchar_t*)lpszFunction) + ((var)?lstrlenW((LPCWSTR)var): (size_t)0) + (size_t)80) * SIZEOF_WCHAR);
 	int www = LocalSize(lpDisplayBuf);
 	if (lpDisplayBuf)
 	{
@@ -197,8 +197,8 @@ int ProcessCompressedFile(wchar_t* fName, const char command7z)
 		if (where[0] == '7' && where[1] == 'z')
 		{
 			//for (unsigned i = 0; i < size; i++)
-			//srcFile[i] = reinterpret_cast<Byte>(&f[i]);
-			//srcFile[i] = (Byte)where[i];
+			//srcFile[i] = reinterpret_cast<BYTE>(&f[i]);
+			//srcFile[i] = (BYTE)where[i];
 			char fNameMBCS[MAX_LOADSTRING] = { ' ' };
 			wcstombs(fNameMBCS, fName, MAX_LOADSTRING);
 			//memmove(argList + 2, argList, MAX_LOADSTRING - 2);
@@ -213,11 +213,11 @@ int ProcessCompressedFile(wchar_t* fName, const char command7z)
 			//For pure LZMA (bz2 or gz: First Determine file size
 
 
-			Byte dest = {};
-			SizeT destLen = 2 * MAX_FILE;  //8 mb dict size
-			const Byte src = *srcFile;
-			SizeT srcLen = size;
-			const Byte propData[5] = {};
+			BYTE dest = {};
+			size_t destLen = 2 * MAX_FILE;  //8 mb dict size
+			const BYTE src = *srcFile;
+			size_t srcLen = size;
+			const BYTE propData[5] = {};
 			unsigned propSize = LZMA_PROPS_SIZE;
 			ELzmaStatus status = LZMA_STATUS_NOT_SPECIFIED;
 			retVal = LzmaUncompress(&dest, &destLen, &src, &srcLen, propData, propSize, status);

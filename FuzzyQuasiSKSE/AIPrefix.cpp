@@ -5,15 +5,15 @@ static void *SzAlloc(ISzAllocPtr p, size_t size) { UNUSED_VAR(p); return MyAlloc
 static void SzFree(ISzAllocPtr p, void *address) { UNUSED_VAR(p); MyFree(address); }
 
 // Dummy Function
-UInt64 SzArEx_GetFolderStreamPos(const CSzArEx *p, UInt32 folderIndex, UInt32 indexInFolder)
+UINT64 SzArEx_GetFolderStreamPos(const CSzArEx *p, UINT32 folderIndex, UINT32 indexInFolder)
 {
 	UNUSED(p);
 	UNUSED(folderIndex);
 	UNUSED(indexInFolder);
-	return UInt64();
+	return UINT64();
 }
 // Dummy Function
-int SzArEx_GetFolderFullPackSize(const CSzArEx *p, UInt32 folderIndex, UInt64 *resSize)
+int SzArEx_GetFolderFullPackSize(const CSzArEx *p, UINT32 folderIndex, UINT64 *resSize)
 {
 	UNUSED(p);
 	UNUSED(folderIndex);
@@ -109,17 +109,17 @@ static int Buf_EnsureSize(CBuf *dest, size_t size)
 
 #define _UTF8_START(n) (0x100 - (1 << (7 - (n))))
 
-#define _UTF8_RANGE(n) (((UInt32)1) << ((n) * 5 + 6))
+#define _UTF8_RANGE(n) (((UINT32)1) << ((n) * 5 + 6))
 
-#define _UTF8_HEAD(n, val) ((Byte)(_UTF8_START(n) + (val >> (6 * (n)))))
-#define _UTF8_CHAR(n, val) ((Byte)(0x80 + (((val) >> (6 * (n))) & 0x3F)))
+#define _UTF8_HEAD(n, val) ((BYTE)(_UTF8_START(n) + (val >> (6 * (n)))))
+#define _UTF8_CHAR(n, val) ((BYTE)(0x80 + (((val) >> (6 * (n))) & 0x3F)))
 
-static size_t Utf16_To_Utf8_Calc(const UInt16 *src, const UInt16 *srcLim)
+static size_t Utf16_To_Utf8_Calc(const UINT16 *src, const UINT16 *srcLim)
 {
 	size_t size = 0;
 	for (;;)
 	{
-		UInt32 val;
+		UINT32 val;
 		if (src == srcLim)
 			return size;
 
@@ -137,7 +137,7 @@ static size_t Utf16_To_Utf8_Calc(const UInt16 *src, const UInt16 *srcLim)
 
 		if (val >= 0xD800 && val < 0xDC00 && src != srcLim)
 		{
-			UInt32 c2 = *src;
+			UINT32 c2 = *src;
 			if (c2 >= 0xDC00 && c2 < 0xE000)
 			{
 				src++;
@@ -150,11 +150,11 @@ static size_t Utf16_To_Utf8_Calc(const UInt16 *src, const UInt16 *srcLim)
 	}
 }
 
-static Byte *Utf16_To_Utf8(Byte *dest, const UInt16 *src, const UInt16 *srcLim)
+static BYTE *Utf16_To_Utf8(BYTE *dest, const UINT16 *src, const UINT16 *srcLim)
 {
 	for (;;)
 	{
-		UInt32 val;
+		UINT32 val;
 		if (src == srcLim)
 			return dest;
 
@@ -176,7 +176,7 @@ static Byte *Utf16_To_Utf8(Byte *dest, const UInt16 *src, const UInt16 *srcLim)
 
 		if (val >= 0xD800 && val < 0xDC00 && src != srcLim)
 		{
-			UInt32 c2 = *src;
+			UINT32 c2 = *src;
 			if (c2 >= 0xDC00 && c2 < 0xE000)
 			{
 				src++;
@@ -197,7 +197,7 @@ static Byte *Utf16_To_Utf8(Byte *dest, const UInt16 *src, const UInt16 *srcLim)
 	}
 }
 
-static SRes Utf16_To_Utf8Buf(CBuf *dest, const UInt16 *src, size_t srcLen)
+static SRes Utf16_To_Utf8Buf(CBuf *dest, const UINT16 *src, size_t srcLen)
 {
 	size_t destLen = Utf16_To_Utf8_Calc(src, src + srcLen);
 	destLen += 1;
@@ -312,7 +312,7 @@ static SRes PrintString(const wchar_t *s)
 	return res;
 }
 
-static void UInt64ToStr(UInt64 value, char *s, int numDigits)
+static void UInt64ToStr(UINT64 value, char *s, int numDigits)
 {
 	char temp[32];
 	int pos = 0;
@@ -362,16 +362,16 @@ static void UIntToStr_2(char *s, unsigned value)
 static void ConvertFileTimeToString(const CNtfsFileTime *nt, char *s)
 {
 	unsigned year, mon, hour, min, sec;
-	Byte ms[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	BYTE ms[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	unsigned t;
-	UInt32 v;
-	UInt64 v64 = nt->Low | ((UInt64)nt->High << 32);
+	UINT32 v;
+	UINT64 v64 = nt->Low | ((UINT64)nt->High << 32);
 	v64 /= 10000000;
 	sec = (unsigned)(v64 % 60); v64 /= 60;
 	min = (unsigned)(v64 % 60); v64 /= 60;
 	hour = (unsigned)(v64 % 24); v64 /= 24;
 
-	v = (UInt32)v64;
+	v = (UINT32)v64;
 
 	year = (unsigned)(1601 + v / PERIOD_400 * 400);
 	v %= PERIOD_400;
@@ -409,7 +409,7 @@ static void PrintError(char *s)
 	PrintLF();
 }
 
-static void GetAttribString(UInt32 wa, BoolInt isDir, char *s)
+static void GetAttribString(UINT wa, BoolInt isDir, char *s)
 {
 #ifdef USE_WINDOWS_FILE
 	s[0] = (char)(((wa & FILE_ATTRIBUTE_DIRECTORY) != 0 || isDir) ? 'D' : '.');
@@ -491,7 +491,7 @@ int Do7zFile(int numargs, const char *args[3])
 	res = SZ_OK;
 
 	{
-		lookStream.buf = (byte *)ISzAlloc_Alloc(&allocImp, kInputBufSize);
+		lookStream.buf = (BYTE *)ISzAlloc_Alloc(&allocImp, kInputBufSize);
 		if (!lookStream.buf)
 			res = SZ_ERROR_MEM;
 		else
@@ -530,14 +530,14 @@ int Do7zFile(int numargs, const char *args[3])
 
 		if (res == SZ_OK)
 		{
-			UInt32 i;
+			UINT32 i;
 
 			/*
 			if you need cache, use these 3 variables.
 			if you use external function, you can make these variable as static.
 			*/
-			UInt32 blockIndex = 0xFFFFFFFF; /* it can have any value before first call (if outBuffer = 0) */
-			Byte *outBuffer = 0; /* it must be 0 before first call for each new archive. */
+			UINT32 blockIndex = 0xFFFFFFFF; /* it can have any value before first call (if outBuffer = 0) */
+			BYTE *outBuffer = 0; /* it must be 0 before first call for each new archive. */
 			size_t outBufferSize = 0;  /* it can have any value before first call (if outBuffer = 0) */
 
 			for (i = 0; i < db.NumFiles; i++)
@@ -565,7 +565,7 @@ int Do7zFile(int numargs, const char *args[3])
 					}
 				}
 
-				SzArEx_GetFileNameUtf16(&db, i, (UInt16*)temp);
+				SzArEx_GetFileNameUtf16(&db, i, (UINT16*)temp);
 				/*
 				if (SzArEx_GetFullNameUtf16_Back(&db, i, temp + len) != temp)
 				{
@@ -577,7 +577,7 @@ int Do7zFile(int numargs, const char *args[3])
 				if (listCommand)
 				{
 					char attr[8], s[32], t[32];
-					UInt64 fileSize;
+					UINT64 fileSize;
 
 					GetAttribString(SzBitWithVals_Check(&db.Attribs, i) ? db.Attribs.Vals[i] : 0, isDir, attr);
 
@@ -707,7 +707,7 @@ int Do7zFile(int numargs, const char *args[3])
 #ifdef USE_WINDOWS_FILE
 						if (SzBitWithVals_Check(&db.Attribs, i))
 						{
-							UInt32 attrib = db.Attribs.Vals[i];
+							UINT32 attrib = db.Attribs.Vals[i];
 							/* p7zip stores posix attributes in high 16 bits and adds 0x8000 as marker.
 							   We remove posix bits, if we detect posix mode field */
 							if ((attrib & 0xF0000000) != 0)

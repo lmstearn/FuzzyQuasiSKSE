@@ -16,6 +16,9 @@
 #define _UNICODE
 #endif
 
+//Suppress warning on unused variables https://stackoverflow.com/a/1486931/2128797
+#define UNUSED(expr) do { (void)(expr); } while (0)
+
 // Consider constexpr unsigned int instead of #define value
 //
 //#define CSIDL_MYDOCUMENTS		0x0005 //My Documents (c4005 macro redef)

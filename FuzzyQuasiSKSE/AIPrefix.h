@@ -32,8 +32,6 @@
 //default compression at 16k
 #define IN_BUF_SIZE (1 << 16)
 #define OUT_BUF_SIZE (1 << 24) //16777216 or default 16mb
- //Suppress warning on unused variables https://stackoverflow.com/a/1486931/2128797
-#define UNUSED(expr) do { (void)(expr); } while (0)
 //UNUSED_VAR from 7z compiler.h is also possible
 // static void *SzAlloc(ISzAllocPtr p, size_t size) {UNUSED(p); return MyAlloc(size); }
 // static void SzFree(ISzAllocPtr p, void *address) {UNUSED(p); MyFree(address); }
@@ -89,8 +87,8 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "common\IDynamicCreate.h"
 #include "common\IDebugLog.h"
 #include "common\ISingleton.h"
-// skse64_common
 
+// skse64_common
 #include "skse64_common\BranchTrampoline.h"
 #include "skse64_common\Relocation.h"
 #include "skse64_common\SafeWrite.h"
