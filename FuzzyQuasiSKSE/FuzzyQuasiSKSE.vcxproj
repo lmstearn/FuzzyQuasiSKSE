@@ -209,6 +209,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+  <None Include="CategoryName" />
+    <ClInclude Include="..\skse64\BSModelDB.h;..\skse64\Colors.h">
+    <DependentUpon>CategoryName</DependentUpon>
+    </ClInclude>
+    <ClCompile Include="..\skse64\BSModelDB.cpp">
+    <DependentUpon>CategoryName</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ResourceCompile Include="FuzzyQuasiSKSE.rc">
       <NullTerminateStrings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</NullTerminateStrings>
     </ResourceCompile>

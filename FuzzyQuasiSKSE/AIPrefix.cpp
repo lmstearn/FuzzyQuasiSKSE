@@ -71,15 +71,6 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 
 
 
-#ifndef USE_WINDOWS_FILE
-/* for mkdir */
-#ifdef _WIN32
-#include <direct.h>
-#else
-#include <sys/stat.h>
-#include <errno.h>
-#endif
-#endif
 
 
 #define kInputBufSize ((size_t)1 << 18)
@@ -279,7 +270,6 @@ static WRes MyCreateDir(const wchar_t *name)
 
 #endif
 }
-
 static WRes OutFile_OpenUtf16(CSzFile *p, const wchar_t *name)
 {
 #ifdef USE_WINDOWS_FILE
@@ -358,14 +348,30 @@ static void UIntToStr_2(char *s, unsigned value)
 #define PERIOD_4 (4 * 365 + 1)
 #define PERIOD_100 (PERIOD_4 * 25 - 1)
 #define PERIOD_400 (PERIOD_100 * 4 + 1)
+static void NtfsFileTime_to_FILETIME(const CNtfsFileTime* t, FILETIME* ft)
+{
+	ft->dwLowDateTime = (DWORD)(t->Low);
+	ft->dwHighDateTime = (DWORD)(t->High);
+}
 
-static void ConvertFileTimeToString(const CNtfsFileTime *nt, char *s)
+static void ConvertFileTimeToString(const CNtfsFileTime * nTime, char *s)
 {
 	unsigned year, mon, hour, min, sec;
 	BYTE ms[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	unsigned t;
 	UINT32 v;
-	UINT64 v64 = nt->Low | ((UINT64)nt->High << 32);
+	//UINT64 v64 = nt->Low | ((UINT64)nt->High << 32);
+	UInt64 v64;
+	{
+		FILETIME fileTime, locTime;
+		NtfsFileTime_to_FILETIME(nTime, &fileTime);
+		if (!FileTimeToLocalFileTime(&fileTime, &locTime))
+		{
+			locTime.dwHighDateTime =
+				locTime.dwLowDateTime = 0;
+		}
+		v64 = locTime.dwLowDateTime | ((UInt64)locTime.dwHighDateTime << 32);
+	}
 	v64 /= 10000000;
 	sec = (unsigned)(v64 % 60); v64 /= 60;
 	min = (unsigned)(v64 % 60); v64 /= 60;
@@ -470,7 +476,7 @@ int Do7zFile(int numargs, const char *args[3])
 	allocTempImp = g_Alloc;
 
 #ifdef UNDER_CE
-	if (InFile_OpenW(&archiveStream.file, L"\test.7z"))
+	if (InFile_OpenW(&archiveStream.file, L"\test.7z")); // change it
 #else
 	//char *command = (char *)calloc(MAX_LOADSTRING, 1);
 	const char *command = args[2];
@@ -485,6 +491,7 @@ int Do7zFile(int numargs, const char *args[3])
 	}
 
 	FileInStream_CreateVTable(&archiveStream);
+	archiveStream.wres = 0;
 	LookToRead2_CreateVTable(&lookStream, False);
 	lookStream.buf = NULL;
 
@@ -755,4 +762,133 @@ int Do7zFile(int numargs, const char *args[3])
 }
 
 
-//IDebugLog gLog;
+
+
+//*********************************************************
+//SKSE entry
+//*********************************************************
+
+
+IDebugLog	gLog;
+HANDLE		g_dllHandle;
+
+static void OnAttach(void);
+static void HookMain(void* retAddr);
+static void HookIAT();
+bool hookInstalled = false;
+std::string g_dllPath;
+
+// api-ms-win-crt-runtime-l1-1-0.dll
+typedef char* (*__get_narrow_winmain_command_line)();
+__get_narrow_winmain_command_line _get_narrow_winmain_command_line_Original = NULL;
+
+/*
+BOOL WINAPI DllMain(HANDLE procHandle, DWORD reason, LPVOID reserved)
+{
+	if (reason == DLL_PROCESS_ATTACH)
+	{
+		g_dllHandle = procHandle;
+	}
+
+	return TRUE;
+}
+*/
+static void OnAttach(void)
+{
+	gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim Special Edition\\SKSE\\skse64_steam_loader.log");
+	gLog.SetPrintLevel(IDebugLog::kLevel_Error);
+	gLog.SetLogLevel(IDebugLog::kLevel_DebugMessage);
+
+	FILETIME	now;
+	GetSystemTimeAsFileTime(&now);
+
+	_MESSAGE("skse64 loader %08X (steam) %08X%08X %s", PACKED_SKSE_VERSION, now.dwHighDateTime, now.dwLowDateTime, GetOSInfoStr().c_str());
+	_MESSAGE("loader base addr = %016I64X", g_dllHandle);
+	_MESSAGE("exe base addr = %016I64X", GetModuleHandle(NULL));
+
+	// hook an imported function early so we can inject our code 
+	HookIAT();
+}
+
+static char* _get_narrow_winmain_command_line_Hook()
+{
+	HookMain(_ReturnAddress());
+
+	return _get_narrow_winmain_command_line_Original();
+}
+
+static void HookIAT()
+{
+	__get_narrow_winmain_command_line* iat = (__get_narrow_winmain_command_line*)GetIATAddr(GetModuleHandle(NULL), "api-ms-win-crt-runtime-l1-1-0.dll", "_get_narrow_winmain_command_line");
+	if (iat)
+	{
+		_MESSAGE("found iat at %016I64X", iat);
+
+		_get_narrow_winmain_command_line_Original = *iat;
+		_MESSAGE("original thunk %016I64X", _get_narrow_winmain_command_line_Original);
+
+		SafeWrite64(uintptr_t(iat), (UInt64)_get_narrow_winmain_command_line_Hook);
+		_MESSAGE("patched iat");
+	}
+	else
+	{
+		_MESSAGE("couldn't find _get_narrow_winmain_command_line");
+	}
+}
+
+static void HookMain(void* retAddr)
+{
+	if (hookInstalled)
+		return;
+	else
+		hookInstalled = true;
+
+	_MESSAGE("HookMain: thread = %d retaddr = %016I64X", GetCurrentThreadId(), retAddr);
+
+	std::string runtimePath = GetRuntimePath();
+	_MESSAGE("runtimePath = %s", runtimePath.c_str());
+
+	bool isEditor = false;
+
+	// check version etc
+	std::string		dllSuffix;
+	ProcHookInfo	procHookInfo;
+
+	if (!IdentifyEXE(runtimePath.c_str(), isEditor, &dllSuffix, &procHookInfo))
+	{
+		_ERROR("unknown exe");
+		return;
+	}
+
+	const char* dllPrefix = (isEditor == false) ? "\\skse64_" : "\\skse64_editor_";
+
+	g_dllPath = GetRuntimeDirectory() + dllPrefix + dllSuffix + ".dll";
+	_MESSAGE("dll = %s", g_dllPath.c_str());
+
+	HMODULE dll = LoadLibrary(g_dllPath.c_str());
+	if (dll)
+	{
+		typedef void (*EntryPoint)(void);
+		EntryPoint entryPoint = (EntryPoint)GetProcAddress(dll, "StartSKSE");
+		if (entryPoint)
+		{
+			entryPoint();
+		}
+		else
+		{
+			_ERROR("entry point not found");
+		}
+	}
+	else
+	{
+		_ERROR("couldn't load DLL");
+	}
+}
+
+extern "C"
+{
+	void InitSKSESteamLoader()
+	{
+		OnAttach();
+	}
+}

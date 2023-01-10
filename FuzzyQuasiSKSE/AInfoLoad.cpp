@@ -600,10 +600,11 @@ BOOL GetRegVal(wchar_t* keyName, wchar_t* valueName, wchar_t* valueData)
 		return retVal;
 	}
 
-	//wchar_t* lpValue;
-	wchar_t* lpValue = new wchar_t[(size_t)length+1]();
-	//lpValue[length + 1] = '\0';
-
+	wchar_t* lpValue = new wchar_t[length];
+	// also consider default initialization: new wchar_t[length]()
+	// https://stackoverflow.com/a/74648388/2128797
+	lpValue[length / sizeof(wchar_t) + 1] = L'\0';
+	
 	// query
 	retVal =RegQueryValueExW(
 		key, 

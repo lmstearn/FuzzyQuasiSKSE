@@ -17,7 +17,7 @@ static void PrintProcessInfo();
 
 int main(int argc, char ** argv)
 {
-	gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim Special Edition\\SKSE\\skse64_loader.log");
+	gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\" SAVE_FOLDER_NAME "\\SKSE\\skse64_loader.log");
 	gLog.SetPrintLevel(IDebugLog::kLevel_FatalError);
 	gLog.SetLogLevel(IDebugLog::kLevel_DebugMessage);
 
@@ -217,13 +217,17 @@ int main(int argc, char ** argv)
 
 	startupInfo.cb = sizeof(startupInfo);
 
+	DWORD createFlags = CREATE_SUSPENDED;
+	if(g_options.m_setPriority)
+		createFlags |= g_options.m_priority;
+
 	if(!CreateProcess(
 		procPath.c_str(),
 		NULL,	// no args
 		NULL,	// default process security
 		NULL,	// default thread security
 		FALSE,	// don't inherit handles
-		CREATE_SUSPENDED,
+		createFlags,
 		NULL,	// no new environment
 		NULL,	// no new cwd
 		&startupInfo, &procInfo))
@@ -266,22 +270,9 @@ int main(int argc, char ** argv)
 	switch(procType)
 	{
 	case kProcType_Steam:
-		{
-			std::string	steamHookDllPath = runtimeDir + "\\skse64_steam_loader.dll";
-
-			injectionSucceeded = InjectDLLThread(&procInfo, steamHookDllPath.c_str(), true, g_options.m_noTimeout);
-		}
-		break;
-
 	case kProcType_Normal:
-#if 0
-		if(InjectDLL(&procInfo, dllPath.c_str(), &procHookInfo))
-		{
-			injectionSucceeded = true;
-		}
-#else
+	case kProcType_GOG:
 		injectionSucceeded = InjectDLLThread(&procInfo, dllPath.c_str(), true, g_options.m_noTimeout);
-#endif
 		break;
 
 	default:

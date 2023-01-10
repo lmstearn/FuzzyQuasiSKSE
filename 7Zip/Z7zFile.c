@@ -259,7 +259,10 @@ static SRes FileInStream_Read(const ISeekInStream *pp, void *buf, size_t *size)
 static SRes FileInStream_Seek(const ISeekInStream *pp, Int64 *pos, ESzSeek origin)
 {
   CFileInStream *p = CONTAINER_FROM_VTBL(pp, CFileInStream, vt);
-  return File_Seek(&p->file, pos, origin);
+  WRes wres = File_Seek(&p->file, pos, origin);
+  p->wres = wres;
+  return (wres == 0) ? SZ_OK : SZ_ERROR_READ;
+
 }
 
 void FileInStream_CreateVTable(CFileInStream *p)

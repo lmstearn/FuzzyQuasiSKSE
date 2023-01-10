@@ -77,6 +77,12 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 
 //SRes LzmaDecode(Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen,	const Byte *propData, unsigned propSize, ELzmaFinishMode finishMode, 	ELzmaStatus *status, ISzAllocPtr alloc);
 //static SRes Decode(ISeqOutStream *outStream, ISeqInStream *inStream);
+// for SKSE entry
+#include "skse64_loader_common/IdentifyEXE.h"
+#include <intrin.h>
+//#include <shlobj.h>
+//#include <intrin.h>
+
 
 // common
 //#include <stdlib.h> // included in stdafx.h
@@ -95,7 +101,7 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64_common\skse_version.h"
 #include "skse64_common\Utilities.h"
 
-
+/*
 // skse64
 #include "skse64\BSModelDB.h"
 #include "skse64\Colors.h"
@@ -195,6 +201,7 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64\PapyrusLeveledActor.h"
 #include "skse64\PapyrusLeveledItem.h"
 #include "skse64\PapyrusLeveledSpell.h"
+#include "skse64\PapyrusLocation.h"
 #include "skse64\PapyrusMagicEffect.h"
 #include "skse64\PapyrusMath.h"
 #include "skse64\PapyrusMisc.h"
@@ -248,3 +255,4 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64_loader_common\LoaderError.h"
 #include "skse64_loader_common\Steam.h"
 // 
+*/

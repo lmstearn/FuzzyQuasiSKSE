@@ -1,7 +1,6 @@
 #include "Utilities.h"
 #include <string>
 
-
 std::string GetRuntimePath()
 {
 	static char	appPath[4096] = { 0 };
