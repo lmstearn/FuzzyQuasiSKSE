@@ -16,7 +16,7 @@
 #endif
 
 #if defined(USE_ASM) && !defined(MY_CPU_AMD64)
-static UInt32 CheckFlag(UInt32 flag)
+static UNInt32 CheckFlag(UNInt32 flag)
 {
   #ifdef _MSC_VER
   __asm pushfd;
@@ -78,7 +78,7 @@ static UInt32 CheckFlag(UInt32 flag)
 
 static
 MY_NO_INLINE
-void MY_FAST_CALL MY__cpuidex_HACK(UInt32 subFunction, int *CPUInfo, UInt32 function)
+void MY_FAST_CALL MY__cpuidex_HACK(UNInt32 subFunction, int *CPUInfo, UNInt32 function)
 {
   UNUSED_VAR(subFunction);
   __cpuid(CPUInfo, function);
@@ -96,13 +96,13 @@ void MY_FAST_CALL MY__cpuidex_HACK(UInt32 subFunction, int *CPUInfo, UInt32 func
 
 
 
-void MyCPUID(UInt32 function, UInt32 *a, UInt32 *b, UInt32 *c, UInt32 *d)
+void MyCPUID(UNInt32 function, UNInt32 *a, UNInt32 *b, UNInt32 *c, UNInt32 *d)
 {
   #ifdef USE_ASM
 
   #ifdef _MSC_VER
 
-  UInt32 a2, b2, c2, d2;
+  UNInt32 a2, b2, c2, d2;
   __asm xor EBX, EBX;
   __asm xor ECX, ECX;
   __asm xor EDX, EDX;
@@ -150,10 +150,10 @@ void MyCPUID(UInt32 function, UInt32 *a, UInt32 *b, UInt32 *c, UInt32 *d)
 
   MY__cpuidex(CPUInfo, (int)function, 0);
 
-  *a = (UInt32)CPUInfo[0];
-  *b = (UInt32)CPUInfo[1];
-  *c = (UInt32)CPUInfo[2];
-  *d = (UInt32)CPUInfo[3];
+  *a = (UNInt32)CPUInfo[0];
+  *b = (UNInt32)CPUInfo[1];
+  *c = (UNInt32)CPUInfo[2];
+  *d = (UNInt32)CPUInfo[3];
 
   #endif
 }
@@ -166,7 +166,7 @@ BoolInt x86cpuid_CheckAndRead(Cx86cpuid *p)
   return True;
 }
 
-static const UInt32 kVendors[][3] =
+static const UNInt32 kVendors[][3] =
 {
   { 0x756E6547, 0x49656E69, 0x6C65746E},
   { 0x68747541, 0x69746E65, 0x444D4163},
@@ -178,7 +178,7 @@ int x86cpuid_GetFirm(const Cx86cpuid *p)
   unsigned i;
   for (i = 0; i < sizeof(kVendors) / sizeof(kVendors[i]); i++)
   {
-    const UInt32 *v = kVendors[i];
+    const UNInt32 *v = kVendors[i];
     if (v[0] == p->vendor[0] &&
         v[1] == p->vendor[1] &&
         v[2] == p->vendor[2])
@@ -191,7 +191,7 @@ BoolInt CPU_Is_InOrder()
 {
   Cx86cpuid p;
   int firm;
-  UInt32 family, model;
+  UNInt32 family, model;
   if (!x86cpuid_CheckAndRead(&p))
     return True;
 
@@ -217,7 +217,9 @@ BoolInt CPU_Is_InOrder()
 }
 
 #if !defined(MY_CPU_AMD64) && defined(_WIN32)
-#include <Windows.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winsock2.h>
 static BoolInt CPU_Sys_Is_SSE_Supported()
 {
   OSVERSIONINFO vi;
@@ -232,7 +234,7 @@ static BoolInt CPU_Sys_Is_SSE_Supported()
 #endif
 
 
-static UInt32 X86_CPUID_ECX_Get_Flags()
+static UNInt32 X86_CPUID_ECX_Get_Flags()
 {
   Cx86cpuid p;
   CHECK_SYS_SSE_SUPPORT
@@ -266,7 +268,7 @@ BoolInt CPU_IsSupported_SHA()
   if (p.maxFunc < 7)
     return False;
   {
-    UInt32 d[4] = { 0 };
+    UNInt32 d[4] = { 0 };
     MyCPUID(7, &d[0], &d[1], &d[2], &d[3]);
     return (d[1] >> 29) & 1;
   }
@@ -275,7 +277,9 @@ BoolInt CPU_IsSupported_SHA()
 // #include <stdio.h>
 
 #ifdef _WIN32
-#include <Windows.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winsock2.h>
 #endif
 
 BoolInt CPU_IsSupported_AVX2()
@@ -294,7 +298,7 @@ BoolInt CPU_IsSupported_AVX2()
   if (p.maxFunc < 7)
     return False;
   {
-    UInt32 d[4] = { 0 };
+    UNInt32 d[4] = { 0 };
     MyCPUID(7, &d[0], &d[1], &d[2], &d[3]);
     // printf("\ncpuid(7): ebx=%8x ecx=%8x\n", d[1], d[2]);
     return 1
@@ -318,7 +322,7 @@ BoolInt CPU_IsSupported_VAES_AVX2()
   if (p.maxFunc < 7)
     return False;
   {
-    UInt32 d[4] = { 0 };
+    UNInt32 d[4] = { 0 };
     MyCPUID(7, &d[0], &d[1], &d[2], &d[3]);
     // printf("\ncpuid(7): ebx=%8x ecx=%8x\n", d[1], d[2]);
     return 1
@@ -334,13 +338,13 @@ BoolInt CPU_IsSupported_PageGB()
   if (!x86cpuid_CheckAndRead(&cpuid))
     return False;
   {
-    UInt32 d[4] = { 0 };
+    UNInt32 d[4] = { 0 };
     MyCPUID(0x80000000, &d[0], &d[1], &d[2], &d[3]);
     if (d[0] < 0x80000001)
       return False;
   }
   {
-    UInt32 d[4] = { 0 };
+    UNInt32 d[4] = { 0 };
     MyCPUID(0x80000001, &d[0], &d[1], &d[2], &d[3]);
     return (d[3] >> 26) & 1;
   }
@@ -350,8 +354,9 @@ BoolInt CPU_IsSupported_PageGB()
 #elif defined(MY_CPU_ARM_OR_ARM64)
 
 #ifdef _WIN32
-
-#include <Windows.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winsock2.h>
 
 BoolInt CPU_IsSupported_CRC32()  { return IsProcessorFeaturePresent(PF_ARM_V8_CRC32_INSTRUCTIONS_AVAILABLE) ? 1 : 0; }
 BoolInt CPU_IsSupported_CRYPTO() { return IsProcessorFeaturePresent(PF_ARM_V8_CRYPTO_INSTRUCTIONS_AVAILABLE) ? 1 : 0; }
@@ -381,8 +386,8 @@ static void Print_sysctlbyname(const char *name)
 
 static BoolInt My_sysctlbyname_Get_BoolInt(const char *name)
 {
-  UInt32 val = 0;
-  if (My_sysctlbyname_Get_UInt32(name, &val) == 0 && val == 1)
+  UNInt32 val = 0;
+  if (My_sysctlbyname_Get_UNInt32(name, &val) == 0 && val == 1)
     return 1;
   return 0;
 }
@@ -466,7 +471,7 @@ int My_sysctlbyname_Get(const char *name, void *buf, size_t *bufSize)
   return sysctlbyname(name, buf, bufSize, NULL, 0);
 }
 
-int My_sysctlbyname_Get_UInt32(const char *name, UInt32 *val)
+int My_sysctlbyname_Get_UNInt32(const char *name, UNInt32 *val)
 {
   size_t bufSize = sizeof(*val);
   int res = My_sysctlbyname_Get(name, val, &bufSize);

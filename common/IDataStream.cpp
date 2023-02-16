@@ -2,7 +2,8 @@
 
 /**** IDataStream *************************************************************/
 
-IDataStream::IDataStream() : streamLength(0), streamOffset(0), swapBytes(false)
+IDataStream::IDataStream()
+:streamLength(0), streamOffset(0), swapBytes(false)
 {
 
 }
@@ -136,7 +137,6 @@ UInt32 IDataStream::ReadString(char * buf, UInt32 bufLength, char altTerminator,
 
 	return traverse - buf - 1;
 }
-
 
 /**
  *	Reads and returns an 8-bit value from the stream without advancing the stream's position

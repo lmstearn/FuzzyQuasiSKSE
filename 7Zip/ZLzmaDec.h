@@ -14,7 +14,7 @@ EXTERN_C_BEGIN
 
 typedef
 #ifdef _LZMA_PROB32
-  UInt32
+  UNInt32
 #else
   UInt16
 #endif
@@ -31,7 +31,7 @@ typedef struct _CLzmaProps
   Byte lp;
   Byte pb;
   Byte _pad_;
-  UInt32 dicSize;
+  UNInt32 dicSize;
 } CLzmaProps;
 
 /* LzmaProps_Decode - decodes properties
@@ -60,15 +60,15 @@ typedef struct
   SizeT dicBufSize;
   SizeT dicPos;
   const Byte *buf;
-  UInt32 range;
-  UInt32 code;
-  UInt32 processedPos;
-  UInt32 checkDicSize;
-  UInt32 reps[4];
-  UInt32 state;
-  UInt32 remainLen;
+  UNInt32 range;
+  UNInt32 code;
+  UNInt32 processedPos;
+  UNInt32 checkDicSize;
+  UNInt32 reps[4];
+  UNInt32 state;
+  UNInt32 remainLen;
 
-  UInt32 numProbs;
+  UNInt32 numProbs;
   unsigned tempBufSize;
   Byte tempBuf[LZMA_REQUIRED_INPUT_MAX];
 } CLzmaDec;

@@ -269,13 +269,13 @@ MY_CPU_64BIT means that processor can work with 64-bit registers.
 #ifdef MY_CPU_LE_UNALIGN
 
 #define GetUi16(p) (*(const UInt16 *)(const void *)(p))
-#define GetUi32(p) (*(const UInt32 *)(const void *)(p))
+#define GetUi32(p) (*(const UNInt32 *)(const void *)(p))
 #ifdef MY_CPU_LE_UNALIGN_64
 #define GetUi64(p) (*(const UInt64 *)(const void *)(p))
 #endif
 
 #define SetUi16(p, v) { *(UInt16 *)(void *)(p) = (v); }
-#define SetUi32(p, v) { *(UInt32 *)(void *)(p) = (v); }
+#define SetUi32(p, v) { *(UNInt32 *)(void *)(p) = (v); }
 #ifdef MY_CPU_LE_UNALIGN_64
 #define SetUi64(p, v) { *(UInt64 *)(void *)(p) = (v); }
 #endif
@@ -288,15 +288,15 @@ MY_CPU_64BIT means that processor can work with 64-bit registers.
 
 #define GetUi32(p) ( \
              ((const Byte *)(p))[0]        | \
-    ((UInt32)((const Byte *)(p))[1] <<  8) | \
-    ((UInt32)((const Byte *)(p))[2] << 16) | \
-    ((UInt32)((const Byte *)(p))[3] << 24))
+    ((UNInt32)((const Byte *)(p))[1] <<  8) | \
+    ((UNInt32)((const Byte *)(p))[2] << 16) | \
+    ((UNInt32)((const Byte *)(p))[3] << 24))
 
-#define SetUi16(p, v) { Byte *_ppp_ = (Byte *)(p); UInt32 _vvv_ = (v); \
+#define SetUi16(p, v) { Byte *_ppp_ = (Byte *)(p); UNInt32 _vvv_ = (v); \
     _ppp_[0] = (Byte)_vvv_; \
     _ppp_[1] = (Byte)(_vvv_ >> 8); }
 
-#define SetUi32(p, v) { Byte *_ppp_ = (Byte *)(p); UInt32 _vvv_ = (v); \
+#define SetUi32(p, v) { Byte *_ppp_ = (Byte *)(p); UNInt32 _vvv_ = (v); \
     _ppp_[0] = (Byte)_vvv_; \
     _ppp_[1] = (Byte)(_vvv_ >> 8); \
     _ppp_[2] = (Byte)(_vvv_ >> 16); \
@@ -310,8 +310,8 @@ MY_CPU_64BIT means that processor can work with 64-bit registers.
 #define GetUi64(p) (GetUi32(p) | ((UInt64)GetUi32(((const Byte *)(p)) + 4) << 32))
 
 #define SetUi64(p, v) { Byte *_ppp2_ = (Byte *)(p); UInt64 _vvv2_ = (v); \
-    SetUi32(_ppp2_    , (UInt32)_vvv2_); \
-    SetUi32(_ppp2_ + 4, (UInt32)(_vvv2_ >> 32)); }
+    SetUi32(_ppp2_    , (UNInt32)_vvv2_); \
+    SetUi32(_ppp2_ + 4, (UNInt32)(_vvv2_ >> 32)); }
 
 #endif
 
@@ -335,32 +335,32 @@ MY_CPU_64BIT means that processor can work with 64-bit registers.
 #pragma intrinsic(_byteswap_uint64)
 
 /* #define GetBe16(p) _byteswap_ushort(*(const UInt16 *)(const Byte *)(p)) */
-#define GetBe32(p) _byteswap_ulong (*(const UInt32 *)(const void *)(p))
+#define GetBe32(p) _byteswap_ulong (*(const UNInt32 *)(const void *)(p))
 #define GetBe64(p) _byteswap_uint64(*(const UInt64 *)(const void *)(p))
 
-#define SetBe32(p, v) (*(UInt32 *)(void *)(p)) = _byteswap_ulong(v)
+#define SetBe32(p, v) (*(UNInt32 *)(void *)(p)) = _byteswap_ulong(v)
 
 #elif defined(MY_CPU_LE_UNALIGN) && ( \
        (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))) \
     || (defined(__clang__) && MY__has_builtin(__builtin_bswap16)) )
 
 /* #define GetBe16(p) __builtin_bswap16(*(const UInt16 *)(const void *)(p)) */
-#define GetBe32(p) __builtin_bswap32(*(const UInt32 *)(const void *)(p))
+#define GetBe32(p) __builtin_bswap32(*(const UNInt32 *)(const void *)(p))
 #define GetBe64(p) __builtin_bswap64(*(const UInt64 *)(const void *)(p))
 
-#define SetBe32(p, v) (*(UInt32 *)(void *)(p)) = __builtin_bswap32(v)
+#define SetBe32(p, v) (*(UNInt32 *)(void *)(p)) = __builtin_bswap32(v)
 
 #else
 
 #define GetBe32(p) ( \
-    ((UInt32)((const Byte *)(p))[0] << 24) | \
-    ((UInt32)((const Byte *)(p))[1] << 16) | \
-    ((UInt32)((const Byte *)(p))[2] <<  8) | \
+    ((UNInt32)((const Byte *)(p))[0] << 24) | \
+    ((UNInt32)((const Byte *)(p))[1] << 16) | \
+    ((UNInt32)((const Byte *)(p))[2] <<  8) | \
              ((const Byte *)(p))[3] )
 
 #define GetBe64(p) (((UInt64)GetBe32(p) << 32) | GetBe32(((const Byte *)(p)) + 4))
 
-#define SetBe32(p, v) { Byte *_ppp_ = (Byte *)(p); UInt32 _vvv_ = (v); \
+#define SetBe32(p, v) { Byte *_ppp_ = (Byte *)(p); UNInt32 _vvv_ = (v); \
     _ppp_[0] = (Byte)(_vvv_ >> 24); \
     _ppp_[1] = (Byte)(_vvv_ >> 16); \
     _ppp_[2] = (Byte)(_vvv_ >> 8); \
@@ -383,12 +383,12 @@ MY_CPU_64BIT means that processor can work with 64-bit registers.
 
 typedef struct
 {
-  UInt32 maxFunc;
-  UInt32 vendor[3];
-  UInt32 ver;
-  UInt32 b;
-  UInt32 c;
-  UInt32 d;
+  UNInt32 maxFunc;
+  UNInt32 vendor[3];
+  UNInt32 ver;
+  UNInt32 b;
+  UNInt32 c;
+  UNInt32 d;
 } Cx86cpuid;
 
 enum
@@ -398,7 +398,7 @@ enum
   CPU_FIRM_VIA
 };
 
-void MyCPUID(UInt32 function, UInt32 *a, UInt32 *b, UInt32 *c, UInt32 *d);
+void MyCPUID(UNInt32 function, UNInt32 *a, UNInt32 *b, UNInt32 *c, UNInt32 *d);
 
 BoolInt x86cpuid_CheckAndRead(Cx86cpuid *p);
 int x86cpuid_GetFirm(const Cx86cpuid *p);
@@ -437,7 +437,7 @@ BoolInt CPU_IsSupported_AES(void);
 
 #if defined(__APPLE__)
 int My_sysctlbyname_Get(const char *name, void *buf, size_t *bufSize);
-int My_sysctlbyname_Get_UInt32(const char *name, UInt32 *val);
+int My_sysctlbyname_Get_UNInt32(const char *name, UNInt32 *val);
 #endif
 
 EXTERN_C_END

@@ -18,19 +18,19 @@
 
 #define CRC_UINT32_SWAP(v) ((v >> 24) | ((v >> 8) & 0xFF00) | ((v << 8) & 0xFF0000) | (v << 24))
 
-UInt32 MY_FAST_CALL CrcUpdateT1_BeT4(UInt32 v, const void *data, size_t size, const UInt32 *table);
-UInt32 MY_FAST_CALL CrcUpdateT1_BeT8(UInt32 v, const void *data, size_t size, const UInt32 *table);
+UNInt32 MY_FAST_CALL CrcUpdateT1_BeT4(UNInt32 v, const void *data, size_t size, const UNInt32 *table);
+UNInt32 MY_FAST_CALL CrcUpdateT1_BeT8(UNInt32 v, const void *data, size_t size, const UNInt32 *table);
 #endif
 
 #ifndef MY_CPU_BE
-UInt32 MY_FAST_CALL CrcUpdateT4(UInt32 v, const void *data, size_t size, const UInt32 *table);
-UInt32 MY_FAST_CALL CrcUpdateT8(UInt32 v, const void *data, size_t size, const UInt32 *table);
+UNInt32 MY_FAST_CALL CrcUpdateT4(UNInt32 v, const void *data, size_t size, const UNInt32 *table);
+UNInt32 MY_FAST_CALL CrcUpdateT8(UNInt32 v, const void *data, size_t size, const UNInt32 *table);
 #endif
 
 
 EXTERN_C_BEGIN
 
-extern UInt32 g_CrcTable[];
+extern UNInt32 g_CrcTable[];
 
 /* Call CrcGenerateTable one time before other CRC functions */
 void MY_FAST_CALL CrcGenerateTable(void);
@@ -39,8 +39,8 @@ void MY_FAST_CALL CrcGenerateTable(void);
 #define CRC_GET_DIGEST(crc) ((crc) ^ CRC_INIT_VAL)
 #define CRC_UPDATE_BYTE(crc, b) (g_CrcTable[((crc) ^ (b)) & 0xFF] ^ ((crc) >> 8))
 
-UInt32 MY_FAST_CALL CrcUpdate(UInt32 crc, const void *data, size_t size);
-UInt32 MY_FAST_CALL CrcCalc(const void *data, size_t size);
+UNInt32 MY_FAST_CALL CrcUpdate(UNInt32 crc, const void *data, size_t size);
+UNInt32 MY_FAST_CALL CrcCalc(const void *data, size_t size);
 
 EXTERN_C_END
 

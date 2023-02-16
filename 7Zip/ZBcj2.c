@@ -8,7 +8,7 @@
 
 #define CProb UInt16
 
-#define kTopValue ((UInt32)1 << 24)
+#define kTopValue ((UNInt32)1 << 24)
 #define kNumModelBits 11
 #define kBitModelTotal (1 << kNumModelBits)
 #define kNumMoveBits 5
@@ -76,7 +76,7 @@ SRes Bcj2Dec_Decode(CBcj2Dec *p)
     p->bufs[p->state] = cur + 4;
     
     {
-      UInt32 val;
+      UNInt32 val;
       Byte *dest;
       SizeT rem;
       
@@ -174,7 +174,7 @@ SRes Bcj2Dec_Decode(CBcj2Dec *p)
         {
           p->temp[3] = src[-1];
           p->bufs[BCJ2_STREAM_MAIN] = src;
-          p->ip += (UInt32)num;
+          p->ip += (UNInt32)num;
           p->dest += num;
           p->state =
             p->bufs[BCJ2_STREAM_MAIN] ==
@@ -185,7 +185,7 @@ SRes Bcj2Dec_Decode(CBcj2Dec *p)
         }
         
         {
-          UInt32 bound, ttt;
+          UNInt32 bound, ttt;
           CProb *prob;
           Byte b = src[0];
           Byte prev = (Byte)(num == 0 ? p->temp[3] : src[-1]);
@@ -193,7 +193,7 @@ SRes Bcj2Dec_Decode(CBcj2Dec *p)
           p->temp[3] = b;
           p->bufs[BCJ2_STREAM_MAIN] = src + 1;
           num++;
-          p->ip += (UInt32)num;
+          p->ip += (UNInt32)num;
           p->dest += num;
           
           prob = p->probs + (unsigned)(b == 0xE8 ? 2 + (unsigned)prev : (b == 0xE9 ? 1 : 0));
@@ -210,7 +210,7 @@ SRes Bcj2Dec_Decode(CBcj2Dec *p)
     }
 
     {
-      UInt32 val;
+      UNInt32 val;
       unsigned cj = (p->temp[3] == 0xE8) ? BCJ2_STREAM_CALL : BCJ2_STREAM_JUMP;
       const Byte *cur = p->bufs[cj];
       Byte *dest;

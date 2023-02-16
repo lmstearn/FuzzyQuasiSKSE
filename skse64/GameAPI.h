@@ -26,7 +26,7 @@ public:
 };
 
 extern RelocPtr <ConsoleManager *> g_console;
-extern RelocPtr <UInt32> g_consoleHandle;
+extern RelocPtr <UINT32> g_consoleHandle;
 extern RelocPtr <PlayerCharacter*> g_thePlayer;
 
 void Console_Print(const char * fmt, ...);

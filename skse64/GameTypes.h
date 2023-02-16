@@ -1,6 +1,4 @@
 #pragma once
-
-#include "skse64_common/Utilities.h"
 #include "skse64/GameAPI.h"
 
 class TESForm;
@@ -9,8 +7,8 @@ class TESForm;
 struct BSIntrusiveRefCounted
 {
 public:
-	volatile UInt32	m_refCount;	// 00
-	UInt32			unk04;		// 04
+	volatile UINT32	m_refCount;	// 00
+	UINT32			unk04;		// 04
 };
 
 // 04
@@ -40,12 +38,12 @@ class SimpleLock
 	};
 
 	volatile SInt32	threadID;	// 00
-	volatile UInt32	lockCount;	// 04
+	volatile UINT32	lockCount;	// 04
 
 public:
 	SimpleLock() : threadID(0), lockCount(0) {}
 
-	void Lock(UInt32 pauseAttempts = 0);
+	void Lock(UINT32 pauseAttempts = 0);
 	void Release(void);
 };
 STATIC_ASSERT(sizeof(SimpleLock) == 0x8);
@@ -755,7 +753,7 @@ public:
 	}
 
 	template <class Op>
-	T * Find(Op& op) const
+	T * const Find(Op& op) const
 	{
 		const _Node* pCur = Head(); 
 
@@ -840,7 +838,7 @@ public:
 
 	T * RemoveNth(SInt32 n) 
 	{
-		T* pRemoved = NULL;
+		Item* pRemoved = NULL;
 		if (n == 0) {
 			pRemoved =  m_listHead.RemoveMe();
 		} else if (n > 0) {
@@ -854,7 +852,7 @@ public:
 
 	T * ReplaceNth(SInt32 n, T* item) 
 	{
-		T* pReplaced = NULL;
+		Item* pReplaced = NULL;
 		NodePos nodePos = GetNthNode(n);
 		if (nodePos.node && nodePos.index == n) {
 			pReplaced = nodePos.node->item;

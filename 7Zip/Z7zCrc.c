@@ -5,25 +5,25 @@
 
 
 
-typedef UInt32 (MY_FAST_CALL *CRC_FUNC)(UInt32 v, const void *data, size_t size, const UInt32 *table);
+typedef UNInt32 (MY_FAST_CALL *CRC_FUNC)(UNInt32 v, const void *data, size_t size, const UNInt32 *table);
 
 CRC_FUNC g_CrcUpdateT4;
 CRC_FUNC g_CrcUpdateT8;
 CRC_FUNC g_CrcUpdate;
 
-UInt32 g_CrcTable[256 * CRC_NUM_TABLES];
+UNInt32 g_CrcTable[256 * CRC_NUM_TABLES];
 
-UInt32 MY_FAST_CALL CrcUpdate(UInt32 v, const void *data, size_t size)
+UNInt32 MY_FAST_CALL CrcUpdate(UNInt32 v, const void *data, size_t size)
 {
   return g_CrcUpdate(v, data, size, g_CrcTable);
 }
 
-UInt32 MY_FAST_CALL CrcCalc(const void *data, size_t size)
+UNInt32 MY_FAST_CALL CrcCalc(const void *data, size_t size)
 {
   return g_CrcUpdate(CRC_INIT_VAL, data, size, g_CrcTable) ^ CRC_INIT_VAL;
 }
 
-UInt32 MY_FAST_CALL CrcUpdateT1(UInt32 v, const void *data, size_t size, const UInt32 *table)
+UNInt32 MY_FAST_CALL CrcUpdateT1(UNInt32 v, const void *data, size_t size, const UNInt32 *table)
 {
   const Byte *p = (const Byte *)data;
   const Byte *pEnd = p + size;
@@ -34,18 +34,18 @@ UInt32 MY_FAST_CALL CrcUpdateT1(UInt32 v, const void *data, size_t size, const U
 
 void MY_FAST_CALL CrcGenerateTable(void)
 {
-  UInt32 i;
+  UNInt32 i;
   for (i = 0; i < 256; i++)
   {
-    UInt32 r = i;
+    UNInt32 r = i;
     unsigned j;
     for (j = 0; j < 8; j++)
-      r = (r >> 1) ^ (kCrcPoly & ((UInt32)0 - (r & 1)));
+      r = (r >> 1) ^ (kCrcPoly & ((UNInt32)0 - (r & 1)));
     g_CrcTable[i] = r;
   }
   for (i = 256; i < 256 * CRC_NUM_TABLES; i++)
   {
-    UInt32 r = g_CrcTable[(size_t)i - 256];
+    UNInt32 r = g_CrcTable[(size_t)i - 256];
     g_CrcTable[i] = g_CrcTable[r & 0xFF] ^ (r >> 8);
   }
 
@@ -72,7 +72,7 @@ void MY_FAST_CALL CrcGenerateTable(void)
   #else
   {
     #ifndef MY_CPU_BE
-    UInt32 k = 0x01020304;
+    UNInt32 k = 0x01020304;
     const Byte *p = (const Byte *)&k;
     if (p[0] == 4 && p[1] == 3)
     {
@@ -90,7 +90,7 @@ void MY_FAST_CALL CrcGenerateTable(void)
     {
       for (i = 256 * CRC_NUM_TABLES - 1; i >= 256; i--)
       {
-        UInt32 x = g_CrcTable[(size_t)i - 256];
+        UNInt32 x = g_CrcTable[(size_t)i - 256];
         g_CrcTable[i] = CRC_UINT32_SWAP(x);
       }
       g_CrcUpdateT4 = CrcUpdateT1_BeT4;

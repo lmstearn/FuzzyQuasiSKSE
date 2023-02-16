@@ -14,7 +14,7 @@ typedef const unsigned long	ConstUInt32;		//!< An unsigned 32-bit integer value
 
 typedef unsigned char		UInt8;		//!< An unsigned 8-bit integer value
 typedef unsigned short		UInt16;		//!< An unsigned 16-bit integer value
-//typedef unsigned long		UInt32;		//!< An unsigned 32-bit integer value
+typedef unsigned long		UInt32;		//!< An unsigned 32-bit integer value
 typedef unsigned long long	UInt64;		//!< An unsigned 64-bit integer value
 typedef signed char			SInt8;		//!< A signed 8-bit integer value
 typedef signed short			SInt16;		//!< A signed 16-bit integer value

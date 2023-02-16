@@ -19,7 +19,6 @@
 //#define _WIN32_WINNT	0x0501
 
 
-//#include <winsock2.h>
 #include "7Zip\Z7zFile.h"
 #include "7Zip\ZLzmaDec.h"
 #include "7Zip\ZAlloc.h"
@@ -74,7 +73,7 @@ static SRes PrintString(const wchar_t *s);
 MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned char *src, size_t *srcLen, 	const unsigned char *props, size_t propsSize, ELzmaStatus status);
 
 
-
+/*
 //SRes LzmaDecode(Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen,	const Byte *propData, unsigned propSize, ELzmaFinishMode finishMode, 	ELzmaStatus *status, ISzAllocPtr alloc);
 //static SRes Decode(ISeqOutStream *outStream, ISeqInStream *inStream);
 // for SKSE entry
@@ -101,7 +100,7 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 #include "skse64_common\skse_version.h"
 #include "skse64_common\Utilities.h"
 
-/*
+
 // skse64
 #include "skse64\BSModelDB.h"
 #include "skse64\Colors.h"

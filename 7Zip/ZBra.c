@@ -5,7 +5,7 @@
 
 #include "ZBra.h"
 EXTERN_C_BEGIN
-extern "C" SizeT ARM_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
+extern "C" SizeT ARM_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding)
 {
   Byte *p;
   const Byte *lim;
@@ -27,9 +27,9 @@ extern "C" SizeT ARM_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
         break;
     }
     {
-      UInt32 v = GetUi32(p - 4);
+      UNInt32 v = GetUi32(p - 4);
       v <<= 2;
-        v += ip + (UInt32)(p - data);
+        v += ip + (UNInt32)(p - data);
       v >>= 2;
       v &= 0x00FFFFFF;
       v |= 0xEB000000;
@@ -48,9 +48,9 @@ extern "C" SizeT ARM_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
         break;
     }
     {
-      UInt32 v = GetUi32(p - 4);
+      UNInt32 v = GetUi32(p - 4);
       v <<= 2;
-        v -= ip + (UInt32)(p - data);
+        v -= ip + (UNInt32)(p - data);
       v >>= 2;
       v &= 0x00FFFFFF;
       v |= 0xEB000000;
@@ -60,7 +60,7 @@ extern "C" SizeT ARM_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
 }
 
 
-extern "C" SizeT ARMT_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
+extern "C" SizeT ARMT_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding)
 {
   Byte *p;
   const Byte *lim;
@@ -72,10 +72,10 @@ extern "C" SizeT ARMT_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
   
   for (;;)
   {
-    UInt32 b1;
+    UNInt32 b1;
     for (;;)
     {
-      UInt32 b3;
+      UNInt32 b3;
       if (p > lim)
         return (SizeT)(p - data);
       b1 = p[1];
@@ -86,15 +86,15 @@ extern "C" SizeT ARMT_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
         break;
     }
     {
-      UInt32 v =
-             ((UInt32)b1 << 19)
-          + (((UInt32)p[1] & 0x7) << 8)
-          + (((UInt32)p[-2] << 11))
+      UNInt32 v =
+             ((UNInt32)b1 << 19)
+          + (((UNInt32)p[1] & 0x7) << 8)
+          + (((UNInt32)p[-2] << 11))
           + (p[0]);
 
       p += 2;
       {
-        UInt32 cur = (ip + (UInt32)(p - data)) >> 1;
+        UNInt32 cur = (ip + (UNInt32)(p - data)) >> 1;
           v += cur;
       }
 
@@ -107,10 +107,10 @@ extern "C" SizeT ARMT_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
   
   for (;;)
   {
-    UInt32 b1;
+    UNInt32 b1;
     for (;;)
     {
-      UInt32 b3;
+      UNInt32 b3;
       if (p > lim)
         return (SizeT)(p - data);
       b1 = p[1];
@@ -121,15 +121,15 @@ extern "C" SizeT ARMT_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
         break;
     }
     {
-      UInt32 v =
-             ((UInt32)b1 << 19)
-          + (((UInt32)p[1] & 0x7) << 8)
-          + (((UInt32)p[-2] << 11))
+      UNInt32 v =
+             ((UNInt32)b1 << 19)
+          + (((UNInt32)p[1] & 0x7) << 8)
+          + (((UNInt32)p[-2] << 11))
           + (p[0]);
 
       p += 2;
       {
-        UInt32 cur = (ip + (UInt32)(p - data)) >> 1;
+        UNInt32 cur = (ip + (UNInt32)(p - data)) >> 1;
           v -= cur;
       }
 
@@ -147,7 +147,7 @@ extern "C" SizeT ARMT_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
 }
 
 
-extern "C" SizeT PPC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
+extern "C" SizeT PPC_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding)
 {
   Byte *p;
   const Byte *lim;
@@ -168,11 +168,11 @@ extern "C" SizeT PPC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
         break;
     }
     {
-      UInt32 v = GetBe32(p - 4);
+      UNInt32 v = GetBe32(p - 4);
       if (encoding)
-        v += ip + (UInt32)(p - data);
+        v += ip + (UNInt32)(p - data);
       else
-        v -= ip + (UInt32)(p - data);
+        v -= ip + (UNInt32)(p - data);
       v &= 0x03FFFFFF;
       v |= 0x48000000;
       SetBe32(p - 4, v);
@@ -181,7 +181,7 @@ extern "C" SizeT PPC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
 }
 
 
-extern "C" SizeT SPARC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
+extern "C" SizeT SPARC_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding)
 {
   Byte *p;
   const Byte *lim;
@@ -199,10 +199,10 @@ extern "C" SizeT SPARC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
       /*
       v = GetBe32(p);
       p += 4;
-      m = v + ((UInt32)5 << 29);
-      m ^= (UInt32)7 << 29;
-      m += (UInt32)1 << 22;
-      if ((m & ((UInt32)0x1FF << 23)) == 0)
+      m = v + ((UNInt32)5 << 29);
+      m ^= (UNInt32)7 << 29;
+      m += (UNInt32)1 << 22;
+      if ((m & ((UNInt32)0x1FF << 23)) == 0)
         break;
       */
       p += 4;
@@ -211,15 +211,15 @@ extern "C" SizeT SPARC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
         break;
     }
     {
-      UInt32 v = GetBe32(p - 4);
+      UNInt32 v = GetBe32(p - 4);
       v <<= 2;
       if (encoding)
-        v += ip + (UInt32)(p - data);
+        v += ip + (UNInt32)(p - data);
       else
-        v -= ip + (UInt32)(p - data);
+        v -= ip + (UNInt32)(p - data);
       
       v &= 0x01FFFFFF;
-      v -= (UInt32)1 << 24;
+      v -= (UNInt32)1 << 24;
       v ^= 0xFF000000;
       v >>= 2;
       v |= 0x40000000;
@@ -229,10 +229,10 @@ extern "C" SizeT SPARC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
 }
 #define Test86MSByte(b) ((((b) + 1) & 0xFE) == 0)
 
-extern "C" SizeT x86_Convert(Byte *data, SizeT size, UInt32 ip, UInt32 *state, int encoding)
+extern "C" SizeT x86_Convert(Byte *data, SizeT size, UNInt32 ip, UNInt32 *state, int encoding)
 {
 	SizeT pos = 0;
-	UInt32 mask = *state & 7;
+	UNInt32 mask = *state & 7;
 	if (size < 5)
 		return 0;
 	size -= 4;
@@ -270,8 +270,8 @@ extern "C" SizeT x86_Convert(Byte *data, SizeT size, UInt32 ip, UInt32 *state, i
 
 		if (Test86MSByte(p[4]))
 		{
-			UInt32 v = ((UInt32)p[4] << 24) | ((UInt32)p[3] << 16) | ((UInt32)p[2] << 8) | ((UInt32)p[1]);
-			UInt32 cur = ip + (UInt32)pos;
+			UNInt32 v = ((UNInt32)p[4] << 24) | ((UNInt32)p[3] << 16) | ((UNInt32)p[2] << 8) | ((UNInt32)p[1]);
+			UNInt32 cur = ip + (UNInt32)pos;
 			pos += 5;
 			if (encoding)
 				v += cur;
@@ -282,7 +282,7 @@ extern "C" SizeT x86_Convert(Byte *data, SizeT size, UInt32 ip, UInt32 *state, i
 				unsigned sh = (mask & 6) << 2;
 				if (Test86MSByte((Byte)(v >> sh)))
 				{
-					v ^= (((UInt32)0x100 << sh) - 1);
+					v ^= (((UNInt32)0x100 << sh) - 1);
 					if (encoding)
 						v += cur;
 					else
@@ -303,7 +303,7 @@ extern "C" SizeT x86_Convert(Byte *data, SizeT size, UInt32 ip, UInt32 *state, i
 	}
 }
 
-extern "C" SizeT IA64_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
+extern "C" SizeT IA64_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding)
 {
 	SizeT i;
 	if (size < 16)
@@ -312,7 +312,7 @@ extern "C" SizeT IA64_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
 	i = 0;
 	do
 	{
-		unsigned m = ((UInt32)0x334B0000 >> (data[i] & 0x1E)) & 3;
+		unsigned m = ((UNInt32)0x334B0000 >> (data[i] & 0x1E)) & 3;
 		if (m)
 		{
 			m++;
@@ -320,7 +320,7 @@ extern "C" SizeT IA64_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
 			{
 				Byte *p = data + (i + (size_t)m * 5 - 8);
 				if (((p[3] >> m) & 15) == 5
-					&& (((p[-1] | ((UInt32)p[0] << 8)) >> m) & 0x70) == 0)
+					&& (((p[-1] | ((UNInt32)p[0] << 8)) >> m) & 0x70) == 0)
 				{
 					unsigned raw = GetUi32(p);
 					unsigned v = raw >> m;
@@ -328,15 +328,15 @@ extern "C" SizeT IA64_Convert(Byte *data, SizeT size, UInt32 ip, int encoding)
 
 					v <<= 4;
 					if (encoding)
-						v += ip + (UInt32)i;
+						v += ip + (UNInt32)i;
 					else
-						v -= ip + (UInt32)i;
+						v -= ip + (UNInt32)i;
 					v >>= 4;
 
 					v &= 0x1FFFFF;
 					v += 0x700000;
 					v &= 0x8FFFFF;
-					raw &= ~((UInt32)0x8FFFFF << m);
+					raw &= ~((UNInt32)0x8FFFFF << m);
 					raw |= (v << m);
 					SetUi32(p, raw);
 				}

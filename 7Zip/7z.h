@@ -24,15 +24,15 @@ typedef struct
 typedef struct
 {
   size_t PropsOffset;
-  UInt32 MethodID;
+ UNInt32 MethodID;
   Byte NumStreams;
   Byte PropsSize;
 } CSzCoderInfo;
 
 typedef struct
 {
-  UInt32 InIndex;
-  UInt32 OutIndex;
+  UNInt32 InIndex;
+  UNInt32 OutIndex;
 } CSzBond;
 
 #define SZ_NUM_CODERS_IN_FOLDER_MAX 4
@@ -41,11 +41,11 @@ typedef struct
 
 typedef struct
 {
-  UInt32 NumCoders;
-  UInt32 NumBonds;
-  UInt32 NumPackStreams;
-  UInt32 UnpackStream;
-  UInt32 PackStreams[SZ_NUM_PACK_STREAMS_IN_FOLDER_MAX];
+  UNInt32 NumCoders;
+  UNInt32 NumBonds;
+  UNInt32 NumPackStreams;
+  UNInt32 UnpackStream;
+  UNInt32 PackStreams[SZ_NUM_PACK_STREAMS_IN_FOLDER_MAX];
   CSzBond Bonds[SZ_NUM_BONDS_IN_FOLDER_MAX];
   CSzCoderInfo Coders[SZ_NUM_CODERS_IN_FOLDER_MAX];
 } CSzFolder;
@@ -55,14 +55,14 @@ SRes SzGetNextFolderItem(CSzFolder *f, CSzData *sd);
 
 typedef struct
 {
-  UInt32 Low;
-  UInt32 High;
+  UNInt32 Low;
+  UNInt32 High;
 } CNtfsFileTime;
 
 typedef struct
 {
   Byte *Defs; /* MSB 0 bit numbering */
-  UInt32 *Vals;
+  UNInt32 *Vals;
 } CSzBitUi32s;
 
 typedef struct
@@ -78,15 +78,15 @@ typedef struct
 
 typedef struct
 {
-  UInt32 NumPackStreams;
-  UInt32 NumFolders;
+  UNInt32 NumPackStreams;
+  UNInt32 NumFolders;
 
   UInt64 *PackPositions;          // NumPackStreams + 1
   CSzBitUi32s FolderCRCs;         // NumFolders
 
   size_t *FoCodersOffsets;        // NumFolders + 1
-  UInt32 *FoStartPackStreamIndex; // NumFolders + 1
-  UInt32 *FoToCoderUnpackSizes;   // NumFolders + 1
+  UNInt32 *FoStartPackStreamIndex; // NumFolders + 1
+  UNInt32 *FoToCoderUnpackSizes;   // NumFolders + 1
   Byte *FoToMainUnpackSizeIndex;  // NumFolders
   UInt64 *CoderUnpackSizes;       // for all coders in all folders
 
@@ -95,9 +95,9 @@ typedef struct
   UInt64 RangeLimit;
 } CSzAr;
 
-UInt64 SzAr_GetFolderUnpackSize(const CSzAr *p, UInt32 folderIndex);
+UInt64 SzAr_GetFolderUnpackSize(const CSzAr *p, UNInt32 folderIndex);
 
-SRes SzAr_DecodeFolder(const CSzAr *p, UInt32 folderIndex,
+SRes SzAr_DecodeFolder(const CSzAr *p, UNInt32 folderIndex,
     ILookInStream *stream, UInt64 startPos,
     Byte *outBuffer, size_t outSize,
     ISzAllocPtr allocMain);
@@ -109,7 +109,7 @@ typedef struct
   UInt64 startPosAfterHeader;
   UInt64 dataPos;
   
-  UInt32 NumFiles;
+  UNInt32 NumFiles;
 
   UInt64 *UnpackPositions;  // NumFiles + 1
   // Byte *IsEmptyFiles;
@@ -121,8 +121,8 @@ typedef struct
   CSzBitUi64s MTime;
   CSzBitUi64s CTime;
 
-  UInt32 *FolderToFile;   // NumFolders + 1
-  UInt32 *FileToFolder;   // NumFiles
+  UNInt32 *FolderToFile;   // NumFolders + 1
+  UNInt32 *FileToFolder;   // NumFiles
 
   size_t *FileNameOffsets; /* in 2-byte steps */
   Byte *FileNames;  /* UTF-16-LE */
@@ -134,8 +134,8 @@ typedef struct
 
 void SzArEx_Init(CSzArEx *p);
 void SzArEx_Free(CSzArEx *p, ISzAllocPtr alloc);
-UInt64 SzArEx_GetFolderStreamPos(const CSzArEx *p, UInt32 folderIndex, UInt32 indexInFolder);
-int SzArEx_GetFolderFullPackSize(const CSzArEx *p, UInt32 folderIndex, UInt64 *resSize);
+UInt64 SzArEx_GetFolderStreamPos(const CSzArEx *p, UNInt32 folderIndex, UNInt32 indexInFolder);
+int SzArEx_GetFolderFullPackSize(const CSzArEx *p, UNInt32 folderIndex, UInt64 *resSize);
 
 /*
 if dest == NULL, the return value specifies the required size of the buffer,
@@ -175,8 +175,8 @@ UInt16 *SzArEx_GetFullNameUtf16_Back(const CSzArEx *p, size_t fileIndex, UInt16 
 SRes SzArEx_Extract(
     const CSzArEx *db,
     ILookInStream *inStream,
-    UInt32 fileIndex,         /* index of file */
-    UInt32 *blockIndex,       /* index of solid block */
+    UNInt32 fileIndex,         /* index of file */
+    UNInt32 *blockIndex,       /* index of solid block */
     Byte **outBuffer,         /* pointer to pointer to output buffer (allocated with allocMain) */
     size_t *outBufferSize,    /* buffer size for output buffer */
     size_t *offset,           /* offset of stream for required file in *outBuffer */

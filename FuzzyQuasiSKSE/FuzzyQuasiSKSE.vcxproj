@@ -110,13 +110,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)skse64_common\;$(SolutionDir)skse64\;$(SolutionDir)skse64_steam_loader\;$(SolutionDir)common\;$(SolutionDir)skse64_loader\;$(SolutionDir)skse64_loader_common\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)skse64_common\;$(SolutionDir)skse64_steam_loader\;$(SolutionDir)common\;$(SolutionDir)skse64_loader\;$(SolutionDir)skse64_loader_common\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
-      <ShowIncludes>false</ShowIncludes>
+      <ShowIncludes>true</ShowIncludes>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PreprocessToFile>false</PreprocessToFile>
+      <ForcedIncludeFiles>..\common\IPrefix.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -209,12 +210,84 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-  <None Include="CategoryName" />
-    <ClInclude Include="..\skse64\BSModelDB.h;..\skse64\Colors.h">
-    <DependentUpon>CategoryName</DependentUpon>
+    <None Include="API" />
+    <ClInclude Include="..\skse64\GameAPI.h;..\skse64\GameBSExtraData.h;..\skse64\GameCamera.h;..\skse64\GameData.h;..\skse64\GameEvents.h;..\skse64\GameExtraData.h;..\skse64\GameFormComponents.h;..\skse64\GameForms.h;..\skse64\GameHandlers.h;..\skse64\GameInput.h;..\skse64\GameMenus.h;..\skse64\GameObjects.h;..\skse64\GameReferences.h;..\skse64\GameResources.h;..\skse64\GameRTTI.h;..\skse64\GameSettings.h;..\skse64\GameStreams.h;..\skse64\GameThreads.h;..\skse64\GameTypes.h;..\skse64\GameUtilities.h;..\skse64\ObScript.h">
+      <DependentUpon>API</DependentUpon>
     </ClInclude>
-    <ClCompile Include="..\skse64\BSModelDB.cpp">
-    <DependentUpon>CategoryName</DependentUpon>
+    <ClCompile Include="..\skse64\GameBSExtraData.cpp;..\skse64\GameCamera.cpp;..\skse64\GameData.cpp;..\skse64\GameEvents.cpp;..\skse64\GameExtraData.cpp;..\skse64\GameFormComponents.cpp;..\skse64\GameForms.cpp;..\skse64\GameHandlers.cpp;..\skse64\GameInput.cpp;..\skse64\GameMenus.cpp;..\skse64\GameObjects.cpp;..\skse64\GamePathing.cpp;..\skse64\GameReferences.cpp;..\skse64\GameResources.cpp;..\skse64\GameRTTI.cpp;..\skse64\GameRTTI.inl;..\skse64\GameSettings.cpp;..\skse64\GameStreams.cpp;..\skse64\GameThreads.cpp;..\skse64\GameTypes.cpp;..\skse64\GameUtilities.cpp;..\skse64\ObScript.cpp">
+      <DependentUpon>API</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="hooks" />
+    <ClInclude Include="..\skse64\Hooks_Camera.h;..\skse64\Hooks_Data.h;..\skse64\Hooks_Debug.h;..\skse64\Hooks_Diagnostics.h;..\skse64\Hooks_DirectInput8Create.h;..\skse64\Hooks_Event.h;..\skse64\Hooks_Gameplay.h;..\skse64\Hooks_Handlers.h;..\skse64\Hooks_Memory.h;..\skse64\Hooks_NetImmerse.h;..\skse64\Hooks_ObScript.h;..\skse64\Hooks_Papyrus.h;..\skse64\Hooks_SaveLoad.h;..\skse64\Hooks_Scaleform.h;..\skse64\Hooks_Threads.h;..\skse64\Hooks_UI.h">
+      <DependentUpon>hooks</DependentUpon>
+    </ClInclude>
+    <ClCompile Include="..\skse64\Hooks_Camera.cpp;..\skse64\Hooks_Data.cpp;..\skse64\Hooks_Debug.cpp;..\skse64\Hooks_Diagnostics.cpp;..\skse64\Hooks_DirectInput8Create.cpp;..\skse64\Hooks_Event.cpp;..\skse64\Hooks_Gameplay.cpp;..\skse64\Hooks_Handlers.cpp;..\skse64\Hooks_Memory.cpp;..\skse64\Hooks_NetImmerse.cpp;..\skse64\Hooks_ObScript.cpp;..\skse64\Hooks_Papyrus.cpp;..\skse64\Hooks_SaveLoad.cpp;..\skse64\Hooks_Scaleform.cpp;..\skse64\Hooks_Threads.cpp;..\skse64\Hooks_UI.cpp">
+      <DependentUpon>hooks</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="internal" />
+    <ClInclude Include="..\skse64\Colors.h;..\skse64\CustomMenu.h;..\skse64\GlobalLocks.h;..\skse64\HashUtil.h;..\skse64\InputMap.h;..\skse64\InternalSerialization.h;..\skse64\InternalTasks.h;..\skse64\PluginAPI.h;..\skse64\PluginLoadErrorDialog.rc;..\skse64\PluginManager.h;..\skse64\Serialization.h;..\skse64\Translation.h">
+      <DependentUpon>internal</DependentUpon>
+    </ClInclude>
+    <ClCompile Include="..\skse64\Colors.cpp;..\skse64\CustomMenu.cpp;..\skse64\GlobalLocks.cpp;..\skse64\HashUtil.cpp;..\skse64\InputMap.cpp;..\skse64\InternalSerialization.cpp;..\skse64\InternalTasks.cpp;..\skse64\PluginLoadErrorDialog.rc;..\skse64\PluginManager.cpp;..\skse64\Serialization.cpp;..\skse64\Translation.cpp">
+      <DependentUpon>internal</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="netimmerse" />
+    <ClInclude Include="..\skse64\BSModelDB.h;..\skse64\NiAdditionalGeometryData.h;..\skse64\NiControllers.h;..\skse64\NiExtraData.h;..\skse64\NiGeometry.h;..\skse64\NiInterpolators.h;..\skse64\NiLight.h;..\skse64\NiMaterial.h;..\skse64\NiNodes.h;..\skse64\NiObjects.h;..\skse64\NiProperties.h;..\skse64\NiRenderer.h;..\skse64\NiRTTI.h;..\skse64\NiSerialization.h;..\skse64\NiTextures.h;..\skse64\NiTypes.h">
+      <DependentUpon>netimmerse</DependentUpon>
+    </ClInclude>
+    <ClCompile Include="..\skse64\BSModelDB.cpp;..\skse64\NiAdditionalGeometryData.cpp;..\skse64\NiControllers.cpp;..\skse64\NiExtraData.cpp;..\skse64\NiGeometry.cpp;..\skse64\NiInterpolators.cpp;..\skse64\NiLight.cpp;..\skse64\NiMaterial.cpp;..\skse64\NiNodes.cpp;..\skse64\NiObjects.cpp;..\skse64\NiProperties.cpp;..\skse64\NiRenderer.cpp;..\skse64\NiRTTI.cpp;..\skse64\NiSerialization.cpp;..\skse64\NiTextures.cpp;..\skse64\NiTypes.cpp">
+      <DependentUpon>netimmerse</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="papyrus_functions" />
+    <ClInclude Include="..\skse64\PapyrusActiveMagicEffect.h;..\skse64\PapyrusActor.h;..\skse64\PapyrusActorBase.h;..\skse64\PapyrusActorValueInfo.h;..\skse64\PapyrusAlias.h;..\skse64\PapyrusAmmo.h;..\skse64\PapyrusArmor.h;..\skse64\PapyrusArmorAddon.h;..\skse64\PapyrusArt.h;..\skse64\PapyrusBook.h;..\skse64\PapyrusCamera.h;..\skse64\PapyrusCell.h;..\skse64\PapyrusClass.h;..\skse64\PapyrusColorForm.h;..\skse64\PapyrusCombatStyle.h;..\skse64\PapyrusConstructibleObject.h;..\skse64\PapyrusDefaultObjectManager.h;..\skse64\PapyrusEnchantment.h;..\skse64\PapyrusEquipSlot.h;..\skse64\PapyrusFaction.h;..\skse64\PapyrusFlora.h;..\skse64\PapyrusForm.h;..\skse64\PapyrusFormList.h;..\skse64\PapyrusGame.h;..\skse64\PapyrusGameData.h;..\skse64\PapyrusHeadPart.h;..\skse64\PapyrusIngredient.h;..\skse64\PapyrusInput.h;..\skse64\PapyrusKeyword.h;..\skse64\PapyrusLeveledActor.h;..\skse64\PapyrusLeveledItem.h;..\skse64\PapyrusLeveledSpell.h;..\skse64\PapyrusLocation.h;..\skse64\PapyrusMagicEffect.h;..\skse64\PapyrusMath.h;..\skse64\PapyrusMisc.h;..\skse64\PapyrusModEvent.h;..\skse64\PapyrusNetImmerse.h;..\skse64\PapyrusObjectReference.h;..\skse64\PapyrusPerk.h;..\skse64\PapyrusPotion.h;..\skse64\PapyrusQuest.h;..\skse64\PapyrusRace.h;..\skse64\PapyrusReferenceAlias.h;..\skse64\PapyrusScroll.h;..\skse64\PapyrusShout.h;..\skse64\PapyrusSKSE.h;..\skse64\PapyrusSound.h;..\skse64\PapyrusSoundDescriptor.h;..\skse64\PapyrusSpawnerTask.h;..\skse64\PapyrusSpell.h;..\skse64\PapyrusStringUtil.h;..\skse64\PapyrusTextureSet.h;..\skse64\PapyrusTree.h;..\skse64\PapyrusUI.h;..\skse64\PapyrusUICallback.h;..\skse64\PapyrusUtility.h;..\skse64\PapyrusWeapon.h;..\skse64\PapyrusWeather.h;..\skse64\PapyrusWornObject.h">
+      <DependentUpon>papyrus_functions</DependentUpon>
+    </ClInclude>
+    <ClCompile Include="..\skse64\PapyrusActiveMagicEffect.cpp;..\skse64\PapyrusActor.cpp;..\skse64\PapyrusActorBase.cpp;..\skse64\PapyrusActorValueInfo.cpp;..\skse64\PapyrusAlias.cpp;..\skse64\PapyrusAmmo.cpp;..\skse64\PapyrusArmor.cpp;..\skse64\PapyrusArmorAddon.cpp;..\skse64\PapyrusArt.cpp;..\skse64\PapyrusBook.cpp;..\skse64\PapyrusCamera.cpp;..\skse64\PapyrusCell.cpp;..\skse64\PapyrusClass.cpp;..\skse64\PapyrusColorForm.cpp;..\skse64\PapyrusCombatStyle.cpp;..\skse64\PapyrusConstructibleObject.cpp;..\skse64\PapyrusDefaultObjectManager.cpp;..\skse64\PapyrusEnchantment.cpp;..\skse64\PapyrusEquipSlot.cpp;..\skse64\PapyrusFaction.cpp;..\skse64\PapyrusFlora.cpp;..\skse64\PapyrusForm.cpp;..\skse64\PapyrusFormList.cpp;..\skse64\PapyrusGame.cpp;..\skse64\PapyrusGameData.cpp;..\skse64\PapyrusHeadPart.cpp;..\skse64\PapyrusIngredient.cpp;..\skse64\PapyrusInput.cpp;..\skse64\PapyrusKeyword.cpp;..\skse64\PapyrusLeveledActor.cpp;..\skse64\PapyrusLeveledItem.cpp;..\skse64\PapyrusLeveledSpell.cpp;..\skse64\PapyrusLocation.cpp;..\skse64\PapyrusMagicEffect.cpp;..\skse64\PapyrusMath.cpp;..\skse64\PapyrusMisc.cpp;..\skse64\PapyrusModEvent.cpp;..\skse64\PapyrusNetImmerse.cpp;..\skse64\PapyrusObjectReference.cpp;..\skse64\PapyrusPerk.cpp;..\skse64\PapyrusPotion.cpp;..\skse64\PapyrusQuest.cpp;..\skse64\PapyrusRace.cpp;..\skse64\PapyrusReferenceAlias.cpp;..\skse64\PapyrusScroll.cpp;..\skse64\PapyrusShout.cpp;..\skse64\PapyrusSKSE.cpp;..\skse64\PapyrusSound.cpp;..\skse64\PapyrusSoundDescriptor.cpp;..\skse64\PapyrusSpawnerTask.cpp;..\skse64\PapyrusSpell.cpp;..\skse64\PapyrusStringUtil.cpp;..\skse64\PapyrusTextureSet.cpp;..\skse64\PapyrusTree.cpp;..\skse64\PapyrusUI.cpp;..\skse64\PapyrusUICallback.cpp;..\skse64\PapyrusUtility.cpp;..\skse64\PapyrusWeapon.cpp;..\skse64\PapyrusWeather.cpp;..\skse64\PapyrusWornObject.cpp">
+      <DependentUpon>papyrus_functions</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="papyrus_vm" />
+    <ClInclude Include="..\skse64\PapyrusArgs.h;..\skse64\PapyrusDelayFunctors.h;..\skse64\PapyrusEventFunctor.h;..\skse64\PapyrusEvents.h;..\skse64\PapyrusInterfaces.h;..\skse64\PapyrusNativeFunctions.h;..\skse64\PapyrusObjects.h;..\skse64\PapyrusValue.h;..\skse64\PapyrusVM.h">
+      <DependentUpon>papyrus_vm</DependentUpon>
+    </ClInclude>
+    <ClCompile Include="..\skse64\PapyrusArgs.cpp;..\skse64\PapyrusDelayFunctors.cpp;..\skse64\PapyrusEvents.cpp;..\skse64\PapyrusInterfaces.cpp;..\skse64\PapyrusNativeFunctionDef.inl;..\skse64\PapyrusNativeFunctionDef_Base.inl;..\skse64\PapyrusNativeFunctions.cpp;..\skse64\PapyrusObjects.cpp;..\skse64\PapyrusValue.cpp;..\skse64\PapyrusVM.cpp">
+      <DependentUpon>papyrus_vm</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scaleform" />
+    <ClInclude Include="..\skse64\ScaleformAPI.h;..\skse64\ScaleformCallbacks.h;..\skse64\ScaleformExtendedData.h;..\skse64\ScaleformLoader.h;..\skse64\ScaleformMovie.h;..\skse64\ScaleformState.h;..\skse64\ScaleformTypes.h;..\skse64\ScaleformValue.h;..\skse64\ScaleformVM.h">
+      <DependentUpon>scaleform</DependentUpon>
+    </ClInclude>
+    <ClCompile Include="..\skse64\ScaleformAPI.cpp;..\skse64\ScaleformCallbacks.cpp;..\skse64\ScaleformExtendedData.cpp;..\skse64\ScaleformLoader.cpp;..\skse64\ScaleformMovie.cpp;..\skse64\ScaleformState.cpp;..\skse64\ScaleformTypes.cpp;..\skse64\ScaleformValue.cpp;..\skse64\ScaleformVM.cpp">
+      <DependentUpon>scaleform</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="skse64_common" />
+    <ClInclude Include="..\skse64_common\BranchTrampoline.h;..\skse64_common\Relocation.h;..\skse64_common\SafeWrite.h;..\skse64_common\skse_version.h;..\skse64_common\Utilities.h">
+      <DependentUpon>skse64_common</DependentUpon>
+    </ClInclude>
+    <ClCompile Include="..\skse64_common\BranchTrampoline.cpp;..\skse64_common\Relocation.cpp;..\skse64_common\SafeWrite.cpp;..\skse64_common\Utilities.cpp">
+      <DependentUpon>skse64_common</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="common" />
+    <ClInclude Include="..\common\IBufferStream.h;..\common\IDataStream.h;..\common\IFileStream.h;..\common\ISegmentStream.h;..\common\IDebugLog.h;..\common\IErrors.h;..\common\IEvent.h;..\common\IInterlockedLong.h;..\common\IMutex.h;..\common\ISingleton.h;..\common\ITypes.h;..\common\ITimer.h;..\common\IDirectoryIterator.h;..\common\IPrefix.h">
+      <DependentUpon>common</DependentUpon>
+    </ClInclude>
+    <ClCompile Include="..\common\IBufferStream.cpp;..\common\IDataStream.cpp;..\common\IFileStream.cpp;..\common\ISegmentStream.cpp;..\common\IDebugLog.cpp;..\common\IErrors.cpp;..\common\IEvent.cpp;..\common\IInterlockedLong.cpp;..\common\IMutex.cpp;..\common\ISingleton.cpp;..\common\ITypes.cpp;..\common\ITimer.cpp;..\common\IDirectoryIterator.cpp;..\common\IPrefix.cpp">
+      <DependentUpon>common</DependentUpon>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

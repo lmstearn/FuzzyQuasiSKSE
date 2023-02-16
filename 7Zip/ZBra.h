@@ -40,7 +40,7 @@ in CALL instructions to increase the compression ratio.
 
   Example:
 
-    UInt32 ip = 0;
+    UNInt32 ip = 0;
     for ()
     {
       ; size must be >= Alignment + LookAhead, if it's not last block
@@ -52,12 +52,12 @@ in CALL instructions to increase the compression ratio.
 */
 
 #define x86_Convert_Init(state) { state = 0; }
-extern "C" SizeT x86_Convert(Byte *data, SizeT size, UInt32 ip, UInt32 *state, int encoding);
-extern "C" SizeT ARM_Convert(Byte *data, SizeT size, UInt32 ip, int encoding);
-extern "C" SizeT ARMT_Convert(Byte *data, SizeT size, UInt32 ip, int encoding);
-extern "C" SizeT PPC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding);
-extern "C" SizeT SPARC_Convert(Byte *data, SizeT size, UInt32 ip, int encoding);
-extern "C" SizeT IA64_Convert(Byte *data, SizeT size, UInt32 ip, int encoding);
+extern "C" SizeT x86_Convert(Byte *data, SizeT size, UNInt32 ip, UNInt32 *state, int encoding);
+extern "C" SizeT ARM_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding);
+extern "C" SizeT ARMT_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding);
+extern "C" SizeT PPC_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding);
+extern "C" SizeT SPARC_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding);
+extern "C" SizeT IA64_Convert(Byte *data, SizeT size, UNInt32 ip, int encoding);
 
 EXTERN_C_END
 

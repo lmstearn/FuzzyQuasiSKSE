@@ -142,4 +142,15 @@
   <ItemGroup>
     <Text Include="FuzzyQuasiSKSE.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="API" />
+    <None Include="hooks" />
+    <None Include="internal" />
+    <None Include="netimmerse" />
+    <None Include="papyrus_functions" />
+    <None Include="papyrus_vm" />
+    <None Include="scaleform" />
+    <None Include="skse64_common" />
+    <None Include="common" />
+  </ItemGroup>
 </Project>

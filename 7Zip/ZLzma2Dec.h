@@ -17,8 +17,8 @@ typedef struct
   Byte needInitLevel;
   Byte isExtraMode;
   Byte _pad_;
-  UInt32 packSize;
-  UInt32 unpackSize;
+  UNInt32 packSize;
+  UNInt32 unpackSize;
   CLzmaDec decoder;
 } CLzma2Dec;
 

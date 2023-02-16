@@ -16,7 +16,7 @@ enum
 struct ProcHookInfo
 {
 	UInt64	version;
-	UInt32	procType;
+	UNInt32	procType;
 };
 
 bool IdentifyEXE(const char * procName, bool isEditor, std::string * dllSuffix, ProcHookInfo * hookInfo);

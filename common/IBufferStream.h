@@ -1,4 +1,5 @@
 #pragma once
+
 #include "IDataStream.h"
 
 class IBufferStream : public IDataStream

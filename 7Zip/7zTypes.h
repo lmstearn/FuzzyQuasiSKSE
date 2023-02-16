@@ -160,7 +160,7 @@ typedef long Int32;
 typedef unsigned long UInt32;
 #else
 typedef int Int32;
-typedef unsigned int UInt32;
+typedef unsigned int UNInt32;
 #endif
 
 
@@ -169,7 +169,7 @@ typedef unsigned int UInt32;
 typedef int INT;
 typedef Int32 INT32;
 typedef unsigned int UINT;
-typedef UInt32 UINT32;
+typedef UNInt32 UINT32;
 typedef INT32 LONG;   // LONG, ULONG and DWORD must be 32-bit for _WIN32 compatibility
 typedef UINT32 ULONG;
 

@@ -1,5 +1,4 @@
 #pragma once
-#include "IDebugLog.h"
 #include "IInterlockedLong.h"
 
 

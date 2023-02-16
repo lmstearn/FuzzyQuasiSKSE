@@ -1,7 +1,7 @@
 #include "IDebugLog.h"
 
 
-FILE			* IDebugLog::logFile = NULL;
+std::FILE			* IDebugLog::logFile = NULL;
 char				IDebugLog::sourceBuf[16] = { 0 };
 char				IDebugLog::headerText[16] = { 0 };
 char				IDebugLog::formatBuf[8192] = { 0 };
