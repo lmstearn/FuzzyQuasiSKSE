@@ -68,6 +68,15 @@ MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned ch
 /* 7zMain.c - Test application for 7z Decoder
 2018-08-04 : Igor Pavlov : Public domain */
 
+#ifndef USE_WINDOWS_FILE
+/* for mkdir */
+#ifdef _WIN32
+#include <direct.h>
+#else
+#include <sys/stat.h>
+#include <errno.h>
+#endif
+#endif
 
 
 

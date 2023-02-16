@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -68,9 +65,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AInfoLoad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -122,12 +116,12 @@
     <ClCompile Include="..\7Zip\ZDelta.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\7Zip\Z7zCrcOpt.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="FuzzyQuasiSKSE.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="..\skse64_common\skse_version.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

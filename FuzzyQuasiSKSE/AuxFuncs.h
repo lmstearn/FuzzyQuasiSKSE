@@ -1,5 +1,36 @@
 #pragma once
-#include "stdafx.h"
+#define _WINSOCKAPI_
+
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+// Windows specific: C, C++
+#include <windows.h>
+#include <winsock2.h>
+#endif
+
+#include "targetver.h" //SDK versioning
+
+// C RunTime Header Files
+#include <stdlib.h>
+// #include <stdio.h> // in strsafe.h
+//#include <string.h> // in strsafe.h
+#include <strsafe.h>
+#include <shellapi.h>
+//#include <malloc.h> // in stdlib.h
+
+//Listview
+#include <CommCtrl.h>
+
+// C++ Header Files:
+#include <memory>
+//#include <vector> // included in filesystem
+//#include <string> //string included in iTypes
+#include <filesystem>
+//#include <iostream> //iostream included in iTypes
+// #include <algorithm> // included in filesystem
+// TODO: reference additional headers your program requires here
+
 #include "resource.h"
 #include "AIPrefix.h"
 

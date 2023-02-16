@@ -4,8 +4,13 @@
 #ifndef __7Z_TYPES_H
 #define __7Z_TYPES_H
 
-#ifdef _WIN32
-/* #include <windows.h> */
+#ifdef WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+#include <windows.h>
+#include <winsock2.h>
+#endif
+// Windows specific: C, C++
 #else
 #include <errno.h>
 #endif
