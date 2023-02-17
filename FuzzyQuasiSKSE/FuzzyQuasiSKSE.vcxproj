@@ -164,42 +164,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\7Zip\ZBcj2.h" />
-    <ClInclude Include="..\7Zip\ZBra.h" />
-    <ClInclude Include="..\7Zip\ZDelta.h" />
-    <ClInclude Include="..\7Zip\Z7zBuf.h" />
-    <ClInclude Include="..\7Zip\Z7zCrc.h" />
-    <ClInclude Include="..\7Zip\Z7zFile.h" />
-    <ClInclude Include="..\7Zip\ZAlloc.h" />
-    <ClInclude Include="..\7Zip\ZCpuArch.h" />
-    <ClInclude Include="..\7Zip\ZLzma2Dec.h" />
-    <ClInclude Include="..\7Zip\ZLzmaDec.h" />
-    <ClInclude Include="AInfoLoad.h" />
-    <ClInclude Include="AIPrefix.h" />
-    <ClInclude Include="AuxFuncs.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="AFuzzyQuasiSKSE.h" />
-    <ClInclude Include="targetver.h" />
+   <ItemGroup>
+    <ClInclude Include="..\7Zip\ZBcj2.h;..\7Zip\ZBra.h;..\7Zip\ZDelta.h;..\7Zip\Z7zBuf.h;..\7Zip\Z7zCrc.h;..\7Zip\Z7zFile.h;..\7Zip\ZAlloc.h;..\7Zip\ZCpuArch.h;..\7Zip\ZLzma2Dec.h;..\7Zip\ZLzmaDec.h;AInfoLoad.h;AIPrefix.h;AuxFuncs.h;resource.h;AFuzzyQuasiSKSE.h;targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\7Zip\ZBcj2.c" />
-    <ClCompile Include="..\7Zip\ZBra.c" />
-    <ClCompile Include="..\7Zip\ZDelta.c" />
-    <ClCompile Include="..\7Zip\Z7zArcIn.c" />
-    <ClCompile Include="..\7Zip\Z7zBuf.c" />
-    <ClCompile Include="..\7Zip\Z7zCrc.c" />
-    <ClCompile Include="..\7Zip\Z7zDec.c" />
-    <ClCompile Include="..\7Zip\Z7zFile.c" />
-    <ClCompile Include="..\7Zip\Z7zStream.c" />
-    <ClCompile Include="..\7Zip\ZAlloc.c" />
-    <ClCompile Include="..\7Zip\ZCpuArch.c" />
-    <ClCompile Include="..\7Zip\ZLzma2Dec.c" />
-    <ClCompile Include="..\7Zip\ZLzmaDec.c" />
-    <ClCompile Include="AInfoLoad.cpp" />
-    <ClCompile Include="AIPrefix.cpp" />
-    <ClCompile Include="AFuzzyQuasiSKSE.cpp" />
-    <ClCompile Include="AuxFuncs.cpp" />
+    <ClCompile Include="..\7Zip\ZBcj2.c;..\7Zip\ZBra.c;..\7Zip\ZDelta.c;..\7Zip\Z7zArcIn.c;..\7Zip\Z7zBuf.c;..\7Zip\Z7zCrc.c;..\7Zip\Z7zDec.c;..\7Zip\Z7zFile.c;..\7Zip\Z7zStream.c;..\7Zip\ZAlloc.c;..\7Zip\ZCpuArch.c;..\7Zip\ZLzma2Dec.c;..\7Zip\ZLzmaDec.c;AInfoLoad.cpp;AIPrefix.cpp;AFuzzyQuasiSKSE.cpp;AuxFuncs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="API" />

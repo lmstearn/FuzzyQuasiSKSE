@@ -838,7 +838,7 @@ public:
 
 	T * RemoveNth(SInt32 n) 
 	{
-		Item* pRemoved = NULL;
+		tList::_Node::Remove(_Node)* pRemoved = NULL;
 		if (n == 0) {
 			pRemoved =  m_listHead.RemoveMe();
 		} else if (n > 0) {
@@ -852,7 +852,7 @@ public:
 
 	T * ReplaceNth(SInt32 n, T* item) 
 	{
-		Item* pReplaced = NULL;
+		tList::_Node::Item* pReplaced = NULL;
 		NodePos nodePos = GetNthNode(n);
 		if (nodePos.node && nodePos.index == n) {
 			pReplaced = nodePos.node->item;
