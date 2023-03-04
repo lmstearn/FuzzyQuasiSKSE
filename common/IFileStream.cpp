@@ -1,5 +1,7 @@
 #include "IFileStream.h"
-
+#include "IDebugLog.h"
+#include "IErrors.h"
+#include <direct.h>
 
 IFileStream::IFileStream()
 :theFile(INVALID_HANDLE_VALUE)
@@ -152,7 +154,7 @@ void IFileStream::Close(void)
 	}
 }
 
-void IFileStream::ReadBuf(void * buf,  UINT32  inLength)
+void IFileStream::ReadBuf(void * buf,  UInt32  inLength)
 {
 	UInt32	bytesRead;
 
@@ -161,7 +163,7 @@ void IFileStream::ReadBuf(void * buf,  UINT32  inLength)
 	streamOffset += bytesRead;
 }
 
-void IFileStream::WriteBuf(const void * buf, UINT32 inLength)
+void IFileStream::WriteBuf(const void * buf, UInt32 inLength)
 {
 	UInt32	bytesWritten;
 
@@ -177,7 +179,7 @@ void IFileStream::WriteBuf(const void * buf, UINT32 inLength)
 		streamLength = streamOffset;
 }
 
-void IFileStream::SetOffset(INT64 inOffset)
+void IFileStream::SetOffset(SInt64 inOffset)
 {
 	LARGE_INTEGER	temp;
 
@@ -187,7 +189,7 @@ void IFileStream::SetOffset(INT64 inOffset)
 	streamOffset = inOffset;
 }
 
-void IFileStream::SetLength(UINT64 length)
+void IFileStream::SetLength(UInt64 length)
 {
 	SetOffset(length);
 	SetEndOfFile(theFile);

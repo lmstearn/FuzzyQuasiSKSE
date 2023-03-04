@@ -1,5 +1,7 @@
 #include "IDebugLog.h"
-
+#include <share.h>
+#include "IFileStream.h"
+#include <shlobj.h>
 
 std::FILE			* IDebugLog::logFile = NULL;
 char				IDebugLog::sourceBuf[16] = { 0 };

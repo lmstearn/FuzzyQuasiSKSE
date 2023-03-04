@@ -13,12 +13,7 @@
 // need win8 for windows store APIs
 #define _WIN32_WINNT	0x0602
 
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-// Windows specific: C, C++
-#include <windows.h>
-#include <winsock2.h>
-#endif
+#include <cstdlib>
 
 
 #include <cstdio>
@@ -29,3 +24,10 @@
 #include "IDynamicCreate.h"
 #include "IDebugLog.h"
 #include "ISingleton.h"
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+// Windows specific: C, C++
+#include <windows.h>
+#include <winsock2.h>
+#endif

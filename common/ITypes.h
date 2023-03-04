@@ -1,15 +1,13 @@
 #pragma once
 #ifndef ITYPESH_GUARD
 #define ITYPESH_GUARD
-#include <cstdarg>
-#include <share.h>
-#include <shlobj.h>
-#include <stdlib.h>
-#include <iostream>
-#include <string>
 
+
+#include "IErrors.h"
 
 #pragma warning(disable: 4221)
+#include <cmath>
+
 typedef const unsigned long	ConstUInt32;		//!< An unsigned 32-bit integer value
 
 typedef unsigned char		UInt8;		//!< An unsigned 8-bit integer value
@@ -184,6 +182,10 @@ typedef Bitfield <UInt8>	Bitfield8;		//!< An 8-bit bitfield
 typedef Bitfield <UInt16>	Bitfield16;		//!< A 16-bit bitfield
 typedef Bitfield <UInt32>	Bitfield32;		//!< A 32-bit bitfield
 
+//Removed from ITypes.h
+STATIC_ASSERT(sizeof(::Bitfield8) == 1);
+STATIC_ASSERT(sizeof(::Bitfield16) == 2);
+STATIC_ASSERT(sizeof(::Bitfield32) == 4);
 //Goto IErrors.h for STATIC_ASSERTs. on above
 /**
  *	A bitstring

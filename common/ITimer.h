@@ -1,7 +1,6 @@
 #pragma once
 #pragma comment( lib, "Winmm.lib" )
-#include "IDebugLog.h"
-#include <mmsystem.h>
+#include "ITypes.h"
 
 using namespace std;
 

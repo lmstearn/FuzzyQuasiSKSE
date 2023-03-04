@@ -1,6 +1,6 @@
 #pragma once
 
-#include "skse64_common/Utilities.h"
+//#include "skse64_common/Utilities.h"
 #include "skse64/GameTypes.h"
 #include "skse64/GameForms.h"
 #include "skse64/GameObjects.h"

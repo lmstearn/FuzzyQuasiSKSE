@@ -1,5 +1,4 @@
 #pragma once
-#include "IDebugLog.h"
 
 class IMutex
 {

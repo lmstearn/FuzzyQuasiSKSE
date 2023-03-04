@@ -73,20 +73,16 @@ static SRes PrintString(const wchar_t *s);
 MY_STDAPI LzmaUncompress(unsigned char *dest, size_t *destLen, const unsigned char *src, size_t *srcLen, 	const unsigned char *props, size_t propsSize, ELzmaStatus status);
 
 
-/*
+
 //SRes LzmaDecode(Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen,	const Byte *propData, unsigned propSize, ELzmaFinishMode finishMode, 	ELzmaStatus *status, ISzAllocPtr alloc);
 //static SRes Decode(ISeqOutStream *outStream, ISeqInStream *inStream);
 // for SKSE entry
 #include "skse64_loader_common/IdentifyEXE.h"
 #include <intrin.h>
-//#include <shlobj.h>
-//#include <intrin.h>
+//#include <shlobj.h> // not sure about this
 
-
+/*
 // common
-//#include <stdlib.h> // included in stdafx.h
-//#include <stdio.h> // included in stdafx.h
-// #include <string.h> included in stdafx.h
 #include "common\ITypes.h"
 #include "common\IErrors.h"
 #include "common\IDynamicCreate.h"

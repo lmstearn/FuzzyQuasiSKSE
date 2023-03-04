@@ -1,7 +1,7 @@
 #pragma once
 #ifndef IDATASTREAMH_GUARD
 #define IDATASTREAMH_GUARD
-#include "ITypes.h"
+#include "IErrors.h"
 
 /**
  *	An arbitrary data stream

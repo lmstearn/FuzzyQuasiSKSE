@@ -3,8 +3,6 @@
 #ifndef IERRORSH_GUARD
 #define IERRORSH_GUARD
 
-#include "IDebugLog.h"
-
 __declspec(noreturn) static void IErrors_Halt(void);
 void _AssertionFailed(const char * file, unsigned long line, const char * desc);
 void _AssertionFailed_ErrCode(const char * file, unsigned long line, const char * desc, unsigned long long code);
@@ -30,8 +28,8 @@ template <int x> struct static_assert_test { };
 
 #define __MACRO_JOIN__(a, b)		__MACRO_JOIN_2__(a, b)
 #define __MACRO_JOIN_2__(a, b)		__MACRO_JOIN_3__(a, b)
-#define __MACRO_JOIN_3__(a, b)		a##b			//## Token-pasting: concatenate operator
-#define __PREPRO_TOKEN_STR2__(a)	#a			//# Stringizing: double quotes operator
+#define __MACRO_JOIN_3__(a, b)		a##b
+#define __PREPRO_TOKEN_STR2__(a)	#a
 #define __PREPRO_TOKEN_STR__(a)		__PREPRO_TOKEN_STR2__(a)
 #define __LOC__						__FILE__ "("__PREPRO_TOKEN_STR__(__LINE__)") : "
 #ifdef __cplusplus
@@ -42,11 +40,6 @@ template <int x> struct static_assert_test { };
 #else
 #define STATIC_ASSERT(a) extern char __dummy[-1 + (2 * (int)(x))]
 #endif
-
-//Removed from ITypes.h
-STATIC_ASSERT(sizeof(::Bitfield8)==1);
-STATIC_ASSERT(sizeof(::Bitfield16)==2);
-STATIC_ASSERT(sizeof(::Bitfield32)==4);
 
 
 //consider

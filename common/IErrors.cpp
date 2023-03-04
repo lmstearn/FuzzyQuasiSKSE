@@ -1,4 +1,6 @@
 #include "IErrors.h"
+#include "IDebugLog.h"
+#include <cstdlib>
 
 __declspec(noreturn) static void IErrors_Halt(void)
 {

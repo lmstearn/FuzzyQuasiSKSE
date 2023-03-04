@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-#include "IErrors.h"
 
 
 class IDirectoryIterator

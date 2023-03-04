@@ -38,7 +38,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -51,7 +51,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -164,11 +164,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-   <ItemGroup>
+  <ItemGroup>
     <ClInclude Include="..\7Zip\ZBcj2.h;..\7Zip\ZBra.h;..\7Zip\ZDelta.h;..\7Zip\Z7zBuf.h;..\7Zip\Z7zCrc.h;..\7Zip\Z7zFile.h;..\7Zip\ZAlloc.h;..\7Zip\ZCpuArch.h;..\7Zip\ZLzma2Dec.h;..\7Zip\ZLzmaDec.h;AInfoLoad.h;AIPrefix.h;AuxFuncs.h;resource.h;AFuzzyQuasiSKSE.h;targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\7Zip\ZBcj2.c;..\7Zip\ZBra.c;..\7Zip\ZDelta.c;..\7Zip\Z7zArcIn.c;..\7Zip\Z7zBuf.c;..\7Zip\Z7zCrc.c;..\7Zip\Z7zDec.c;..\7Zip\Z7zFile.c;..\7Zip\Z7zStream.c;..\7Zip\ZAlloc.c;..\7Zip\ZCpuArch.c;..\7Zip\ZLzma2Dec.c;..\7Zip\ZLzmaDec.c;AInfoLoad.cpp;AIPrefix.cpp;AFuzzyQuasiSKSE.cpp;AuxFuncs.cpp" />
+    <ClCompile Include="..\7Zip\ZBcj2.c;..\7Zip\ZBra.c;..\7Zip\ZDelta.c;..\7Zip\Z7zArcIn.c;..\7Zip\Z7zBuf.c;..\7Zip\Z7zCrc.c;..\7Zip\Z7zDec.c;..\7Zip\Z7zFile.c;..\7Zip\Z7zStream.c;..\7Zip\ZAlloc.c;..\7Zip\ZCpuArch.c;..\7Zip\ZLzma2Dec.c;..\7Zip\ZLzmaDec.c;AInfoLoad.cpp;AIPrefix.cpp;AFuzzyQuasiSKSE.cpp;AuxFuncs.cpp;..\skse64\skse64.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="API" />
@@ -249,6 +249,15 @@
     </ClInclude>
     <ClCompile Include="..\common\IBufferStream.cpp;..\common\IDataStream.cpp;..\common\IFileStream.cpp;..\common\ISegmentStream.cpp;..\common\IDebugLog.cpp;..\common\IErrors.cpp;..\common\IEvent.cpp;..\common\IInterlockedLong.cpp;..\common\IMutex.cpp;..\common\ISingleton.cpp;..\common\ITypes.cpp;..\common\ITimer.cpp;..\common\IDirectoryIterator.cpp;..\common\IPrefix.cpp">
       <DependentUpon>common</DependentUpon>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="skse64_loader_common" />
+    <ClInclude Include="..\skse64_loader_common\IdentifyEXE.h;..\skse64_loader_common\Inject.h;..\skse64_loader_common\LoaderError.h;..\skse64_loader_common\Steam.h">
+      <DependentUpon>skse64_loader_common</DependentUpon>
+    </ClInclude>
+      <ClCompile Include="..\skse64_loader_common\IdentifyEXE.cpp;..\skse64_loader_common\Inject.cpp;..\skse64_loader_common\LoaderError.cpp;..\skse64_loader_common\Steam.cpp">
+      <DependentUpon>skse64_loader_common</DependentUpon>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

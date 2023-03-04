@@ -71,7 +71,7 @@ void RegisterFunction(GFxValue * dst, GFxMovieView * movie, const char * name)
 
 	// create the function object
 	GFxValue	fnValue;
-GFxFunctionHandler::movie->CreateFunction(&fnValue, fn);
+	movie->CreateFunction(&fnValue, fn);
 
 	// register it
 	dst->SetMember(name, &fnValue);
